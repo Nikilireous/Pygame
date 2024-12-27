@@ -3,6 +3,7 @@ import os
 import sys
 import math
 import random
+from map import Map
 
 
 class Kiana(pygame.sprite.Sprite):
@@ -96,6 +97,7 @@ def main():
     pygame.init()
     size = 1400, 800
     fps = 100
+    map0 = Map((200, 320))
     screen = pygame.display.set_mode(size)
     pygame.display.set_caption("Kiana_game")
 
@@ -127,6 +129,7 @@ def main():
                 seconds_to_shoot += 1
 
         screen.fill(0)
+        map0.update(screen)
         character_sprites.draw(screen)
         character_sprites.update()
 
