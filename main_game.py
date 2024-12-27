@@ -17,22 +17,6 @@ class Kiana(pygame.sprite.Sprite):
         self.rect.x, self.rect.y = 660, 360
         self.clock = 0
 
-    def load_image(self, name, colorkey=None):
-        fullname = os.path.join('images', name)
-        if not os.path.isfile(fullname):
-            print(f"Файл с изображением '{fullname}' не найден")
-            sys.exit()
-        image = pygame.image.load(fullname)
-
-        if colorkey is not None:
-            image = image.convert()
-            if colorkey == -1:
-                colorkey = image.get_at((0, 0))
-            image.set_colorkey(colorkey)
-        else:
-            image = image.convert_alpha()
-        return image
-
     def update(self):
         if self.clock == 2500 // self.fps:
             self.clock = 0
@@ -97,7 +81,8 @@ def main():
     pygame.init()
     size = 1400, 800
     fps = 100
-    map0 = Map((200, 320), fps)
+    main_map = Map((200, 320), fps)
+
     screen = pygame.display.set_mode(size)
     pygame.display.set_caption("Kiana_game")
 
@@ -129,11 +114,13 @@ def main():
                 seconds_to_shoot += 1
 
         screen.fill(0)
-        map0.update(screen)
-        character_sprites.draw(screen)
-        character_sprites.update()
+        main_map.update(screen)
+        all_change = main_map.change
 
-        bullet_sprites.update(map0.change)
+        character_sprites.update()
+        character_sprites.draw(screen)
+
+        bullet_sprites.update(change=all_change)
         bullet_sprites.draw(screen)
 
         pygame.display.flip()
