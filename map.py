@@ -44,26 +44,31 @@ class Map:
         speed = 3
         keys = pygame.key.get_pressed()
         if keys[pygame.K_w]:
-            if self.step_condition(self.player_x, self.player_y - speed - 40, "top"):
+            pos1, pos2 = (self.player_y - 40 - speed, self.player_x - 40), (self.player_y - 40 - speed, self.player_x + 40)
+            if self.step_condition(pos1, pos2):
                 self.player_y -= speed
         if keys[pygame.K_s]:
-            if self.step_condition(self.player_x, self.player_y + speed + 40, "bot"):
+            pos1, pos2 = (self.player_y + 40 + speed, self.player_x - 40), (self.player_y + 40 + speed, self.player_x + 40)
+            if self.step_condition(pos1, pos2):
                 self.player_y += speed
         if keys[pygame.K_a]:
-            if self.step_condition(self.player_x - speed - 40, self.player_y, "left"):
+            pos1, pos2 = (self.player_y - 40, self.player_x - 40 - speed), (self.player_y + 40, self.player_x - 40 - speed)
+            if self.step_condition(pos1, pos2):
                 self.player_x -= speed
         if keys[pygame.K_d]:
-            if self.step_condition(self.player_x + speed + 40, self.player_y, "right"):
+            pos1, pos2 = (self.player_y - 40, self.player_x + 40 + speed), (self.player_y + 40, self.player_x + 40 + speed)
+            if self.step_condition(pos1, pos2):
                 self.player_x += speed
 
         camera_x = self.player_x - screen.get_width() // 2
         camera_y = self.player_y - screen.get_height() // 2
         self.draw_map(screen, camera_x, camera_y)
 
-    def step_condition(self, pos1, pos2, direction):
-        if direction == "top":
-            player_in_tiles_cor = (pos1 // self.TILE_SIZE, pos2 // self.TILE_SIZE)
-            if self.map_data[player_in_tiles_cor[0]][player_in_tiles_cor[1]] == 0:
-                return True
-            return False
+    def step_condition(self, pos1, pos2):
+        for i in (pos1, pos2):
+            player_in_tiles_cor = (i[0] // self.TILE_SIZE, i[1] // self.TILE_SIZE)
+            if self.map_data[player_in_tiles_cor[0]][player_in_tiles_cor[1]] != 0:
+                return False
+        return True
+
 
