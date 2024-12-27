@@ -12,9 +12,9 @@ class Kiana(pygame.sprite.Sprite):
         self.fps = fps
         self.cur_frame = 0
         self.image = self.load_image(self.frames[self.cur_frame])
-        self.image = pygame.transform.scale(self.image, (100, 100))
+        self.image = pygame.transform.scale(self.image, (80, 80))
         self.rect = self.image.get_rect()
-        self.rect.x, self.rect.y = 650, 350
+        self.rect.x, self.rect.y = 660, 360
         self.clock = 0
 
     def load_image(self, name, colorkey=None):
@@ -38,13 +38,14 @@ class Kiana(pygame.sprite.Sprite):
             self.clock = 0
             self.cur_frame = (self.cur_frame + 1) % len(self.frames)
             self.image = self.load_image(self.frames[self.cur_frame])
-            self.image = pygame.transform.scale(self.image, (100, 100))
+            self.image = pygame.transform.scale(self.image, (80, 80))
         else:
             self.clock += 1
 
 
-class Bullet:
-    def __init__(self, x, y):
+class Bullet(pygame.sprite.Sprite):
+    def __init__(self, x, y, *group):
+        super().__init__(*group)
         self.pos = (x, y)
         mx, my = pygame.mouse.get_pos()
         self.dir = (mx - x, my - y)
@@ -55,18 +56,24 @@ class Bullet:
             self.dir = (self.dir[0] / length, self.dir[1] / length)
         angle = math.degrees(math.atan2(-self.dir[1], self.dir[0]))
 
-        self.bullet = self.load_image("bullet.png")
-        self.bullet = pygame.transform.scale(self.bullet, (15, 10))
-        self.bullet = pygame.transform.rotate(self.bullet, angle)
-        self.speed = 10
+        self.image = self.load_image("bullet.png")  # Атрибут image
+        self.image = pygame.transform.scale(self.image, (15, 10))
+        self.image = pygame.transform.rotate(self.image, angle)
+
+        self.rect = self.image.get_rect()  # Атрибут rect
+        self.rect.center = self.pos
+
+        self.speed = 8
 
     def update(self):
         self.pos = (self.pos[0] + self.dir[0] * self.speed,
                     self.pos[1] + self.dir[1] * self.speed)
+        self.rect.center = self.pos
 
-    def draw(self, surf):
-        bullet_rect = self.bullet.get_rect(center=self.pos)
-        surf.blit(self.bullet, bullet_rect)
+        screen_width, screen_height = pygame.display.get_surface().get_size()
+        if (self.pos[0] < 0 or self.pos[0] > screen_width or
+                self.pos[1] < 0 or self.pos[1] > screen_height):
+            self.kill()
 
     def load_image(self, name, colorkey=None):
         fullname = os.path.join('images', name)
@@ -93,30 +100,38 @@ def main():
     pygame.display.set_caption("Kiana_game")
 
     character_sprites = pygame.sprite.Group()
-    bullet_sprites = []
+    bullet_sprites = pygame.sprite.Group()
 
     Kiana(character_sprites, fps=fps)
 
     clock = pygame.time.Clock()
+    seconds_to_shoot = 0
+    fire = False
     running = True
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                fire = True
+                Bullet(size[0] // 2, size[1] // 2, bullet_sprites)
             if event.type == pygame.MOUSEBUTTONUP:
-                bullet_sprites.append(Bullet(700, 400))
+                fire = False
+                seconds_to_shoot = 0
+
+        if fire:
+            if seconds_to_shoot == fps // 10:
+                seconds_to_shoot = 0
+                Bullet(size[0] // 2, size[1] // 2, bullet_sprites)
+            else:
+                seconds_to_shoot += 1
 
         screen.fill(0)
         character_sprites.draw(screen)
         character_sprites.update()
 
-        for bullet in bullet_sprites[:]:
-            bullet.update()
-            if not screen.get_rect().collidepoint(bullet.pos):
-                bullet_sprites.remove(bullet)
-
-        for bullet in bullet_sprites:
-            bullet.draw(screen)
+        bullet_sprites.update()
+        bullet_sprites.draw(screen)
 
         pygame.display.flip()
         clock.tick(fps)
