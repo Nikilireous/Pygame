@@ -43,22 +43,25 @@ class Map:
     def update(self, screen):
         speed = 3
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_w]:
-            pos1, pos2 = (self.player_y - 40 - speed, self.player_x - 40), (self.player_y - 40 - speed, self.player_x + 40)
-            if self.step_condition(pos1, pos2):
-                self.player_y -= speed
-        if keys[pygame.K_s]:
-            pos1, pos2 = (self.player_y + 40 + speed, self.player_x - 40), (self.player_y + 40 + speed, self.player_x + 40)
-            if self.step_condition(pos1, pos2):
-                self.player_y += speed
-        if keys[pygame.K_a]:
-            pos1, pos2 = (self.player_y - 40, self.player_x - 40 - speed), (self.player_y + 40, self.player_x - 40 - speed)
-            if self.step_condition(pos1, pos2):
-                self.player_x -= speed
-        if keys[pygame.K_d]:
-            pos1, pos2 = (self.player_y - 40, self.player_x + 40 + speed), (self.player_y + 40, self.player_x + 40 + speed)
-            if self.step_condition(pos1, pos2):
-                self.player_x += speed
+        if keys[pygame.K_w]:  # Движение Вверх
+            pos1, pos2 = (self.player_y - 30 - speed, self.player_x - 10), (
+                          self.player_y - 30 - speed, self.player_x + 10)
+            if self.step_condition(pos1, pos2): self.player_y -= speed
+
+        if keys[pygame.K_s]:  # Движение Вниз
+            pos1, pos2 = (self.player_y + 35 + speed, self.player_x - 10), (
+                          self.player_y + 35 + speed, self.player_x + 10)
+            if self.step_condition(pos1, pos2): self.player_y += speed
+
+        if keys[pygame.K_a]:  # Движение Влево
+            pos1, pos2 = (self.player_y - 30, self.player_x - 10 - speed), (
+                          self.player_y + 35, self.player_x - 10 - speed)
+            if self.step_condition(pos1, pos2): self.player_x -= speed
+
+        if keys[pygame.K_d]:  # Движение Вправо
+            pos1, pos2 = (self.player_y - 30, self.player_x + 10 + speed), (
+                          self.player_y + 35, self.player_x + 10 + speed)
+            if self.step_condition(pos1, pos2): self.player_x += speed
 
         camera_x = self.player_x - screen.get_width() // 2
         camera_y = self.player_y - screen.get_height() // 2
@@ -66,9 +69,7 @@ class Map:
 
     def step_condition(self, pos1, pos2):
         for i in (pos1, pos2):
-            player_in_tiles_cor = (i[0] // self.TILE_SIZE, i[1] // self.TILE_SIZE)
+            player_in_tiles_cor = (i[1] // self.TILE_SIZE, i[0] // self.TILE_SIZE)
             if self.map_data[player_in_tiles_cor[0]][player_in_tiles_cor[1]] != 0:
                 return False
         return True
-
-
