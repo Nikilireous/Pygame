@@ -2,7 +2,6 @@ import pygame
 import os
 import sys
 import math
-import random
 from map import Map
 
 
@@ -35,7 +34,7 @@ class Kiana(pygame.sprite.Sprite):
         return image
 
     def update(self):
-        if self.clock == self.fps // 4:
+        if self.clock == 2500 // self.fps:
             self.clock = 0
             self.cur_frame = (self.cur_frame + 1) % len(self.frames)
             self.image = self.load_image(self.frames[self.cur_frame])
@@ -45,9 +44,10 @@ class Kiana(pygame.sprite.Sprite):
 
 
 class Bullet(pygame.sprite.Sprite):
-    def __init__(self, x, y, *group):
+    def __init__(self, x, y, fps, *group):
         super().__init__(*group)
         self.pos = (x, y)
+        self.fps = fps
         mx, my = pygame.mouse.get_pos()
         self.dir = (mx - x, my - y)
         length = math.hypot(*self.dir)
@@ -57,18 +57,18 @@ class Bullet(pygame.sprite.Sprite):
             self.dir = (self.dir[0] / length, self.dir[1] / length)
         angle = math.degrees(math.atan2(-self.dir[1], self.dir[0]))
 
-        self.image = self.load_image("bullet.png")  # Атрибут image
+        self.image = self.load_image("bullet.png")
         self.image = pygame.transform.scale(self.image, (15, 10))
         self.image = pygame.transform.rotate(self.image, angle)
 
-        self.rect = self.image.get_rect()  # Атрибут rect
+        self.rect = self.image.get_rect()
         self.rect.center = self.pos
 
-        self.speed = 8
+        self.speed = 800 // self.fps
 
-    def update(self):
-        self.pos = (self.pos[0] + self.dir[0] * self.speed,
-                    self.pos[1] + self.dir[1] * self.speed)
+    def update(self, change):
+        self.pos = (self.pos[0] + self.dir[0] * self.speed - change[0],
+                    self.pos[1] + self.dir[1] * self.speed - change[1])
         self.rect.center = self.pos
 
         screen_width, screen_height = pygame.display.get_surface().get_size()
@@ -97,7 +97,7 @@ def main():
     pygame.init()
     size = 1400, 800
     fps = 100
-    map0 = Map((200, 320))
+    map0 = Map((200, 320), fps)
     screen = pygame.display.set_mode(size)
     pygame.display.set_caption("Kiana_game")
 
@@ -116,7 +116,7 @@ def main():
                 running = False
             if event.type == pygame.MOUSEBUTTONDOWN:
                 fire = True
-                Bullet(size[0] // 2, size[1] // 2, bullet_sprites)
+                Bullet(size[0] // 2, size[1] // 2, fps, bullet_sprites)
             if event.type == pygame.MOUSEBUTTONUP:
                 fire = False
                 seconds_to_shoot = 0
@@ -124,7 +124,7 @@ def main():
         if fire:
             if seconds_to_shoot == fps // 10:
                 seconds_to_shoot = 0
-                Bullet(size[0] // 2, size[1] // 2, bullet_sprites)
+                Bullet(size[0] // 2, size[1] // 2, fps, bullet_sprites)
             else:
                 seconds_to_shoot += 1
 
@@ -133,7 +133,7 @@ def main():
         character_sprites.draw(screen)
         character_sprites.update()
 
-        bullet_sprites.update()
+        bullet_sprites.update(map0.change)
         bullet_sprites.draw(screen)
 
         pygame.display.flip()
