@@ -5,12 +5,12 @@ import os
 
 
 class KianaBaseAttack(pygame.sprite.Sprite):
-    def __init__(self, x, y, fps, map0, player_pos, *group):
+    def __init__(self, *group, x, y, fps, map_data, player_pos):
         super().__init__(*group)
         self.pos = (x, y)
         self.player_pos = player_pos
         self.fps = fps
-        self.map = map0
+        self.map = map_data
         mx, my = pygame.mouse.get_pos()
         self.dir = (mx - x, my - y)
         length = math.hypot(*self.dir)
@@ -28,6 +28,11 @@ class KianaBaseAttack(pygame.sprite.Sprite):
         self.rect.center = self.pos
 
         self.speed = 800 // self.fps
+
+    def get_map_coords(self, camera_x, camera_y, tile_size):
+        map_x = (camera_x + self.rect.centerx) // tile_size
+        map_y = (camera_y + self.rect.centery) // tile_size
+        return map_x, map_y
 
     def update(self, change, camera_pos):
         self.pos = (self.pos[0] + self.dir[0] * self.speed - change[0],
@@ -59,8 +64,3 @@ class KianaBaseAttack(pygame.sprite.Sprite):
         else:
             image = image.convert_alpha()
         return image
-
-    def get_map_coords(self, camera_x, camera_y, tile_size):
-        map_x = (self.rect.centerx + camera_x) // tile_size
-        map_y = (self.rect.centery + camera_y) // tile_size
-        return map_x, map_y
