@@ -11,6 +11,7 @@ def main():
     fps = 100
     main_map = Map((200, 320), fps)
     main_map_data = main_map.map_data
+    main_map_flightless_data = main_map.flightless_map
 
     screen = pygame.display.set_mode(size)
     pygame.display.set_caption("Kiana_game")
@@ -20,7 +21,7 @@ def main():
     spider_sprites = pygame.sprite.Group()
 
     kiana_character = Kiana(character_sprites, fps=fps)
-    Spider(spider_sprites, fps=fps, player=kiana_character)
+    Spider(spider_sprites, fps=fps, map_data=main_map_flightless_data, player=kiana_character)
 
     clock = pygame.time.Clock()
     seconds_to_shoot = 0
@@ -56,7 +57,7 @@ def main():
         bullet_sprites.update(change=all_change, camera_pos=camera_pos)
         bullet_sprites.draw(screen)
 
-        spider_sprites.update(change=all_change)
+        spider_sprites.update(change=all_change, camera_pos=camera_pos)
         spider_sprites.draw(screen)
 
         pygame.display.flip()
