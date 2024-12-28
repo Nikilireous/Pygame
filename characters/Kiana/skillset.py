@@ -30,8 +30,8 @@ class KianaBaseAttack(pygame.sprite.Sprite):
         self.speed = 800 // self.fps
 
     def get_map_coords(self, camera_x, camera_y, tile_size):
-        map_x = (self.rect.centerx + camera_x) // tile_size
-        map_y = (self.rect.centery + camera_y) // tile_size
+        map_x = (camera_x + self.rect.centerx) // tile_size
+        map_y = (camera_y + self.rect.centery) // tile_size
         return map_x, map_y
 
     def update(self, change, camera_pos):
