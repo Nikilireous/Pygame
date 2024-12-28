@@ -23,6 +23,16 @@ class Map:
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
         ]
 
+        self.flightless_map = []
+        for y in range(len(self.map_data)):
+            row = []
+            for x in range(len(self.map_data)):
+                if self.map_data[y][x] == 0:
+                    row.append(1)
+                else:
+                    row.append(0)
+            self.flightless_map.append(row)
+
     def load_tiles(self):
         tiles = {
             0: pygame.image.load(os.path.join("images", "tiles", "grass.png")),
