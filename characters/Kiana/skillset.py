@@ -5,12 +5,12 @@ import os
 
 
 class KianaBaseAttack(pygame.sprite.Sprite):
-    def __init__(self, x, y, fps, map0, player_pos, *group):
+    def __init__(self, *group, x, y, fps, map_data, player_pos):
         super().__init__(*group)
         self.pos = (x, y)
         self.player_pos = player_pos
         self.fps = fps
-        self.map = map0
+        self.map = map_data
         mx, my = pygame.mouse.get_pos()
         self.dir = (mx - x, my - y)
         length = math.hypot(*self.dir)
