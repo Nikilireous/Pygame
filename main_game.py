@@ -1,152 +1,8 @@
 import pygame
-import os
-import sys
-import math
 from map import Map
-
-
-class Kiana(pygame.sprite.Sprite):
-    def __init__(self, *group, fps):
-        super().__init__(*group)
-        self.frames = ["Kiana0-Photoroom.png", "Kiana00-Photoroom.png"]
-        self.fps = fps
-        self.cur_frame = 0
-        self.image = self.load_image(self.frames[self.cur_frame])
-        self.image = pygame.transform.scale(self.image, (80, 80))
-        self.rect = self.image.get_rect()
-        self.rect.x, self.rect.y = 660, 360
-        self.clock = 0
-
-    def update(self):
-        if self.clock == 2500 // self.fps:
-            self.clock = 0
-            self.cur_frame = (self.cur_frame + 1) % len(self.frames)
-            self.image = self.load_image(self.frames[self.cur_frame])
-            self.image = pygame.transform.scale(self.image, (80, 80))
-        else:
-            self.clock += 1
-
-    def load_image(self, name, colorkey=None):
-        fullname = os.path.join('images', name)
-        if not os.path.isfile(fullname):
-            print(f"Файл с изображением '{fullname}' не найден")
-            sys.exit()
-        image = pygame.image.load(fullname)
-
-        if colorkey is not None:
-            image = image.convert()
-            if colorkey == -1:
-                colorkey = image.get_at((0, 0))
-            image.set_colorkey(colorkey)
-        else:
-            image = image.convert_alpha()
-        return image
-
-
-class Bullet(pygame.sprite.Sprite):
-    def __init__(self, x, y, fps, *group):
-        super().__init__(*group)
-        self.pos = (x, y)
-        self.fps = fps
-        mx, my = pygame.mouse.get_pos()
-        self.dir = (mx - x, my - y)
-        length = math.hypot(*self.dir)
-        if length == 0.0:
-            self.dir = (0, -1)
-        else:
-            self.dir = (self.dir[0] / length, self.dir[1] / length)
-        angle = math.degrees(math.atan2(-self.dir[1], self.dir[0]))
-
-        self.image = self.load_image("bullet.png")
-        self.image = pygame.transform.scale(self.image, (15, 10))
-        self.image = pygame.transform.rotate(self.image, angle)
-
-        self.rect = self.image.get_rect()
-        self.rect.center = self.pos
-
-        self.speed = 800 // self.fps
-
-    def update(self, change):
-        self.pos = (self.pos[0] + self.dir[0] * self.speed - change[0],
-                    self.pos[1] + self.dir[1] * self.speed - change[1])
-        self.rect.center = self.pos
-
-        screen_width, screen_height = pygame.display.get_surface().get_size()
-        if (self.pos[0] < 0 or self.pos[0] > screen_width or
-                self.pos[1] < 0 or self.pos[1] > screen_height):
-            self.kill()
-
-    def load_image(self, name, colorkey=None):
-        fullname = os.path.join('images', name)
-        if not os.path.isfile(fullname):
-            print(f"Файл с изображением '{fullname}' не найден")
-            sys.exit()
-        image = pygame.image.load(fullname)
-
-        if colorkey is not None:
-            image = image.convert()
-            if colorkey == -1:
-                colorkey = image.get_at((0, 0))
-            image.set_colorkey(colorkey)
-        else:
-            image = image.convert_alpha()
-        return image
-
-class Spider(pygame.sprite.Sprite):
-    def __init__(self, *group, fps, player):
-        super().__init__(*group)
-        self.frames = [f"pauk{i}.png" for i in range(11)]
-        self.fps = fps
-        self.player = player
-        self.cur_frame = 0
-        self.image = self.load_image(self.frames[self.cur_frame])
-        self.image = pygame.transform.scale(self.image, (80, 80))
-        self.rect = self.image.get_rect()
-        self.rect.x, self.rect.y = 0, 0
-        self.speed = 2
-        self.clock = 0
-
-    def move_towards_player(self, player, change):
-        dx, dy = player.rect.x - self.rect.x, player.rect.y - self.rect.y
-        dist = math.hypot(dx, dy)
-
-        try:
-            dx, dy = dx / dist, dy / dist
-            self.rect.x += dx * self.speed - change[0]
-            self.rect.y += dy * self.speed - change[1]
-        except ZeroDivisionError:
-            pass
-
-    def update(self, change):
-        self.move_towards_player(self.player, change)
-
-        if self.clock == 250 // self.fps:
-            dx, dy = (self.player.rect.x - self.rect.x), (self.player.rect.y - self.rect.y)
-            self.clock = 0
-            self.cur_frame = (self.cur_frame + 1) % len(self.frames)
-            self.image = self.load_image(self.frames[self.cur_frame])
-            self.image = pygame.transform.scale(self.image, (100, 100))
-
-            angle = math.degrees(math.atan2(-dx, dy))
-            self.image = pygame.transform.rotate(self.image, -angle)
-        else:
-            self.clock += 1
-
-    def load_image(self, name, colorkey=None):
-        fullname = os.path.join('images/enemies/pauk', name)
-        if not os.path.isfile(fullname):
-            print(f"Файл с изображением '{fullname}' не найден")
-            sys.exit()
-        image = pygame.image.load(fullname)
-
-        if colorkey is not None:
-            image = image.convert()
-            if colorkey == -1:
-                colorkey = image.get_at((0, 0))
-            image.set_colorkey(colorkey)
-        else:
-            image = image.convert_alpha()
-        return image
+from characters.Kiana.kiana import Kiana
+from characters.Kiana.skillset import KianaBaseAttack
+from enemies.spider import Spider
 
 
 def main():
@@ -154,6 +10,7 @@ def main():
     size = 1400, 800
     fps = 100
     main_map = Map((200, 320), fps)
+    map0 = main_map.map_data
 
     screen = pygame.display.set_mode(size)
     pygame.display.set_caption("Kiana_game")
@@ -170,12 +27,12 @@ def main():
     fire = False
     running = True
     while running:
+        player_pos = (main_map.player_x, main_map.player_y)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
             if event.type == pygame.MOUSEBUTTONDOWN:
                 fire = True
-                Bullet(size[0] // 2, size[1] // 2, fps, bullet_sprites)
             if event.type == pygame.MOUSEBUTTONUP:
                 fire = False
                 seconds_to_shoot = 0
@@ -183,7 +40,7 @@ def main():
         if fire:
             if seconds_to_shoot == fps // 10:
                 seconds_to_shoot = 0
-                Bullet(size[0] // 2, size[1] // 2, fps, bullet_sprites)
+                KianaBaseAttack(size[0] // 2, size[1] // 2, fps, map0, player_pos, bullet_sprites)
             else:
                 seconds_to_shoot += 1
 
@@ -193,8 +50,9 @@ def main():
 
         character_sprites.update()
         character_sprites.draw(screen)
+        camera_pos = (main_map.player_x - size[0] // 2, main_map.player_y - size[1] // 2)
 
-        bullet_sprites.update(change=all_change)
+        bullet_sprites.update(change=all_change, camera_pos=camera_pos)
         bullet_sprites.draw(screen)
 
         spider_sprites.update(change=all_change)
