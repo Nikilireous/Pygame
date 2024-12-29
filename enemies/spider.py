@@ -41,10 +41,9 @@ class Spider(pygame.sprite.Sprite):
         try:
             dx, dy = (dx / dist * self.speed), (dy / dist * self.speed)
             for coords in self.get_legs_coords(camera_pos[0] + int(dx) - change[0],
-                                              camera_pos[1] + int(dy) - change[1],
-                                              128):
-
-                if self.map_data[coords[0]][coords[1]] in [0]:
+                                               camera_pos[1] + int(dy) - change[1],
+                                               128):
+                if self.map_data[coords[1]][coords[0]] in [0]:
                     self.movement_type = 'matrix'
 
             if self.movement_type == 'vector':
@@ -64,7 +63,6 @@ class Spider(pygame.sprite.Sprite):
 
         start = grid.node(start[0], start[1])
         end = grid.node(end[0], end[1])
-
 
         finder = AStarFinder()
         path, runs = finder.find_path(start, end, grid)
@@ -90,7 +88,6 @@ class Spider(pygame.sprite.Sprite):
             pass
 
     def update(self, change, camera_pos):
-        print(self.movement_type)
         if self.movement_type == 'vector':
             self.vector_move(self.player, change, camera_pos)
 
