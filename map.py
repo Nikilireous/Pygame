@@ -3,31 +3,21 @@ import os
 
 
 class Map:
-    def __init__(self, player_pos, fps):
+    def __init__(self, fps):
         self.TILE_SIZE = 128
-        self.player_x = player_pos[0]
-        self.player_y = player_pos[1]
         self.tiles = self.load_tiles()
         self.change = [0, 0]
         self.fps = fps
-        self.map_data = [
-            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-            [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-            [1, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-            [1, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-            [1, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-            [1, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-            [1, 0, 2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-            [1, 0, 2, 2, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-            [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-        ]
+        with open("maps/map_number_1") as file:
+            self.map_data = list(map(lambda x: list(map(int, x.split())), file.readlines()))
+            self.player_x = len(self.map_data[0]) // 2 * 128
+            self.player_y = len(self.map_data) // 2 * 128
 
         self.flightless_map = []
         for y in range(len(self.map_data)):
             row = []
             for x in range(len(self.map_data[y])):
-                if self.map_data[y][x] == 0:
+                if self.map_data[y][x] in [0, 4]:
                     row.append(1)
                 else:
                     row.append(0)
@@ -35,9 +25,11 @@ class Map:
 
     def load_tiles(self):
         tiles = {
-            0: pygame.image.load(os.path.join("images", "tiles", "grass.png")),
-            1: pygame.image.load(os.path.join("images", "tiles", "wall.png")),
-            2: pygame.image.load(os.path.join("images", "tiles", "water.png"))
+            0: pygame.image.load(os.path.join("images/tiles", "grass.png")),
+            1: pygame.image.load(os.path.join("images/tiles", "wall.png")),
+            2: pygame.image.load(os.path.join("images/tiles", "water.png")),
+            3: pygame.image.load(os.path.join("images/tiles", "lava.png")),
+            4: pygame.image.load(os.path.join("images/tiles", "earth.png"))
         }
         for key in tiles:
             tiles[key] = pygame.transform.scale(tiles[key], (self.TILE_SIZE, self.TILE_SIZE))
@@ -58,28 +50,28 @@ class Map:
         keys = pygame.key.get_pressed()
         if keys[pygame.K_w]:  # Движение Вверх
             pos1, pos2 = (self.player_y - 30 - speed, self.player_x - 10), (
-                          self.player_y - 30 - speed, self.player_x + 10)
+                self.player_y - 30 - speed, self.player_x + 10)
             if self.step_condition(pos1, pos2):
                 self.player_y -= speed
                 self.change[1] -= speed
 
         if keys[pygame.K_s]:  # Движение Вниз
             pos1, pos2 = (self.player_y + 35 + speed, self.player_x - 10), (
-                          self.player_y + 35 + speed, self.player_x + 10)
+                self.player_y + 35 + speed, self.player_x + 10)
             if self.step_condition(pos1, pos2):
                 self.player_y += speed
                 self.change[1] += speed
 
         if keys[pygame.K_a]:  # Движение Влево
             pos1, pos2 = (self.player_y - 30, self.player_x - 10 - speed), (
-                          self.player_y + 35, self.player_x - 10 - speed)
+                self.player_y + 35, self.player_x - 10 - speed)
             if self.step_condition(pos1, pos2):
                 self.player_x -= speed
                 self.change[0] -= speed
 
         if keys[pygame.K_d]:  # Движение Вправо
             pos1, pos2 = (self.player_y - 30, self.player_x + 10 + speed), (
-                          self.player_y + 35, self.player_x + 10 + speed)
+                self.player_y + 35, self.player_x + 10 + speed)
             if self.step_condition(pos1, pos2):
                 self.player_x += speed
                 self.change[0] += speed
@@ -91,6 +83,6 @@ class Map:
     def step_condition(self, pos1, pos2):
         for i in (pos1, pos2):
             player_in_tiles_cor = (i[0] // self.TILE_SIZE, i[1] // self.TILE_SIZE)
-            if self.map_data[player_in_tiles_cor[0]][player_in_tiles_cor[1]] != 0:
+            if self.map_data[player_in_tiles_cor[0]][player_in_tiles_cor[1]] not in [0, 4]:
                 return False
         return True

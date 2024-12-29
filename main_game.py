@@ -13,7 +13,7 @@ def main():
     pygame.mixer.music.play(-1)
     size = 1400, 800
     fps = 100
-    main_map = Map((200, 320), fps)
+    main_map = Map(fps)
     main_map_data = main_map.map_data
     main_map_flightless_data = main_map.flightless_map
 
