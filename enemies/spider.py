@@ -18,8 +18,9 @@ class Spider(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(self.image, (80, 80))
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = 650, 700
-        self.movement_type = 'vector'
-        self.matrix_timer = self.fps * 3
+
+        self.movement_type = 'vector'  # Тип передвижения противника
+        self.matrix_timer = self.fps * 3  # Время в секундах, сколько длится матричное движение
         self.speed = 2
         self.clock = 0
         self.HP = 100
@@ -35,6 +36,7 @@ class Spider(pygame.sprite.Sprite):
         center_y = (camera_y + self.rect.centery) // tile_size
         return centre_x, center_y
 
+    # Векторное передвижение (по вектору между противником и игроком)
     def vector_move(self, player, change, camera_pos):
         dx, dy = player.rect.x - self.rect.x, player.rect.y - self.rect.y
         dist = math.hypot(dx, dy)
@@ -57,6 +59,7 @@ class Spider(pygame.sprite.Sprite):
         except ZeroDivisionError:
             pass
 
+    # Матричное передвижение (по тайлам карты)
     def matrix_move(self, player, change, camera_pos):
         grid = Grid(matrix=self.map_data)
         start = self.get_center_coords(camera_pos[0], camera_pos[1], 128)
@@ -65,7 +68,7 @@ class Spider(pygame.sprite.Sprite):
         start = grid.node(start[0], start[1])
         end = grid.node(end[0], end[1])
 
-        finder = AStarFinder()
+        finder = AStarFinder()  # Метод поиска кратчайшего пути до игрока
         path, runs = finder.find_path(start, end, grid)
 
         try:

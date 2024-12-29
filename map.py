@@ -8,14 +8,16 @@ class Map:
         self.tiles = self.load_tiles()
         self.change = [0, 0]
         self.fps = fps
-        with open("maps/map_number_1") as file:
+        with open("maps/map_number_1") as file:  # Открытие файла заготовленного скелета карты
             player_pos = list(map(int, file.readline().split()))
             print(player_pos)
             self.map_data = list(map(lambda x: list(map(int, x.split())), file.readlines()))
-            self.player_x = player_pos[0] * 128
-            self.player_y = player_pos[1] * 128
+            self.player_x = player_pos[0] * self.TILE_SIZE
+            self.player_y = player_pos[1] * self.TILE_SIZE
 
+        # Создание маршрутной карты для нелетающих противников
         self.flightless_map = []
+        self.flightless_sprites_group = pygame.sprite.Group()
         for y in range(len(self.map_data)):
             row = []
             for x in range(len(self.map_data[y])):
@@ -25,6 +27,7 @@ class Map:
                     row.append(0)
             self.flightless_map.append(row)
 
+    # Загрузка спрайтов тайлов карты
     def load_tiles(self):
         tiles = {
             0: pygame.image.load(os.path.join("images/tiles", "grass.png")),
@@ -37,6 +40,7 @@ class Map:
             tiles[key] = pygame.transform.scale(tiles[key], (self.TILE_SIZE, self.TILE_SIZE))
         return tiles
 
+    # Отрисовка карты
     def draw_map(self, screen, camera_x, camera_y):
         for y, row in enumerate(self.map_data):
             for x, tile in enumerate(row):
