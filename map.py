@@ -9,9 +9,11 @@ class Map:
         self.change = [0, 0]
         self.fps = fps
         with open("maps/map_number_1") as file:
+            player_pos = list(map(int, file.readline().split()))
+            print(player_pos)
             self.map_data = list(map(lambda x: list(map(int, x.split())), file.readlines()))
-            self.player_x = len(self.map_data[0]) // 2 * 128
-            self.player_y = len(self.map_data) // 2 * 128
+            self.player_x = player_pos[0] * 128
+            self.player_y = player_pos[1] * 128
 
         self.flightless_map = []
         for y in range(len(self.map_data)):
