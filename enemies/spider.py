@@ -7,12 +7,13 @@ from pathfinding.finder.a_star import AStarFinder
 
 
 class Spider(pygame.sprite.Sprite):
-    def __init__(self, *group, fps, map_data, player):
+    def __init__(self, *group, fps, map_data, tiles_data, player):
         super().__init__(*group)
         self.frames = [f"pauk{i}.png" for i in range(11)]
         self.fps = fps
         self.player = player
         self.map_data = map_data
+        self.tiles_data = tiles_data
         self.cur_frame = 0
         self.image = self.load_image(self.frames[self.cur_frame])
         self.image = pygame.transform.scale(self.image, (80, 80))
@@ -43,11 +44,15 @@ class Spider(pygame.sprite.Sprite):
 
         try:
             dx, dy = (dx / dist * self.speed), (dy / dist * self.speed)
-            for coords in self.get_legs_coords(camera_pos[0] + int(dx) - change[0],
-                                               camera_pos[1] + int(dy) - change[1],
-                                               128):
-                if self.map_data[coords[1]][coords[0]] in [0]:
-                    self.movement_type = 'matrix'
+
+            collision_object = pygame.sprite.spritecollideany(self, self.tiles_data)
+            if collision_object:
+                self.movement_type = 'matrix'
+            # for coords in self.get_legs_coords(camera_pos[0] + int(dx) - change[0],
+            #                                    camera_pos[1] + int(dy) - change[1],
+            #                                    128):
+            #     if self.map_data[coords[1]][coords[0]] in [0]:
+            #         self.movement_type = 'matrix'
 
             if self.movement_type == 'vector':
                 self.rect.x += dx - change[0]
@@ -91,7 +96,8 @@ class Spider(pygame.sprite.Sprite):
             self.movement_type = 'vector'
             pass
 
-    def update(self, change, camera_pos):
+    def update(self, change, camera_pos, tiles_data):
+        self.tiles_data = tiles_data
         if self.HP <= 0:
             self.kill()
         if self.movement_type == 'vector':

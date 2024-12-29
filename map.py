@@ -5,7 +5,6 @@ import os
 class Map:
     def __init__(self, fps):
         self.TILE_SIZE = 128
-        self.tiles = self.load_tiles()
         self.change = [0, 0]
         self.fps = fps
         with open("maps/map_number_1") as file:  # Открытие файла заготовленного скелета карты
@@ -15,9 +14,10 @@ class Map:
             self.player_x = player_pos[0] * self.TILE_SIZE
             self.player_y = player_pos[1] * self.TILE_SIZE
 
-        # Создание маршрутной карты для нелетающих противников
-        self.flightless_map = []
-        self.flightless_sprites_group = pygame.sprite.Group()
+        self.all_tiles = pygame.sprite.Group()
+        self.flightless_map = []  # Создание маршрутной карты для нелетающих противников
+        self.flightless_sprite_group = pygame.sprite.Group()  # Создание группы спрайтов, не доступных для нелетающих противников
+
         for y in range(len(self.map_data)):
             row = []
             for x in range(len(self.map_data[y])):
@@ -26,6 +26,8 @@ class Map:
                 else:
                     row.append(0)
             self.flightless_map.append(row)
+
+        self.tiles = self.load_tiles()
 
     # Загрузка спрайтов тайлов карты
     def load_tiles(self):
@@ -37,18 +39,30 @@ class Map:
             4: pygame.image.load(os.path.join("images/tiles", "earth.png"))
         }
         for key in tiles:
-            tiles[key] = pygame.transform.scale(tiles[key], (self.TILE_SIZE, self.TILE_SIZE))
+            tile_sprite = pygame.sprite.Sprite()
+            tile_sprite.image = pygame.transform.scale(tiles[key], (self.TILE_SIZE, self.TILE_SIZE))
+            tile_sprite.rect = tile_sprite.image.get_rect()
+            tiles[key] = tile_sprite
         return tiles
 
     # Отрисовка карты
     def draw_map(self, screen, camera_x, camera_y):
+        self.all_tiles = pygame.sprite.Group()
+        self.flightless_sprite_group = pygame.sprite.Group()
         for y, row in enumerate(self.map_data):
             for x, tile in enumerate(row):
                 screen_x = x * self.TILE_SIZE - camera_x
                 screen_y = y * self.TILE_SIZE - camera_y
 
                 if -self.TILE_SIZE < screen_x < screen.get_width() and -self.TILE_SIZE < screen_y < screen.get_height():
-                    screen.blit(self.tiles[tile], (screen_x, screen_y))
+                    current_tile = self.tiles[tile]
+                    current_tile.rect.x, current_tile.rect.y = screen_x, screen_y
+                    self.all_tiles.add(current_tile)
+
+                    if tile in [1, 2, 3]:
+                        self.flightless_sprite_group.add(current_tile)
+
+                    self.all_tiles.draw(screen)
 
     def update(self, screen):
         self.change = [0, 0]
