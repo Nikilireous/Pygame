@@ -34,7 +34,13 @@ class KianaBaseAttack(pygame.sprite.Sprite):
         map_y = (camera_y + self.rect.centery) // tile_size
         return map_x, map_y
 
-    def update(self, change, camera_pos):
+    def update(self, change, camera_pos, enemies_group):
+
+        collision_object = pygame.sprite.spritecollideany(self, enemies_group)
+        if collision_object:
+            collision_object.HP -= 5
+            self.kill()
+
         self.pos = (self.pos[0] + self.dir[0] * self.speed - change[0],
                     self.pos[1] + self.dir[1] * self.speed - change[1])
         self.rect.center = self.pos

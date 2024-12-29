@@ -22,6 +22,7 @@ class Spider(pygame.sprite.Sprite):
         self.matrix_timer = self.fps * 3
         self.speed = 2
         self.clock = 0
+        self.HP = 100
 
     def get_legs_coords(self, camera_x, camera_y, tile_size):
         left_x = (self.rect.x + camera_x) // tile_size
@@ -88,6 +89,8 @@ class Spider(pygame.sprite.Sprite):
             pass
 
     def update(self, change, camera_pos):
+        if self.HP <= 0:
+            self.kill()
         if self.movement_type == 'vector':
             self.vector_move(self.player, change, camera_pos)
 

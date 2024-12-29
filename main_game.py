@@ -54,7 +54,7 @@ def main():
         character_sprites.update()
         character_sprites.draw(screen)
 
-        bullet_sprites.update(change=all_change, camera_pos=camera_pos)
+        bullet_sprites.update(change=all_change, camera_pos=camera_pos, enemies_group=spider_sprites)
         bullet_sprites.draw(screen)
 
         spider_sprites.update(change=all_change, camera_pos=camera_pos)
