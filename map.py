@@ -11,22 +11,22 @@ class Map:
         self.change = [0, 0]
         self.fps = fps
         self.map_data = [
-            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-            [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-            [1, 0, 2, 2, 0, 0, 2, 2, 0, 1],
-            [1, 0, 2, 0, 0, 0, 0, 2, 0, 1],
-            [1, 0, 0, 0, 2, 2, 0, 0, 0, 1],
-            [1, 0, 0, 0, 2, 2, 0, 0, 0, 1],
-            [1, 0, 2, 0, 0, 0, 0, 2, 0, 1],
-            [1, 0, 2, 2, 0, 0, 2, 2, 0, 1],
-            [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+            [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+            [1, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+            [1, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+            [1, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+            [1, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+            [1, 0, 2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+            [1, 0, 2, 2, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+            [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
         ]
 
         self.flightless_map = []
         for y in range(len(self.map_data)):
             row = []
-            for x in range(len(self.map_data)):
+            for x in range(len(self.map_data[y])):
                 if self.map_data[y][x] == 0:
                     row.append(1)
                 else:
@@ -90,7 +90,7 @@ class Map:
 
     def step_condition(self, pos1, pos2):
         for i in (pos1, pos2):
-            player_in_tiles_cor = (i[1] // self.TILE_SIZE, i[0] // self.TILE_SIZE)
+            player_in_tiles_cor = (i[0] // self.TILE_SIZE, i[1] // self.TILE_SIZE)
             if self.map_data[player_in_tiles_cor[0]][player_in_tiles_cor[1]] != 0:
                 return False
         return True
