@@ -70,3 +70,35 @@ class KianaBaseAttack(pygame.sprite.Sprite):
         else:
             image = image.convert_alpha()
         return image
+
+
+class SkillE(pygame.sprite.Sprite):
+    def __init__(self, *group):
+        super().__init__(*group)
+        self.frames = [f"laser{i}.png" for i in range(12)]
+        self.cur_frame = 0
+        self.image = self.load_image(self.frames[self.cur_frame])
+        self.rect = self.image.get_rect()
+        self.rect = self.image.get_rect()
+        self.rect.x = 700
+        self.rect.y = 400
+
+    def update(self):
+        self.cur_frame = (self.cur_frame + 1) % len(self.frames)
+        self.image = self.load_image(self.frames[self.cur_frame])
+
+    def load_image(self, name, colorkey=None):
+        fullname = os.path.join('images/characters/Kiana/Laser', name)
+        if not os.path.isfile(fullname):
+            print(f"Файл с изображением '{fullname}' не найден")
+            sys.exit()
+        image = pygame.image.load(fullname)
+
+        if colorkey is not None:
+            image = image.convert()
+            if colorkey == -1:
+                colorkey = image.get_at((0, 0))
+            image.set_colorkey(colorkey)
+        else:
+            image = image.convert_alpha()
+        return image
