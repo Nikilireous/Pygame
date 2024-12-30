@@ -8,7 +8,7 @@ class Map:
         self.tiles = self.load_tiles()
         self.change = [0, 0]
         self.fps = fps
-        with open("maps/map_number_2") as file:
+        with open("maps/map_number_1") as file:
             player_pos = list(map(int, file.readline().split()))
             print(player_pos)
             self.map_data = list(map(lambda x: list(map(int, x.split())), file.readlines()))
@@ -48,7 +48,7 @@ class Map:
 
     def update(self, screen):
         self.change = [0, 0]
-        speed = 300 // self.fps
+        speed = 3000 // self.fps
         keys = pygame.key.get_pressed()
         if keys[pygame.K_w]:  # Движение Вверх
             pos1, pos2 = (self.player_y - 30 - speed, self.player_x - 10), (

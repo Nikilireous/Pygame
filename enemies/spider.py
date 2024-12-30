@@ -7,7 +7,7 @@ from pathfinding.finder.a_star import AStarFinder
 
 
 class Spider(pygame.sprite.Sprite):
-    def __init__(self, *group, fps, map_data, player):
+    def __init__(self, *group, fps, map_data, player, x, y):
         super().__init__(*group)
         self.frames = [f"pauk{i}.png" for i in range(11)]
         self.fps = fps
@@ -17,12 +17,12 @@ class Spider(pygame.sprite.Sprite):
         self.image = self.load_image(self.frames[self.cur_frame])
         self.image = pygame.transform.scale(self.image, (80, 80))
         self.rect = self.image.get_rect()
-        self.rect.x, self.rect.y = 650, 700
+        self.rect.x, self.rect.y = x, y
         self.movement_type = 'vector'
         self.matrix_timer = self.fps * 3
         self.speed = 2
         self.clock = 0
-        self.HP = 1000
+        self.HP = 500
 
     def get_legs_coords(self, camera_x, camera_y, tile_size):
         left_x = (self.rect.x + camera_x) // tile_size
@@ -44,8 +44,13 @@ class Spider(pygame.sprite.Sprite):
             for coords in self.get_legs_coords(camera_pos[0] + int(dx) - change[0],
                                                camera_pos[1] + int(dy) - change[1],
                                                128):
-                if self.map_data[coords[1]][coords[0]] in [0]:
-                    self.movement_type = 'matrix'
+                try:
+                    if self.map_data[coords[1]][coords[0]] in [0]:
+                        self.movement_type = 'matrix'
+
+                except IndexError:
+                    print(self.rect)
+                    pass
 
             if self.movement_type == 'vector':
                 self.rect.x += dx - change[0]
@@ -62,8 +67,16 @@ class Spider(pygame.sprite.Sprite):
         start = self.get_center_coords(camera_pos[0], camera_pos[1], 128)
         end = (camera_pos[0] + 700) // 128, (camera_pos[1] + 400) // 128
 
-        start = grid.node(start[0], start[1])
-        end = grid.node(end[0], end[1])
+        try:
+            start = grid.node(start[0], start[1])
+            end = grid.node(end[0], end[1])
+
+        except IndexError:
+            print(self.rect)
+            self.movement_type = 'vector'
+            pass
+
+
 
         finder = AStarFinder()
         path, runs = finder.find_path(start, end, grid)
