@@ -3,6 +3,8 @@ from map import Map
 from characters.Kiana.kiana import Kiana
 from characters.Kiana.skillset import KianaBaseAttack, SkillE
 from enemies.spider import Spider
+from events.events import Events
+import random
 import time
 
 
@@ -27,7 +29,8 @@ def main():
     skill_sprites = pygame.sprite.Group()
 
     kiana_character = Kiana(character_sprites, fps=fps)
-    Spider(spider_sprites, fps=fps, map_data=main_map_flightless_data, player=kiana_character)
+
+    events = Events(fps=fps, flightless_data=main_map_flightless_data, player=kiana_character, spider_sprites=spider_sprites)
 
     clock = pygame.time.Clock()
     laser_clock = 0
@@ -66,6 +69,14 @@ def main():
         main_map.update(screen)
         all_change = main_map.change
         camera_pos = (main_map.player_x - size[0] // 2, main_map.player_y - size[1] // 2)
+
+        a = random.randint(1, 100)
+        if a > 98:
+            events.spawn_enemies(
+                enemy=Spider,
+                camera_pos=camera_pos, available_range=((704, 8896), (704, 8896))
+            )
+
 
         character_sprites.update()
         character_sprites.draw(screen)
