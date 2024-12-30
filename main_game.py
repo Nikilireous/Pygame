@@ -1,16 +1,17 @@
 import pygame
 from map import Map
 from characters.Kiana.kiana import Kiana
-from characters.Kiana.skillset import KianaBaseAttack
+from characters.Kiana.skillset import KianaBaseAttack, SkillE
 from enemies.spider import Spider
+import time
 
 
 def main():
     pygame.init()
-    pygame.mixer.init()
-    pygame.mixer.music.load('Audio/background_music.mp3')
-    pygame.mixer.music.set_volume(1)
-    pygame.mixer.music.play(-1)
+    # pygame.mixer.init()
+    # pygame.mixer.music.load('Audio/background_music.mp3')
+    # pygame.mixer.music.set_volume(1)
+    # pygame.mixer.music.play(-1)
     size = 1400, 800
     fps = 100
     main_map = Map(fps)
@@ -23,11 +24,14 @@ def main():
     character_sprites = pygame.sprite.Group()
     bullet_sprites = pygame.sprite.Group()
     spider_sprites = pygame.sprite.Group()
+    skill_sprites = pygame.sprite.Group()
 
     kiana_character = Kiana(character_sprites, fps=fps)
     Spider(spider_sprites, fps=fps, map_data=main_map_flightless_data, player=kiana_character)
 
     clock = pygame.time.Clock()
+    laser_clock = 0
+    skill = True
     seconds_to_shoot = 0
     fire = False
     running = True
@@ -41,14 +45,22 @@ def main():
             if event.type == pygame.MOUSEBUTTONUP:
                 fire = False
                 seconds_to_shoot = 0
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_e and skill:
+                    SkillE(skill_sprites)
+                    skill = False
+                    laser_clock = time.time()
 
         if fire:
             if seconds_to_shoot == fps // 10:
                 seconds_to_shoot = 0
-                x, y = size[0] // 2, size[1] // 2  #Позиция центра экрана
+                x, y = size[0] // 2, size[1] // 2
                 KianaBaseAttack(bullet_sprites, x=x, y=y, fps=fps, map_data=main_map_data, player_pos=player_pos)
             else:
                 seconds_to_shoot += 1
+
+        if time.time() - laser_clock >= 23:
+            skill = True
 
         screen.fill(0)
         main_map.update(screen)
@@ -63,6 +75,9 @@ def main():
 
         spider_sprites.update(change=all_change, camera_pos=camera_pos)
         spider_sprites.draw(screen)
+
+        skill_sprites.update(enemies_group=spider_sprites)
+        skill_sprites.draw(screen)
 
         pygame.display.flip()
         clock.tick(fps)
