@@ -22,7 +22,7 @@ class Spider(pygame.sprite.Sprite):
         self.matrix_timer = self.fps * 3
         self.speed = 2
         self.clock = 0
-        self.HP = 500
+        self.HP = 200
 
     def get_legs_coords(self, camera_x, camera_y, tile_size):
         left_x = (self.rect.x + camera_x) // tile_size
@@ -73,8 +73,6 @@ class Spider(pygame.sprite.Sprite):
         except IndexError:
             self.movement_type = 'vector'
             pass
-
-
 
         finder = AStarFinder()
         path, runs = finder.find_path(start, end, grid)

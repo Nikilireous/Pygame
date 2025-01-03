@@ -19,6 +19,11 @@ def main():
     main_map = Map(fps)
     main_map_data = main_map.map_data
     main_map_flightless_data = main_map.flightless_map
+    tile_size = main_map.TILE_SIZE
+    right_border = 6 * tile_size + tile_size // 2
+    left_border = (len(main_map_data[0]) - 7) * tile_size - tile_size // 2
+    upper_border = 3 * tile_size + tile_size // 2
+    lower_border = (len(main_map_data) - 4) * tile_size - tile_size // 2
 
     screen = pygame.display.set_mode(size)
     pygame.display.set_caption("Kiana_game")
@@ -74,7 +79,7 @@ def main():
         if a > 98:
             events.spawn_enemies(
                 enemy=Spider,
-                camera_pos=camera_pos, available_range=((704, 8896), (704, 8896))
+                camera_pos=camera_pos, available_range=((right_border, left_border), (upper_border, lower_border))
             )
 
 
