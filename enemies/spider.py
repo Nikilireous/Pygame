@@ -61,7 +61,7 @@ class Spider(pygame.sprite.Sprite):
         except ZeroDivisionError:
             pass
 
-    def matrix_move(self, player, change, camera_pos):
+    def matrix_move(self, change, camera_pos):
         grid = Grid(matrix=self.map_data)
         start = self.get_center_coords(camera_pos[0], camera_pos[1], 128)
         end = (camera_pos[0] + 700) // 128, (camera_pos[1] + 400) // 128
@@ -97,7 +97,7 @@ class Spider(pygame.sprite.Sprite):
             self.movement_type = 'vector'
             pass
 
-    def update(self, change, camera_pos):
+    def update(self, change, camera_pos, visible_sprites):
         if self.HP <= 0:
             self.kill()
         if self.movement_type == 'vector':
@@ -112,17 +112,19 @@ class Spider(pygame.sprite.Sprite):
             else:
                 self.matrix_timer -= 1
 
-        if self.clock == 250 // self.fps:
-            dx, dy = (self.player.rect.x - self.rect.x), (self.player.rect.y - self.rect.y)
-            self.clock = 0
-            self.cur_frame = (self.cur_frame + 1) % len(self.frames)
-            self.image = self.frames[self.cur_frame]
-            self.image = pygame.transform.scale(self.image, (100, 100))
+        if -60 < self.rect.centerx < 1460 and -60 < self.rect.centery < 860:
+            visible_sprites.add(self)
+            if self.clock == 250 // self.fps:
+                dx, dy = (self.player.rect.x - self.rect.x), (self.player.rect.y - self.rect.y)
+                self.clock = 0
+                self.cur_frame = (self.cur_frame + 1) % len(self.frames)
+                self.image = self.frames[self.cur_frame]
+                self.image = pygame.transform.scale(self.image, (100, 100))
 
-            angle = math.degrees(math.atan2(-dx, dy))
-            self.image = pygame.transform.rotate(self.image, -angle)
-        else:
-            self.clock += 1
+                angle = math.degrees(math.atan2(-dx, dy))
+                self.image = pygame.transform.rotate(self.image, -angle)
+            else:
+                self.clock += 1
 
     def load_image(self, name, colorkey=None):
         fullname = os.path.join('images/enemies/pauk', name)

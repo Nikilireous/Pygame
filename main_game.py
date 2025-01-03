@@ -30,6 +30,7 @@ def main():
 
     character_sprites = pygame.sprite.Group()
     bullet_sprites = pygame.sprite.Group()
+    visible_enemies = pygame.sprite.Group()
     spider_sprites = pygame.sprite.Group()
     skill_sprites = pygame.sprite.Group()
 
@@ -74,6 +75,7 @@ def main():
         main_map.update(screen)
         all_change = main_map.change
         camera_pos = (main_map.player_x - size[0] // 2, main_map.player_y - size[1] // 2)
+        visible_enemies = pygame.sprite.Group()
 
         a = random.randint(1, 100)
         if a > 98:
@@ -89,8 +91,8 @@ def main():
         bullet_sprites.update(change=all_change, camera_pos=camera_pos, enemies_group=spider_sprites)
         bullet_sprites.draw(screen)
 
-        spider_sprites.update(change=all_change, camera_pos=camera_pos)
-        spider_sprites.draw(screen)
+        spider_sprites.update(change=all_change, camera_pos=camera_pos, visible_sprites=visible_enemies)
+        visible_enemies.draw(screen)
 
         skill_sprites.update(enemies_group=spider_sprites)
         skill_sprites.draw(screen)
