@@ -8,12 +8,11 @@ class Map:
         self.tiles = self.load_tiles()
         self.change = [0, 0]
         self.fps = fps
-        with open("maps/map_number_1") as file:
+        with open("maps/map_number_3") as file:
             player_pos = list(map(int, file.readline().split()))
-            print(player_pos)
             self.map_data = list(map(lambda x: list(map(int, x.split())), file.readlines()))
-            self.player_x = player_pos[0] * 128
-            self.player_y = player_pos[1] * 128
+            self.player_x = player_pos[0] * self.TILE_SIZE + 64
+            self.player_y = player_pos[1] * self.TILE_SIZE + 64
 
         self.flightless_map = []
         for y in range(len(self.map_data)):
@@ -48,7 +47,7 @@ class Map:
 
     def update(self, screen):
         self.change = [0, 0]
-        speed = 3000 // self.fps
+        speed = 300 // self.fps
         keys = pygame.key.get_pressed()
         if keys[pygame.K_w]:  # Движение Вверх
             pos1, pos2 = (self.player_y - 30 - speed, self.player_x - 10), (

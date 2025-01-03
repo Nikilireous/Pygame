@@ -6,10 +6,10 @@ import os
 class Kiana(pygame.sprite.Sprite):
     def __init__(self, *group, fps):
         super().__init__(*group)
-        self.frames = [f"Kiana{i}.png" for i in range(2)]
+        self.frames = [self.load_image(f"Kiana{i}.png") for i in range(2)]
         self.fps = fps
         self.cur_frame = 0
-        self.image = self.load_image(self.frames[self.cur_frame])
+        self.image = self.frames[self.cur_frame]
         self.image = pygame.transform.scale(self.image, (80, 80))
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = 660, 360
@@ -19,7 +19,7 @@ class Kiana(pygame.sprite.Sprite):
         if self.clock == 2500 // self.fps:
             self.clock = 0
             self.cur_frame = (self.cur_frame + 1) % len(self.frames)
-            self.image = self.load_image(self.frames[self.cur_frame])
+            self.image = self.frames[self.cur_frame]
             self.image = pygame.transform.scale(self.image, (80, 80))
         else:
             self.clock += 1

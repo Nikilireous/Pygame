@@ -9,12 +9,12 @@ from pathfinding.finder.a_star import AStarFinder
 class Spider(pygame.sprite.Sprite):
     def __init__(self, *group, fps, map_data, player, x, y):
         super().__init__(*group)
-        self.frames = [f"pauk{i}.png" for i in range(11)]
+        self.frames = [self.load_image(f"pauk{i}.png") for i in range(11)]
         self.fps = fps
         self.player = player
         self.map_data = map_data
         self.cur_frame = 0
-        self.image = self.load_image(self.frames[self.cur_frame])
+        self.image = self.frames[self.cur_frame]
         self.image = pygame.transform.scale(self.image, (80, 80))
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = x, y
@@ -49,7 +49,6 @@ class Spider(pygame.sprite.Sprite):
                         self.movement_type = 'matrix'
 
                 except IndexError:
-                    print(self.rect)
                     pass
 
             if self.movement_type == 'vector':
@@ -72,7 +71,6 @@ class Spider(pygame.sprite.Sprite):
             end = grid.node(end[0], end[1])
 
         except IndexError:
-            print(self.rect)
             self.movement_type = 'vector'
             pass
 
@@ -120,7 +118,7 @@ class Spider(pygame.sprite.Sprite):
             dx, dy = (self.player.rect.x - self.rect.x), (self.player.rect.y - self.rect.y)
             self.clock = 0
             self.cur_frame = (self.cur_frame + 1) % len(self.frames)
-            self.image = self.load_image(self.frames[self.cur_frame])
+            self.image = self.frames[self.cur_frame]
             self.image = pygame.transform.scale(self.image, (100, 100))
 
             angle = math.degrees(math.atan2(-dx, dy))

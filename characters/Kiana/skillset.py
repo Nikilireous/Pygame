@@ -76,10 +76,9 @@ class KianaBaseAttack(pygame.sprite.Sprite):
 class SkillE(pygame.sprite.Sprite):
     def __init__(self, *group):
         super().__init__(*group)
-        self.frames = [f"lazer{i}.png" for i in range(12)]
+        self.frames = [self.load_image(f"lazer{i}.png") for i in range(12)]
         self.cur_frame = 0
-        self.image = self.load_image(self.frames[self.cur_frame])
-        self.image = pygame.transform.scale(self.image, (2000, 91))
+        self.image = self.frames[self.cur_frame]
         self.rect = self.image.get_rect()
         self.rect.x = 700
         self.rect.y = 360
@@ -95,9 +94,7 @@ class SkillE(pygame.sprite.Sprite):
                 collision_object.HP -= 5
 
         self.cur_frame = (self.cur_frame + 1) % len(self.frames)
-        self.image = self.load_image(self.frames[self.cur_frame])
-        self.image = pygame.transform.scale(self.image, (2000, 91))
-
+        self.image = self.frames[self.cur_frame]
         self.pos = (self.rect.x, self.rect.y)
         mx, my = pygame.mouse.get_pos()
         self.dir = (mx - 700, my - 400)

@@ -10,10 +10,10 @@ import time
 
 def main():
     pygame.init()
-    # pygame.mixer.init()
-    # pygame.mixer.music.load('Audio/background_music.mp3')
-    # pygame.mixer.music.set_volume(1)
-    # pygame.mixer.music.play(-1)
+    pygame.mixer.init()
+    pygame.mixer.music.load('Audio/background_music.mp3')
+    pygame.mixer.music.set_volume(1)
+    pygame.mixer.music.play(-1)
     size = 1400, 800
     fps = 100
     main_map = Map(fps)
