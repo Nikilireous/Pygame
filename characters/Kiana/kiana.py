@@ -14,8 +14,9 @@ class Kiana(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = 660, 360
         self.clock = 0
+        self.HP = 500
 
-    def update(self):
+    def update(self, visible_sprites):
         if self.clock == 2500 // self.fps:
             self.clock = 0
             self.cur_frame = (self.cur_frame + 1) % len(self.frames)
@@ -23,6 +24,12 @@ class Kiana(pygame.sprite.Sprite):
             self.image = pygame.transform.scale(self.image, (80, 80))
         else:
             self.clock += 1
+
+        collision_object = pygame.sprite.spritecollide(self, visible_sprites, False)
+        if collision_object:
+            for enemie in collision_object:
+                if pygame.sprite.collide_mask(self, enemie):
+                    self.HP -= 1
 
     def load_image(self, name, colorkey=None):
         fullname = os.path.join('images/characters/Kiana', name)

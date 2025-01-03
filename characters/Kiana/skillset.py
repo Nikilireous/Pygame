@@ -74,9 +74,12 @@ class KianaBaseAttack(pygame.sprite.Sprite):
 
 
 class SkillE(pygame.sprite.Sprite):
-    def __init__(self, *group):
+    def __init__(self, *group, fps):
         super().__init__(*group)
         self.frames = [self.load_image(f"lazer{i}.png") for i in range(12)]
+        self.fire_to_second = 10
+        self.fps = fps
+        self.fire = 0
         self.cur_frame = 0
         self.image = self.frames[self.cur_frame]
         self.rect = self.image.get_rect()
@@ -88,10 +91,16 @@ class SkillE(pygame.sprite.Sprite):
         if time.time() - self.time >= 3:
             self.kill()
 
-        collision_object = pygame.sprite.spritecollideany(self, enemies_group)
-        if collision_object:
-            if pygame.sprite.collide_mask(self, collision_object):
-                collision_object.HP -= 5
+        if self.fire == self.fps // self.fire_to_second:
+            self.fire = 0
+            collision_object = pygame.sprite.spritecollide(self, enemies_group, False)
+            if collision_object:
+                for enemie in collision_object:
+                    if pygame.sprite.collide_mask(self, enemie):
+                        enemie.HP -= self.fps * 5 // self.fire_to_second
+        else:
+            self.fire += 1
+
 
         self.cur_frame = (self.cur_frame + 1) % len(self.frames)
         self.image = self.frames[self.cur_frame]

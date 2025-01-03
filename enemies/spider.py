@@ -61,7 +61,7 @@ class Spider(pygame.sprite.Sprite):
         except ZeroDivisionError:
             pass
 
-    def matrix_move(self, change, camera_pos):
+    def matrix_move(self, player, change, camera_pos):
         grid = Grid(matrix=self.map_data)
         start = self.get_center_coords(camera_pos[0], camera_pos[1], 128)
         end = (camera_pos[0] + 700) // 128, (camera_pos[1] + 400) // 128
