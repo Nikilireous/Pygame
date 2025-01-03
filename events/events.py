@@ -6,7 +6,7 @@ class Events:
         self.fps = fps
         self.flightless_data = flightless_data
         self.player = player
-        self.spider_sprites  = spider_sprites
+        self.spider_sprites = spider_sprites
 
     def spawn_enemies(self, enemy, camera_pos, available_range):
         # for enemy in enemies:
