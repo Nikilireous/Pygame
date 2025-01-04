@@ -10,10 +10,10 @@ import time
 
 def main():
     pygame.init()
-    pygame.mixer.init()
-    pygame.mixer.music.load('Audio/background_music_2.mp3')
-    pygame.mixer.music.set_volume(1)
-    pygame.mixer.music.play(-1)
+    # pygame.mixer.init()
+    # pygame.mixer.music.load('Audio/background_music_2.mp3')
+    # pygame.mixer.music.set_volume(1)
+    # pygame.mixer.music.play(-1)
     size = 1400, 800
     fps = 100
     main_map = Map(fps)
@@ -86,7 +86,7 @@ def main():
                     camera_pos=camera_pos, available_range=((right_border, left_border), (upper_border, lower_border))
                 )
 
-        bullet_sprites.update(change=all_change, camera_pos=camera_pos, enemies_group=spider_sprites)
+        bullet_sprites.update(change=all_change, camera_pos=camera_pos, enemies_group=spider_sprites, player=kiana_character)
         bullet_sprites.draw(screen)
 
         spider_sprites.update(change=all_change, camera_pos=camera_pos, visible_sprites=visible_enemies)
@@ -95,8 +95,10 @@ def main():
         character_sprites.update(visible_sprites=visible_enemies)
         character_sprites.draw(screen)
 
-        skill_sprites.update(enemies_group=visible_enemies)
+        skill_sprites.update(enemies_group=visible_enemies, player=kiana_character)
         skill_sprites.draw(screen)
+
+        kiana_character.draw_interface(screen)
 
         pygame.display.flip()
         clock.tick(fps)
