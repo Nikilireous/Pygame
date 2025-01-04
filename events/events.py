@@ -9,8 +9,7 @@ class Events:
         self.spider_sprites = spider_sprites
 
     def spawn_enemies(self, enemy, camera_pos, available_range):
-        # for enemy in enemies:
-        for quantity in range(random.randint(0, 1)):
+        for quantity in range(random.randint(0, 2)):
             side = random.choice(['x', 'y'])
 
             if side == 'x':

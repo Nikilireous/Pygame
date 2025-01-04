@@ -78,12 +78,13 @@ def main():
         camera_pos = (main_map.player_x - size[0] // 2, main_map.player_y - size[1] // 2)
         visible_enemies = pygame.sprite.Group()
 
-        a = random.randint(1, 100)
-        if a > 98:
-            events.spawn_enemies(
-                enemy=Spider,
-                camera_pos=camera_pos, available_range=((right_border, left_border), (upper_border, lower_border))
-            )
+        if len(spider_sprites) < 150:
+            spawn_chance = random.randint(1, 100)
+            if spawn_chance > 98:
+                events.spawn_enemies(
+                    enemy=Spider,
+                    camera_pos=camera_pos, available_range=((right_border, left_border), (upper_border, lower_border))
+                )
 
         bullet_sprites.update(change=all_change, camera_pos=camera_pos, enemies_group=spider_sprites)
         bullet_sprites.draw(screen)
