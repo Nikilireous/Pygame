@@ -35,12 +35,15 @@ class KianaBaseAttack(pygame.sprite.Sprite):
         map_y = (camera_y + self.rect.centery) // tile_size
         return map_x, map_y
 
-    def update(self, change, camera_pos, enemies_group):
+    def update(self, change, camera_pos, enemies_group, player):
 
         collision_object = pygame.sprite.spritecollideany(self, enemies_group)
         if collision_object:
-            collision_object.HP -= 5
+            collision_object.HP -= player.base_atk_damage
             self.kill()
+            if collision_object.HP <= 0:
+                collision_object.kill()
+                player.XP += 1
 
         self.pos = (self.pos[0] + self.dir[0] * self.speed - change[0],
                     self.pos[1] + self.dir[1] * self.speed - change[1])
@@ -87,7 +90,7 @@ class SkillE(pygame.sprite.Sprite):
         self.rect.y = 360
         self.time = time.time()
 
-    def update(self, enemies_group):
+    def update(self, enemies_group, player):
         if time.time() - self.time >= 3:
             self.kill()
 
@@ -97,7 +100,10 @@ class SkillE(pygame.sprite.Sprite):
             if collision_object:
                 for enemie in collision_object:
                     if pygame.sprite.collide_mask(self, enemie):
-                        enemie.HP -= self.fps * 5 // self.fire_to_second
+                        enemie.HP -= player.skill_damage
+                        if enemie.HP <= 0:
+                            enemie.kill()
+                            player.XP += 1
         else:
             self.fire += 1
 

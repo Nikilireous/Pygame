@@ -98,8 +98,6 @@ class Spider(pygame.sprite.Sprite):
             pass
 
     def update(self, change, camera_pos, visible_sprites):
-        if self.HP <= 0:
-            self.kill()
         if self.movement_type == 'vector':
             self.vector_move(self.player, change, camera_pos)
 
