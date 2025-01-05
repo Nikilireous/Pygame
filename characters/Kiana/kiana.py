@@ -17,13 +17,21 @@ class Kiana(pygame.sprite.Sprite):
         self.clock = 0
         self.max_HP = 500
         self.HP = self.max_HP
+        self.regeneration_value = 1
+        self.regeneration_clock = 0
         self.XP = 0
-        self.level = 10
+        self.level = 1
         self.base_atk_damage = 10
         self.skill_damage = 50
 
     def update(self, visible_sprites):
         self.level_update_changed()
+        if self.regeneration_clock > 0:
+            self.regeneration_clock -= 1
+        else:
+            if self.HP < self.max_HP:
+                self.HP += 1
+
         if self.clock == 2500 // self.fps:
             self.clock = 0
             self.cur_frame = (self.cur_frame + 1) % len(self.frames)
@@ -34,8 +42,9 @@ class Kiana(pygame.sprite.Sprite):
 
         collision_object = pygame.sprite.spritecollide(self, visible_sprites, False)
         if collision_object:
-            for enemie in collision_object:
-                if pygame.sprite.collide_mask(self, enemie):
+            for enemy in collision_object:
+                if pygame.sprite.collide_mask(self, enemy):
+                    self.regeneration_clock = 500
                     self.HP -= 1
 
     def load_image(self, name, colorkey=None):
