@@ -3,17 +3,17 @@ import sys
 import os
 
 
-class Kiana(pygame.sprite.Sprite):
+class Mei(pygame.sprite.Sprite):
     def __init__(self, *group, fps):
         super().__init__(*group)
-        self.frames = [self.load_image(f"Kiana{i}.png") for i in range(2)]
+        self.frames = [self.load_image(f"Mei{i}.png") for i in range(2)]
         self.level_XP = [0, 10, 20, 35, 50, 70, 90, 110, 130, 150]
         self.fps = fps
         self.cur_frame = 0
         self.image = self.frames[self.cur_frame]
-        self.image = pygame.transform.scale(self.image, (80, 80))
+        self.image = pygame.transform.scale(self.image, (110, 110))
         self.rect = self.image.get_rect()
-        self.rect.x, self.rect.y = 660, 360
+        self.rect.x, self.rect.y = 645, 350
         self.clock = 0
         self.max_HP = 500
         self.HP = self.max_HP
@@ -36,7 +36,7 @@ class Kiana(pygame.sprite.Sprite):
             self.clock = 0
             self.cur_frame = (self.cur_frame + 1) % len(self.frames)
             self.image = self.frames[self.cur_frame]
-            self.image = pygame.transform.scale(self.image, (80, 80))
+            self.image = pygame.transform.scale(self.image, (110, 110))
         else:
             self.clock += 1
 
@@ -48,7 +48,7 @@ class Kiana(pygame.sprite.Sprite):
                     self.HP -= 1
 
     def load_image(self, name, colorkey=None):
-        fullname = os.path.join('images/characters/Kiana', name)
+        fullname = os.path.join('images/characters/Mei', name)
         if not os.path.isfile(fullname):
             print(f"Файл с изображением '{fullname}' не найден")
             sys.exit()
