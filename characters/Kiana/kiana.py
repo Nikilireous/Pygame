@@ -1,6 +1,7 @@
 import pygame
 import sys
 import os
+import time
 
 
 class Kiana(pygame.sprite.Sprite):
@@ -17,20 +18,16 @@ class Kiana(pygame.sprite.Sprite):
         self.clock = 0
         self.max_HP = 500
         self.HP = self.max_HP
-        self.regeneration_value = 1
-        self.regeneration_clock = 0
         self.XP = 0
         self.level = 1
         self.base_atk_damage = 10
         self.skill_damage = 50
+        self.regeneration_to_second = 1
+        self.regeneration_time = 0
 
     def update(self, visible_sprites):
         self.level_update_changed()
-        if self.regeneration_clock > 0:
-            self.regeneration_clock -= 1
-        else:
-            if self.HP < self.max_HP:
-                self.HP += 1
+        self.regeneration()
 
         if self.clock == 2500 // self.fps:
             self.clock = 0
@@ -44,7 +41,6 @@ class Kiana(pygame.sprite.Sprite):
         if collision_object:
             for enemy in collision_object:
                 if pygame.sprite.collide_mask(self, enemy):
-                    self.regeneration_clock = 500
                     self.HP -= 1
 
     def load_image(self, name, colorkey=None):
@@ -73,6 +69,8 @@ class Kiana(pygame.sprite.Sprite):
         self.base_atk_damage += 5
         self.max_HP += 250
         self.HP += 250
+        self.regeneration_to_second += 1
+        self.skill_damage += 10
 
     def draw_interface(self, screen):
         self.HP_bar(screen)
@@ -108,3 +106,12 @@ class Kiana(pygame.sprite.Sprite):
             pygame.draw.rect(level_bar, "white", ((0, 0), (self.XP * k, 5)))
 
         screen.blit(level_bar, (575, 780))
+
+    def regeneration(self):
+        if self.HP != self.max_HP:
+            if self.regeneration_time == 0:
+                self.regeneration_time = time.time()
+            elif time.time() - self.regeneration_time >= 1 / self.regeneration_to_second:
+                self.HP += 1
+                self.regeneration_time = 0
+
