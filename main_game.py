@@ -1,21 +1,22 @@
 import pygame
 from map import Map
 from characters.Kiana.kiana import Kiana
-from characters.Kiana.skillset import KianaBaseAttack, SkillE
+from characters.Kiana.skillset import KianaBaseAttack, KianaSkillE
 from characters.Mei.mei import Mei
-from characters.Mei.skillset import KianaBaseAttack, SkillE
+from characters.Mei.skillset import MeiBaseAttack, MeiSkillE
 from enemies.spider import Spider
 from events.events import Events
+from interface.interface import Interface
 import random
 import time
 
 
 def main():
     pygame.init()
-    pygame.mixer.init()
-    pygame.mixer.music.load('Audio/background_music_2.mp3')
-    pygame.mixer.music.set_volume(1)
-    pygame.mixer.music.play(-1)
+    # pygame.mixer.init()
+    # pygame.mixer.music.load('Audio/background_music_2.mp3')
+    # pygame.mixer.music.set_volume(1)
+    # pygame.mixer.music.play(-1)
     size = 1400, 800
     fps = 100
     main_map = Map(fps)
@@ -36,9 +37,10 @@ def main():
     spider_sprites = pygame.sprite.Group()
     skill_sprites = pygame.sprite.Group()
 
-    kiana_character = Kiana(character_sprites, fps=fps)
+    character = Kiana(character_sprites, fps=fps)
+    interface = Interface(character)
 
-    events = Events(fps=fps, flightless_data=main_map_flightless_data, player=kiana_character,
+    events = Events(fps=fps, flightless_data=main_map_flightless_data, player=character,
                     spider_sprites=spider_sprites)
 
     clock = pygame.time.Clock()
@@ -59,7 +61,7 @@ def main():
                 seconds_to_shoot = 0
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_e and skill:
-                    SkillE(skill_sprites, fps=fps)
+                    KianaSkillE(skill_sprites, fps=fps, player=character)
                     skill = False
                     laser_clock = time.time()
 
@@ -88,7 +90,7 @@ def main():
                     camera_pos=camera_pos, available_range=((right_border, left_border), (upper_border, lower_border))
                 )
 
-        bullet_sprites.update(change=all_change, camera_pos=camera_pos, enemies_group=spider_sprites, player=kiana_character)
+        bullet_sprites.update(change=all_change, camera_pos=camera_pos, enemies_group=spider_sprites, player=character)
         bullet_sprites.draw(screen)
 
         spider_sprites.update(change=all_change, camera_pos=camera_pos, visible_sprites=visible_enemies)
@@ -97,15 +99,15 @@ def main():
         character_sprites.update(visible_sprites=visible_enemies)
         character_sprites.draw(screen)
 
-        skill_sprites.update(enemies_group=visible_enemies, player=kiana_character)
+        skill_sprites.update(enemies_group=visible_enemies)
         skill_sprites.draw(screen)
 
-        kiana_character.draw_interface(screen)
+        interface.draw_interface(screen)
 
         pygame.display.flip()
         clock.tick(fps)
 
-        if kiana_character.HP <= 0:
+        if character.HP <= 0:
             print("Вас убили!")
             running = False
 

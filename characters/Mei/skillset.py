@@ -5,7 +5,7 @@ import os
 import time
 
 
-class KianaBaseAttack(pygame.sprite.Sprite):
+class MeiBaseAttack(pygame.sprite.Sprite):
     def __init__(self, *group, x, y, fps, map_data, player_pos):
         super().__init__(*group)
         self.pos = (x, y)
@@ -76,7 +76,7 @@ class KianaBaseAttack(pygame.sprite.Sprite):
         return image
 
 
-class SkillE(pygame.sprite.Sprite):
+class MeiSkillE(pygame.sprite.Sprite):
     def __init__(self, *group, fps):
         super().__init__(*group)
         self.frames = [self.load_image(f"lazer{i}.png") for i in range(12)]
