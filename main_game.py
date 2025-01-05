@@ -12,10 +12,10 @@ import time
 
 def main():
     pygame.init()
-    # pygame.mixer.init()
-    # pygame.mixer.music.load('Audio/background_music_2.mp3')
-    # pygame.mixer.music.set_volume(1)
-    # pygame.mixer.music.play(-1)
+    pygame.mixer.init()
+    pygame.mixer.music.load('Audio/background_music_2.mp3')
+    pygame.mixer.music.set_volume(1)
+    pygame.mixer.music.play(-1)
     size = 1400, 800
     fps = 100
     main_map = Map(fps)
@@ -71,7 +71,7 @@ def main():
             else:
                 seconds_to_shoot += 1
 
-        if time.time() - laser_clock >= 3:
+        if time.time() - laser_clock >= 23:
             skill = True
 
         screen.fill(0)
