@@ -2,6 +2,8 @@ import pygame
 from map import Map
 from characters.Kiana.kiana import Kiana
 from characters.Kiana.skillset import KianaBaseAttack, SkillE
+from characters.Mei.mei import Mei
+from characters.Mei.skillset import KianaBaseAttack, SkillE
 from enemies.spider import Spider
 from events.events import Events
 import random
