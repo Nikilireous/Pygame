@@ -76,7 +76,6 @@ class MeiBaseAttack(pygame.sprite.Sprite):
 
     def shot(self, enemie):
         if pygame.sprite.collide_mask(self, enemie):
-            print(enemie.HP - self.player.base_atk_damage)
             if enemie.HP - self.player.base_atk_damage <= 0:
                 enemie.kill()
                 self.player.XP += 1
