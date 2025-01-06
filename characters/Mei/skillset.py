@@ -6,61 +6,60 @@ import time
 
 
 class MeiBaseAttack(pygame.sprite.Sprite):
-    def __init__(self, *group, x, y, fps, map_data, player_pos):
+    def __init__(self, *group, fps, player):
         super().__init__(*group)
-        self.pos = (x, y)
-        self.player_pos = player_pos
+        self.cur_frame = 0
+        self.player = player
         self.fps = fps
-        self.map = map_data
+        self.frames_time = 3
+        self.frames_second = 0
+        self.frames = [self.load_image(f"katana{i}.png") for i in range(7)]
+        self.shot_enemies = set()
+
+        self.image = self.frames[self.cur_frame]
+
         mx, my = pygame.mouse.get_pos()
-        self.dir = (mx - x, my - y)
+        self.dir = (mx - 700, my - 400)
         length = math.hypot(*self.dir)
         if length == 0.0:
             self.dir = (0, -1)
         else:
             self.dir = (self.dir[0] / length, self.dir[1] / length)
-        angle = math.degrees(math.atan2(-self.dir[1], self.dir[0]))
+        self.angle = math.degrees(math.atan2(-self.dir[1], self.dir[0]))
 
-        self.image = self.load_image("bullet.png")
-        self.image = pygame.transform.scale(self.image, (15, 10))
-        self.image = pygame.transform.rotate(self.image, angle)
+        self.image = pygame.transform.rotate(self.image, self.angle)
+        self.image = pygame.transform.flip(self.image, True, True)
 
         self.rect = self.image.get_rect()
+
+        self.pos = (700 + self.dir[0] * 250,
+                    400 + self.dir[1] * 250)
         self.rect.center = self.pos
 
-        self.speed = 800 // self.fps
 
-    def get_map_coords(self, camera_x, camera_y, tile_size):
-        map_x = (camera_x + self.rect.centerx) // tile_size
-        map_y = (camera_y + self.rect.centery) // tile_size
-        return map_x, map_y
+    def update(self, change, camera_pos, enemies_group):
+        if self.frames_second == self.frames_time:
+            self.frames_second = 0
+            if self.cur_frame + 1 == 7:
+                self.kill()
 
-    def update(self, change, camera_pos, enemies_group, player):
+            collision_object = set(pygame.sprite.spritecollide(self, enemies_group, False))
+            if collision_object - (collision_object & self.shot_enemies):
+                for enemie in collision_object:
+                    self.shot(enemie)
 
-        collision_object = pygame.sprite.spritecollideany(self, enemies_group)
-        if collision_object:
-            collision_object.HP -= player.base_atk_damage
-            self.kill()
-            if collision_object.HP <= 0:
-                collision_object.kill()
-                player.XP += 1
+            self.cur_frame = (self.cur_frame + 1) % len(self.frames)
+            self.image = self.frames[self.cur_frame]
+            self.image = pygame.transform.rotate(self.image, self.angle)
+            self.image = pygame.transform.flip(self.image, True, True)
 
-        self.pos = (self.pos[0] + self.dir[0] * self.speed - change[0],
-                    self.pos[1] + self.dir[1] * self.speed - change[1])
-        self.rect.center = self.pos
+        else:
+            self.frames_second += 1
 
-        screen_width, screen_height = pygame.display.get_surface().get_size()
-        if (self.pos[0] < 0 or self.pos[0] > screen_width or
-                self.pos[1] < 0 or self.pos[1] > screen_height):
-            self.kill()
 
-        map_x, map_y = self.get_map_coords(camera_pos[0], camera_pos[1], 128)
-
-        if self.map[map_y][map_x] == 1:
-            self.kill()
 
     def load_image(self, name, colorkey=None):
-        fullname = os.path.join('images/characters/Kiana', name)
+        fullname = os.path.join('images/characters/Mei/Skill', name)
         if not os.path.isfile(fullname):
             print(f"Файл с изображением '{fullname}' не найден")
             sys.exit()
@@ -74,6 +73,16 @@ class MeiBaseAttack(pygame.sprite.Sprite):
         else:
             image = image.convert_alpha()
         return image
+
+    def shot(self, enemie):
+        if pygame.sprite.collide_mask(self, enemie):
+            print(enemie.HP - self.player.base_atk_damage)
+            if enemie.HP - self.player.base_atk_damage <= 0:
+                enemie.kill()
+                self.player.XP += 1
+            else:
+                enemie.HP -= self.player.base_atk_damage
+                self.shot_enemies.add(enemie)
 
 
 class MeiSkillE(pygame.sprite.Sprite):

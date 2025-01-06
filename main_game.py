@@ -5,7 +5,6 @@ from characters.Kiana.skillset import KianaBaseAttack, KianaSkillE
 from characters.Mei.mei import Mei
 from characters.Mei.skillset import MeiBaseAttack, MeiSkillE
 from enemies.spider import Spider
-from enemies.witch import Witch
 from events.events import Events
 from interface.interface import Interface
 import random
@@ -36,14 +35,13 @@ def main():
     bullet_sprites = pygame.sprite.Group()
     visible_enemies = pygame.sprite.Group()
     spider_sprites = pygame.sprite.Group()
-    witch_sprites = pygame.sprite.Group()
     skill_sprites = pygame.sprite.Group()
 
     character = Kiana(character_sprites, fps=fps)
     interface = Interface(character)
 
     events = Events(fps=fps, flightless_data=main_map_flightless_data, player=character,
-                    spider_sprites=spider_sprites, witch_sprites=witch_sprites)
+                    spider_sprites=spider_sprites)
 
     clock = pygame.time.Clock()
     laser_clock = 0
@@ -84,29 +82,22 @@ def main():
         camera_pos = (main_map.player_x - size[0] // 2, main_map.player_y - size[1] // 2)
         visible_enemies = pygame.sprite.Group()
 
-        if len(spider_sprites) + len(witch_sprites) < 150:
-            spawn_chance = random.randint(1, 1000)
-            if spawn_chance > 980:
+        if len(spider_sprites) < 150:
+            spawn_chance = random.randint(1, 100)
+            if spawn_chance > 98:
                 events.spawn_enemies(
                     enemy=Spider,
                     camera_pos=camera_pos, available_range=((right_border, left_border), (upper_border, lower_border))
                 )
 
-            if spawn_chance > 998:
-                events.spawn_enemies(
-                    enemy=Witch,
-                    camera_pos=camera_pos, available_range=((right_border, left_border), (upper_border, lower_border))
-                )
+        bullet_sprites.update(change=all_change, camera_pos=camera_pos, enemies_group=spider_sprites, player=character)
+        bullet_sprites.draw(screen)
 
         spider_sprites.update(change=all_change, camera_pos=camera_pos, visible_sprites=visible_enemies)
-        witch_sprites.update(change=all_change, player=character, visible_sprites=visible_enemies)
         visible_enemies.draw(screen)
 
         character_sprites.update(visible_sprites=visible_enemies)
         character_sprites.draw(screen)
-
-        bullet_sprites.update(change=all_change, camera_pos=camera_pos, enemies_group=visible_enemies, player=character)
-        bullet_sprites.draw(screen)
 
         skill_sprites.update(enemies_group=visible_enemies)
         skill_sprites.draw(screen)
