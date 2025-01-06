@@ -51,8 +51,8 @@ def main():
     witch_sprites = pygame.sprite.Group()
     skill_sprites = pygame.sprite.Group()
 
-    # character, character_name = character_choice(group=character_sprites, fps=fps)
-    character, character_name = Mei(character_sprites, fps=fps), "Mei"
+    character, character_name = character_choice(group=character_sprites, fps=fps)
+    # character, character_name = Mei(character_sprites, fps=fps), "Mei"
     interface = Interface(character)
 
     events = Events(fps=fps, flightless_data=main_map_flightless_data, player=character,
@@ -125,13 +125,10 @@ def main():
         witch_sprites.update(change=all_change, player=character, visible_sprites=visible_enemies)
         visible_enemies.draw(screen)
 
-        bullet_sprites.update(change=all_change, camera_pos=camera_pos, enemies_group=visible_enemies)
-        bullet_sprites.draw(screen)
-
         character_sprites.update(visible_sprites=visible_enemies)
         character_sprites.draw(screen)
 
-        bullet_sprites.update(change=all_change, camera_pos=camera_pos, enemies_group=visible_enemies, player=character)
+        bullet_sprites.update(change=all_change, camera_pos=camera_pos, enemies_group=visible_enemies)
         bullet_sprites.draw(screen)
 
         skill_sprites.update(enemies_group=visible_enemies)
