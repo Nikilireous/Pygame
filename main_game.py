@@ -90,14 +90,14 @@ def main():
                     camera_pos=camera_pos, available_range=((right_border, left_border), (upper_border, lower_border))
                 )
 
-        bullet_sprites.update(change=all_change, camera_pos=camera_pos, enemies_group=spider_sprites, player=character)
-        bullet_sprites.draw(screen)
-
         spider_sprites.update(change=all_change, camera_pos=camera_pos, visible_sprites=visible_enemies)
         visible_enemies.draw(screen)
 
         character_sprites.update(visible_sprites=visible_enemies)
         character_sprites.draw(screen)
+
+        bullet_sprites.update(change=all_change, camera_pos=camera_pos, enemies_group=visible_enemies, player=character)
+        bullet_sprites.draw(screen)
 
         skill_sprites.update(enemies_group=visible_enemies)
         skill_sprites.draw(screen)
