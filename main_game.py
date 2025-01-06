@@ -5,10 +5,22 @@ from characters.Kiana.skillset import KianaBaseAttack, KianaSkillE
 from characters.Mei.mei import Mei
 from characters.Mei.skillset import MeiBaseAttack, MeiSkillE
 from enemies.spider import Spider
+from enemies.witch import Witch
 from events.events import Events
 from interface.interface import Interface
 import random
 import time
+
+
+def character_choice(group, fps):
+    name = input("Выберите персонажа. (Mei, Kiana): ")
+    while True:
+        if name == "Mei":
+            return Mei(group, fps=fps), name
+        elif name == "Kiana":
+            return Kiana(group, fps=fps), name
+        else:
+            name = input("Такого персонажа не существует. Выберите одного из предложенных. (Mei, Kiana): ")
 
 
 def main():
@@ -17,6 +29,7 @@ def main():
     # pygame.mixer.music.load('Audio/background_music_2.mp3')
     # pygame.mixer.music.set_volume(1)
     # pygame.mixer.music.play(-1)
+
     size = 1400, 800
     fps = 100
     main_map = Map(fps)
@@ -29,19 +42,21 @@ def main():
     lower_border = (len(main_map_data) - 4) * tile_size - tile_size // 2
 
     screen = pygame.display.set_mode(size)
-    pygame.display.set_caption("Kiana_game")
+    pygame.display.set_caption("honkai impact 4th")
 
     character_sprites = pygame.sprite.Group()
     bullet_sprites = pygame.sprite.Group()
     visible_enemies = pygame.sprite.Group()
     spider_sprites = pygame.sprite.Group()
+    witch_sprites = pygame.sprite.Group()
     skill_sprites = pygame.sprite.Group()
 
-    character = Kiana(character_sprites, fps=fps)
+    # character, character_name = character_choice(group=character_sprites, fps=fps)
+    character, character_name = Mei(character_sprites, fps=fps), "Mei"
     interface = Interface(character)
 
     events = Events(fps=fps, flightless_data=main_map_flightless_data, player=character,
-                    spider_sprites=spider_sprites)
+                    spider_sprites=spider_sprites, witch_sprites=witch_sprites)
 
     clock = pygame.time.Clock()
     laser_clock = 0
@@ -66,12 +81,22 @@ def main():
                     laser_clock = time.time()
 
         if fire:
-            if seconds_to_shoot == fps // 10:
-                seconds_to_shoot = 0
-                x, y = size[0] // 2, size[1] // 2
-                KianaBaseAttack(bullet_sprites, x=x, y=y, fps=fps, map_data=main_map_data, player_pos=player_pos)
-            else:
-                seconds_to_shoot += 1
+            if character_name == "Kiana":
+                if seconds_to_shoot == fps // 10:
+                    seconds_to_shoot = 0
+                    x, y = size[0] // 2, size[1] // 2
+                    KianaBaseAttack(bullet_sprites, x=x, y=y, fps=fps, map_data=main_map_data, player_pos=player_pos,
+                                    player=character)
+                else:
+                    seconds_to_shoot += 1
+
+            elif character_name == "Mei":
+                if seconds_to_shoot == 50:
+                    seconds_to_shoot = 0
+                    MeiBaseAttack(bullet_sprites, fps=fps, player=character)
+                else:
+                    seconds_to_shoot += 1
+
 
         if time.time() - laser_clock >= 23:
             skill = True
@@ -82,22 +107,32 @@ def main():
         camera_pos = (main_map.player_x - size[0] // 2, main_map.player_y - size[1] // 2)
         visible_enemies = pygame.sprite.Group()
 
-        if len(spider_sprites) < 150:
-            spawn_chance = random.randint(1, 100)
-            if spawn_chance > 98:
+        if len(spider_sprites) + len(witch_sprites) < 150:
+            spawn_chance = random.randint(1, 1000)
+            if spawn_chance > 980:
                 events.spawn_enemies(
                     enemy=Spider,
                     camera_pos=camera_pos, available_range=((right_border, left_border), (upper_border, lower_border))
                 )
 
-        bullet_sprites.update(change=all_change, camera_pos=camera_pos, enemies_group=spider_sprites, player=character)
-        bullet_sprites.draw(screen)
+            if spawn_chance > 998:
+                events.spawn_enemies(
+                    enemy=Witch,
+                    camera_pos=camera_pos, available_range=((right_border, left_border), (upper_border, lower_border))
+                )
 
         spider_sprites.update(change=all_change, camera_pos=camera_pos, visible_sprites=visible_enemies)
+        witch_sprites.update(change=all_change, player=character, visible_sprites=visible_enemies)
         visible_enemies.draw(screen)
+
+        bullet_sprites.update(change=all_change, camera_pos=camera_pos, enemies_group=visible_enemies)
+        bullet_sprites.draw(screen)
 
         character_sprites.update(visible_sprites=visible_enemies)
         character_sprites.draw(screen)
+
+        bullet_sprites.update(change=all_change, camera_pos=camera_pos, enemies_group=visible_enemies, player=character)
+        bullet_sprites.draw(screen)
 
         skill_sprites.update(enemies_group=visible_enemies)
         skill_sprites.draw(screen)
