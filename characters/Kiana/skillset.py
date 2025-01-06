@@ -6,9 +6,10 @@ import time
 
 
 class KianaBaseAttack(pygame.sprite.Sprite):
-    def __init__(self, *group, x, y, fps, map_data, player_pos):
+    def __init__(self, *group, x, y, fps, map_data, player_pos, player):
         super().__init__(*group)
         self.pos = (x, y)
+        self.player = player
         self.player_pos = player_pos
         self.fps = fps
         self.map = map_data
@@ -35,15 +36,15 @@ class KianaBaseAttack(pygame.sprite.Sprite):
         map_y = (camera_y + self.rect.centery) // tile_size
         return map_x, map_y
 
-    def update(self, change, camera_pos, enemies_group, player):
+    def update(self, change, camera_pos, enemies_group):
 
         collision_object = pygame.sprite.spritecollideany(self, enemies_group)
         if collision_object:
-            collision_object.HP -= player.base_atk_damage
+            collision_object.HP -= self.player.base_atk_damage
             self.kill()
             if collision_object.HP <= 0:
                 collision_object.kill()
-                player.XP += 1
+                self.player.XP += 1
 
         self.pos = (self.pos[0] + self.dir[0] * self.speed - change[0],
                     self.pos[1] + self.dir[1] * self.speed - change[1])
