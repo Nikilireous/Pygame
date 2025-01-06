@@ -20,7 +20,7 @@ class Spider(pygame.sprite.Sprite):
         self.rect.x, self.rect.y = x, y
         self.movement_type = 'vector'
         self.matrix_timer = self.fps * 3
-        self.speed = 2
+        self.speed = 3
         self.clock = 0
         self.HP = 200
 
