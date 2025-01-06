@@ -125,13 +125,10 @@ def main():
         witch_sprites.update(change=all_change, player=character, visible_sprites=visible_enemies)
         visible_enemies.draw(screen)
 
-        bullet_sprites.update(change=all_change, camera_pos=camera_pos, enemies_group=visible_enemies)
-        bullet_sprites.draw(screen)
-
         character_sprites.update(visible_sprites=visible_enemies)
         character_sprites.draw(screen)
 
-        bullet_sprites.update(change=all_change, camera_pos=camera_pos, enemies_group=visible_enemies, player=character)
+        bullet_sprites.update(change=all_change, camera_pos=camera_pos, enemies_group=visible_enemies)
         bullet_sprites.draw(screen)
 
         skill_sprites.update(enemies_group=visible_enemies)
