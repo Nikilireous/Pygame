@@ -11,9 +11,9 @@ class MeiBaseAttack(pygame.sprite.Sprite):
         self.cur_frame = 0
         self.player = player
         self.fps = fps
-        self.frames_time = 3
+        self.frames_time = 1
         self.frames_second = 0
-        self.frames = [self.load_image(f"katana{i}.png") for i in range(7)]
+        self.frames = [self.load_image(f"katana{i}.png") for i in range(15)]
         self.shot_enemies = set()
 
         self.image = self.frames[self.cur_frame]
@@ -32,15 +32,15 @@ class MeiBaseAttack(pygame.sprite.Sprite):
 
         self.rect = self.image.get_rect()
 
-        self.pos = (700 + self.dir[0] * 250,
-                    400 + self.dir[1] * 250)
+        self.pos = (700 + self.dir[0] * 200,
+                    400 + self.dir[1] * 200)
         self.rect.center = self.pos
 
 
     def update(self, change, camera_pos, enemies_group):
         if self.frames_second == self.frames_time:
             self.frames_second = 0
-            if self.cur_frame + 1 == 7:
+            if self.cur_frame + 1 == 15:
                 self.kill()
 
             collision_object = set(pygame.sprite.spritecollide(self, enemies_group, False))
