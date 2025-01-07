@@ -115,7 +115,7 @@ def main():
                 mei_skill_duration = False
                 mei_skill_time = 0
             else:
-                mei_skill.jerc()
+                mei_skill.dash()
                 mei_skill_time += 1
 
 
