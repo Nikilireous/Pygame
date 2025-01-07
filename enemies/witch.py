@@ -6,12 +6,11 @@ import time
 
 
 class Witch(pygame.sprite.Sprite):
-    def __init__(self, *group, fps, map_data, player, x, y):
+    def __init__(self, *group, fps, player, x, y):
         super().__init__(*group)
         self.frames = [self.load_image(f"vedma{i}.png") for i in range(3)]
         self.fps = fps
         self.player = player
-        self.map_data = map_data
         self.cur_frame = 0
         self.image = self.frames[self.cur_frame]
         self.image = pygame.transform.scale(self.image, (40, 80))
