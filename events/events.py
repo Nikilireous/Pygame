@@ -11,8 +11,8 @@ class Events:
         self.spider_sprites = spider_sprites
         self.witch_sprites = witch_sprites
 
-    def spawn_enemies(self, enemy, camera_pos, available_range):
-        for quantity in range(random.randint(0, 2)):
+    def spawn_enemies(self, enemy, max_enemies, camera_pos, available_range):
+        for quantity in range(random.randint(0, max_enemies)):
             side = random.choice(['x', 'y'])
 
             if side == 'x':
