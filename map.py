@@ -3,8 +3,9 @@ import os
 
 
 class Map:
-    def __init__(self, fps):
+    def __init__(self, fps, player):
         self.TILE_SIZE = 128
+        self.player = player
         self.tiles = self.load_tiles()
         self.change = [0, 0]
         self.fps = fps
@@ -47,7 +48,7 @@ class Map:
 
     def update(self, screen):
         self.change = [0, 0]
-        speed = 300 // self.fps
+        speed = self.player.move_speed
         keys = pygame.key.get_pressed()
         if keys[pygame.K_w]:  # Движение Вверх
             pos1, pos2 = (self.player_y - 30 - speed, self.player_x - 10), (

@@ -32,14 +32,6 @@ def main():
 
     size = 1400, 800
     fps = 100
-    main_map = Map(fps)
-    main_map_data = main_map.map_data
-    main_map_flightless_data = main_map.flightless_map
-    tile_size = main_map.TILE_SIZE
-    right_border = 6 * tile_size + tile_size // 2
-    left_border = (len(main_map_data[0]) - 7) * tile_size - tile_size // 2
-    upper_border = 3 * tile_size + tile_size // 2
-    lower_border = (len(main_map_data) - 4) * tile_size - tile_size // 2
 
     screen = pygame.display.set_mode(size)
     pygame.display.set_caption("honkai impact 4th")
@@ -53,6 +45,14 @@ def main():
 
     character, character_name = character_choice(group=character_sprites, fps=fps)
     # character, character_name = Mei(character_sprites, fps=fps), "Mei"
+    main_map = Map(fps, character)
+    main_map_data = main_map.map_data
+    main_map_flightless_data = main_map.flightless_map
+    tile_size = main_map.TILE_SIZE
+    right_border = 6 * tile_size + tile_size // 2
+    left_border = (len(main_map_data[0]) - 7) * tile_size - tile_size // 2
+    upper_border = 3 * tile_size + tile_size // 2
+    lower_border = (len(main_map_data) - 4) * tile_size - tile_size // 2
     interface = Interface(character)
 
     events = Events(fps=fps, flightless_data=main_map_flightless_data, player=character,
@@ -77,6 +77,7 @@ def main():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_e and skill:
                     KianaSkillE(skill_sprites, fps=fps, player=character)
+                    interface.skill_start = True
                     skill = False
                     laser_clock = time.time()
 
@@ -98,7 +99,7 @@ def main():
                     seconds_to_shoot += 1
 
 
-        if time.time() - laser_clock >= 23:
+        if time.time() - laser_clock >= character.skill_recharge:
             skill = True
 
         screen.fill(0)

@@ -24,6 +24,8 @@ class Mei(pygame.sprite.Sprite):
         self.skill_damage = 50
         self.regeneration_to_second = 1
         self.regeneration_time = 0
+        self.move_speed = 3
+        self.skill_recharge = 10
 
     def update(self, visible_sprites):
         self.level_update_changed()
