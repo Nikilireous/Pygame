@@ -6,6 +6,7 @@ from characters.Mei.mei import Mei
 from characters.Mei.skillset import MeiBaseAttack, MeiSkillE
 from enemies.spider import Spider
 from enemies.witch import Witch
+from enemies.boss import Boss
 from events.events import Events
 from interface.interface import Interface
 import random
@@ -23,15 +24,14 @@ def character_choice(group, fps):
             name = input("Такого персонажа не существует. Выберите одного из предложенных. (Mei, Kiana): ")
 
 
-def phases(all_events: Events, camera_pos, current_time, borders, spiders, witches):
+def phases(all_events: Events, camera_pos, current_time, borders, spiders, witches, bosses):
     if current_time <= 60:
         if len(spiders) < 50:
             spawn_chance = random.randint(1, 1000)
             if spawn_chance > 990:
                 all_events.spawn_enemies(
                     enemy=Spider, max_enemies=1,
-                    camera_pos=camera_pos, available_range=(borders[:2], borders[2:])
-                )
+                    camera_pos=camera_pos, available_range=(borders[:2], borders[2:]))
 
     if 60 < current_time <= 120:
         if len(spiders) < 100:
@@ -57,6 +57,14 @@ def phases(all_events: Events, camera_pos, current_time, borders, spiders, witch
                     enemy=Witch, max_enemies=2,
                     camera_pos=camera_pos, available_range=(borders[:2], borders[2:]))
 
+    if 240 < current_time <= 300:
+        if len(bosses) < 1:
+            spawn_chance = random.randint(1, 1000)
+            if spawn_chance > 990:
+                all_events.spawn_enemies(
+                    enemy=Boss, max_enemies=1,
+                    camera_pos=camera_pos, available_range=(borders[:2], borders[2:]))
+
 
 
 def main():
@@ -77,10 +85,12 @@ def main():
     visible_enemies = pygame.sprite.Group()
     spider_sprites = pygame.sprite.Group()
     witch_sprites = pygame.sprite.Group()
+    boss_sprites = pygame.sprite.Group()
     skill_sprites = pygame.sprite.Group()
 
-    character, character_name = character_choice(group=character_sprites, fps=fps)
-    # character, character_name = Mei(character_sprites, fps=fps), "Mei"
+    # character, character_name = character_choice(group=character_sprites, fps=fps)
+    character, character_name = Mei(character_sprites, fps=fps), "Mei"
+
     main_map = Map(fps, character)
     main_map_data = main_map.map_data
     main_map_flightless_data = main_map.flightless_map
@@ -92,7 +102,7 @@ def main():
     interface = Interface(character)
 
     events = Events(fps=fps, flightless_data=main_map_flightless_data, player=character,
-                    spider_sprites=spider_sprites, witch_sprites=witch_sprites)
+                    spider_sprites=spider_sprites, witch_sprites=witch_sprites, boss_sprites=boss_sprites)
 
     clock = pygame.time.Clock()
     laser_clock = 0
@@ -148,10 +158,11 @@ def main():
 
         phases(all_events=events, camera_pos=camera_pos, current_time=interface.current_time,
                borders=(right_border, left_border, upper_border, lower_border),
-               spiders=spider_sprites, witches=witch_sprites)
+               spiders=spider_sprites, witches=witch_sprites, bosses=boss_sprites)
 
         spider_sprites.update(change=all_change, camera_pos=camera_pos, visible_sprites=visible_enemies)
         witch_sprites.update(change=all_change, player=character, visible_sprites=visible_enemies)
+        boss_sprites.update(change=all_change, player=character, visible_sprites=visible_enemies)
         visible_enemies.draw(screen)
 
         character_sprites.update(visible_sprites=visible_enemies)
