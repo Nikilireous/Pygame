@@ -59,10 +59,12 @@ def main():
                     spider_sprites=spider_sprites, witch_sprites=witch_sprites)
 
     clock = pygame.time.Clock()
-    laser_clock = 0
+    skill_clock = 0
     skill = True
     seconds_to_shoot = 0
     fire = False
+    mei_skill_duration = False
+    mei_skill_time = 0
     running = True
     while running:
         player_pos = (main_map.player_x, main_map.player_y)
@@ -76,10 +78,16 @@ def main():
                 seconds_to_shoot = 0
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_e and skill:
-                    KianaSkillE(skill_sprites, fps=fps, player=character)
+                    if character_name == "Kiana":
+                        KianaSkillE(skill_sprites, fps=fps, player=character)
+                    elif character_name == "Mei":
+                        character.HP -= 5
+                        character.base_atk_damage += 15
+                        mei_skill = MeiSkillE(player=character, map=main_map, enemy=visible_enemies)
+                        mei_skill_duration = True
                     interface.skill_start = True
                     skill = False
-                    laser_clock = time.time()
+                    skill_clock = time.time()
 
         if fire:
             if character_name == "Kiana":
@@ -98,9 +106,18 @@ def main():
                 else:
                     seconds_to_shoot += 1
 
-
-        if time.time() - laser_clock >= character.skill_recharge:
+        if time.time() - skill_clock >= character.skill_recharge and not skill:
+            character.base_atk_damage -= 15
             skill = True
+
+        if mei_skill_duration:
+            if mei_skill_time == 20:
+                mei_skill_duration = False
+                mei_skill_time = 0
+            else:
+                mei_skill.jerc()
+                mei_skill_time += 1
+
 
         screen.fill(0)
         main_map.update(screen)
