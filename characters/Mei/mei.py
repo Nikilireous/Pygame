@@ -20,7 +20,7 @@ class Mei(pygame.sprite.Sprite):
         self.HP = self.max_HP
         self.XP = 0
         self.level = 1
-        self.base_atk_damage = 100
+        self.base_atk_damage = 15
         self.skill_damage = 50
         self.regeneration_to_second = 1
         self.regeneration_time = 0
@@ -44,7 +44,7 @@ class Mei(pygame.sprite.Sprite):
             for enemy in collision_object:
                 if pygame.sprite.collide_mask(self, enemy):
                     self.regeneration_clock = 500
-                    self.HP -= 1
+                    self.HP -= enemy.damage
 
     def load_image(self, name, colorkey=None):
         fullname = os.path.join('images/characters/Mei', name)
@@ -69,7 +69,7 @@ class Mei(pygame.sprite.Sprite):
             self.new_level()
 
     def new_level(self):
-        self.base_atk_damage += 5
+        self.base_atk_damage += 3
         self.max_HP += 250
         self.HP += 250
         self.regeneration_to_second += 1

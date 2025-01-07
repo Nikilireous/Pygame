@@ -11,9 +11,9 @@ class MeiBaseAttack(pygame.sprite.Sprite):
         self.cur_frame = 0
         self.player = player
         self.fps = fps
-        self.frames_time = 3
+        self.frames_time = 1
         self.frames_second = 0
-        self.frames = [self.load_image(f"katana{i}.png") for i in range(7)]
+        self.frames = [self.load_image(f"katana{i}.png") for i in range(15)]
         self.shot_enemies = set()
 
         self.image = self.frames[self.cur_frame]
@@ -32,8 +32,8 @@ class MeiBaseAttack(pygame.sprite.Sprite):
 
         self.rect = self.image.get_rect()
 
-        self.pos = (700 + self.dir[0] * 250,
-                    400 + self.dir[1] * 250)
+        self.pos = (700 + self.dir[0] * 200,
+                    400 + self.dir[1] * 200)
         self.rect.center = self.pos
 
 
@@ -74,14 +74,14 @@ class MeiBaseAttack(pygame.sprite.Sprite):
             image = image.convert_alpha()
         return image
 
-    def shot(self, enemie):
-        if pygame.sprite.collide_mask(self, enemie):
-            if enemie.HP - self.player.base_atk_damage <= 0:
-                enemie.kill()
+    def shot(self, enemy):
+        if pygame.sprite.collide_mask(self, enemy):
+            if enemy.HP - self.player.base_atk_damage <= 0:
+                enemy.kill()
                 self.player.XP += 1
             else:
-                enemie.HP -= self.player.base_atk_damage
-                self.shot_enemies.add(enemie)
+                enemy.HP -= self.player.base_atk_damage
+                self.shot_enemies.add(enemy)
 
 
 class MeiSkillE(pygame.sprite.Sprite):

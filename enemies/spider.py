@@ -23,6 +23,7 @@ class Spider(pygame.sprite.Sprite):
         self.speed = 3
         self.clock = 0
         self.HP = 200
+        self.damage = 1
 
     def get_legs_coords(self, camera_x, camera_y, tile_size):
         left_x = (self.rect.x + camera_x) // tile_size

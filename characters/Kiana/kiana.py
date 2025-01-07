@@ -20,7 +20,7 @@ class Kiana(pygame.sprite.Sprite):
         self.HP = self.max_HP
         self.XP = 0
         self.level = 1
-        self.base_atk_damage = 10
+        self.base_atk_damage = 15
         self.skill_damage = 50
         self.regeneration_to_second = 1
         self.regeneration_time = 0
@@ -43,7 +43,7 @@ class Kiana(pygame.sprite.Sprite):
         if collision_object:
             for enemy in collision_object:
                 if pygame.sprite.collide_mask(self, enemy):
-                    self.HP -= 1
+                    self.HP -= enemy.damage
 
     def load_image(self, name, colorkey=None):
         fullname = os.path.join('images/characters/Kiana', name)

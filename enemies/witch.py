@@ -21,9 +21,10 @@ class Witch(pygame.sprite.Sprite):
         self.current_time = 2
         self.delta_time = time.time()
         self.dx = self.dy = self.dist = None
-        self.speed = 10
+        self.speed = 12
         self.clock = 0
-        self.HP = 100
+        self.HP = 130
+        self.damage = 3
 
     def vector_move(self, change, dx, dy, dist):
         try:
