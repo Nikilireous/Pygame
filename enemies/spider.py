@@ -2,8 +2,8 @@ import pygame
 import sys
 import os
 import math
-from pathfinding.core.grid import Grid
-from pathfinding.finder.a_star import AStarFinder
+# from pathfinding.core.grid import Grid
+# from pathfinding.finder.a_star import AStarFinder
 
 
 class Spider(pygame.sprite.Sprite):
@@ -42,15 +42,15 @@ class Spider(pygame.sprite.Sprite):
 
         try:
             dx, dy = (dx / dist * self.speed), (dy / dist * self.speed)
-            for coords in self.get_legs_coords(camera_pos[0] + int(dx) - change[0],
-                                               camera_pos[1] + int(dy) - change[1],
-                                               128):
-                try:
-                    if self.map_data[coords[1]][coords[0]] in [0]:
-                        self.movement_type = 'matrix'
-
-                except IndexError:
-                    pass
+            # for coords in self.get_legs_coords(camera_pos[0] + int(dx) - change[0],
+            #                                    camera_pos[1] + int(dy) - change[1],
+            #                                    128):
+            #     try:
+            #         if self.map_data[coords[1]][coords[0]] in [0]:
+            #             self.movement_type = 'matrix'
+            #
+            #     except IndexError:
+            #         pass
 
             if self.movement_type == 'vector':
                 self.rect.x += dx - change[0]
