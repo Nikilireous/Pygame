@@ -5,12 +5,16 @@ class Interface:
     def __init__(self, player):
         self.player = player
         self.time = time.time()
+        self.skill_start = False
+        self.skill_time = None
+        self.skill_ready = True
 
     def draw_interface(self, screen):
         self.HP_bar(screen)
         self.lvl_text(screen)
         self.XP_to_level_bar(screen)
         self.timer(screen)
+        self.skill_bar(screen)
 
     def HP_bar(self, screen):
         HP_bar = pygame.Surface((250, 30))
@@ -48,4 +52,29 @@ class Interface:
         text = font.render(t.split()[3][3:], 1, (0, 0, 0))
 
         screen.blit(text, (655, 10))
+
+    def skill_bar(self, screen):
+        skill_bar = pygame.Surface((20, 45))
+        if self.skill_ready:
+            skill_bar.fill("yellow")
+            font = pygame.font.Font(None, 29)
+            text = font.render(f"E", 1, (0, 0, 0))
+            skill_bar.blit(text, (3, 13))
+        else:
+            skill_bar.fill("black")
+
+        if self.skill_start or self.skill_time:
+            if not self.skill_time:
+                self.skill_time = time.time()
+                self.skill_start = False
+                self.skill_ready = False
+
+            height = 45 - (45 / self.player.skill_recharge * (time.time() - self.skill_time))
+            if height <= 0:
+                self.skill_ready = True
+                self.skill_time = None
+            else:
+                pygame.draw.rect(skill_bar, "white", ((0, height), (20, 45)))
+
+        screen.blit(skill_bar, (840, 740))
 

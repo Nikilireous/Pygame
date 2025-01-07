@@ -40,7 +40,7 @@ class MeiBaseAttack(pygame.sprite.Sprite):
     def update(self, change, camera_pos, enemies_group):
         if self.frames_second == self.frames_time:
             self.frames_second = 0
-            if self.cur_frame + 1 == 15:
+            if self.cur_frame + 1 == len(self.frames):
                 self.kill()
 
             collision_object = set(pygame.sprite.spritecollide(self, enemies_group, False))
