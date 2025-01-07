@@ -42,7 +42,7 @@ class Mei(pygame.sprite.Sprite):
             for enemy in collision_object:
                 if pygame.sprite.collide_mask(self, enemy):
                     self.regeneration_clock = 500
-                    self.HP -= 1
+                    self.HP -= enemy.damage
 
     def load_image(self, name, colorkey=None):
         fullname = os.path.join('images/characters/Mei', name)

@@ -41,7 +41,7 @@ class Kiana(pygame.sprite.Sprite):
         if collision_object:
             for enemy in collision_object:
                 if pygame.sprite.collide_mask(self, enemy):
-                    self.HP -= 1
+                    self.HP -= enemy.damage
 
     def load_image(self, name, colorkey=None):
         fullname = os.path.join('images/characters/Kiana', name)
