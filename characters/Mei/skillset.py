@@ -74,14 +74,14 @@ class MeiBaseAttack(pygame.sprite.Sprite):
             image = image.convert_alpha()
         return image
 
-    def shot(self, enemie):
-        if pygame.sprite.collide_mask(self, enemie):
-            if enemie.HP - self.player.base_atk_damage <= 0:
-                enemie.kill()
+    def shot(self, enemy):
+        if pygame.sprite.collide_mask(self, enemy):
+            if enemy.HP - self.player.base_atk_damage <= 0:
+                enemy.kill()
                 self.player.XP += 1
             else:
-                enemie.HP -= self.player.base_atk_damage
-                self.shot_enemies.add(enemie)
+                enemy.HP -= self.player.base_atk_damage
+                self.shot_enemies.add(enemy)
 
 
 class MeiSkillE(pygame.sprite.Sprite):
