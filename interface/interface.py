@@ -8,6 +8,7 @@ class Interface:
         self.skill_start = False
         self.skill_time = None
         self.skill_ready = True
+        self.current_time = None
 
     def draw_interface(self, screen):
         self.HP_bar(screen)
@@ -48,7 +49,8 @@ class Interface:
 
     def timer(self, screen):
         font = pygame.font.Font(None, 50)
-        t = str(time.ctime(time.time() - self.time))
+        self.current_time = time.time() - self.time
+        t = str(time.ctime(self.current_time))
         text = font.render(t.split()[3][3:], 1, (0, 0, 0))
 
         screen.blit(text, (655, 10))

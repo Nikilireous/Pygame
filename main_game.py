@@ -23,6 +23,42 @@ def character_choice(group, fps):
             name = input("Такого персонажа не существует. Выберите одного из предложенных. (Mei, Kiana): ")
 
 
+def phases(all_events: Events, camera_pos, current_time, borders, spiders, witches):
+    if current_time <= 60:
+        if len(spiders) < 50:
+            spawn_chance = random.randint(1, 1000)
+            if spawn_chance > 990:
+                all_events.spawn_enemies(
+                    enemy=Spider, max_enemies=1,
+                    camera_pos=camera_pos, available_range=(borders[:2], borders[2:])
+                )
+
+    if 60 < current_time <= 120:
+        if len(spiders) < 100:
+            spawn_chance = random.randint(1, 1000)
+            if spawn_chance > 980:
+                all_events.spawn_enemies(
+                    enemy=Spider, max_enemies=2,
+                    camera_pos=camera_pos, available_range=(borders[:2], borders[2:]))
+
+    if 120 < current_time <= 180:
+        if len(spiders) < 60:
+            spawn_chance = random.randint(1, 1000)
+            if spawn_chance > 675:
+                all_events.spawn_enemies(
+                    enemy=Spider, max_enemies=5,
+                    camera_pos=camera_pos, available_range=(borders[:2], borders[2:]))
+
+    if 180 < current_time <= 240:
+        if len(witches) < 30:
+            spawn_chance = random.randint(1, 1000)
+            if spawn_chance > 990:
+                all_events.spawn_enemies(
+                    enemy=Witch, max_enemies=2,
+                    camera_pos=camera_pos, available_range=(borders[:2], borders[2:]))
+
+
+
 def main():
     pygame.init()
     # pygame.mixer.init()
@@ -108,19 +144,11 @@ def main():
         camera_pos = (main_map.player_x - size[0] // 2, main_map.player_y - size[1] // 2)
         visible_enemies = pygame.sprite.Group()
 
-        if len(spider_sprites) + len(witch_sprites) < 150:
-            spawn_chance = random.randint(1, 1000)
-            if spawn_chance > 980:
-                events.spawn_enemies(
-                    enemy=Spider,
-                    camera_pos=camera_pos, available_range=((right_border, left_border), (upper_border, lower_border))
-                )
+        interface.timer(screen)
 
-            if spawn_chance > 998:
-                events.spawn_enemies(
-                    enemy=Witch,
-                    camera_pos=camera_pos, available_range=((right_border, left_border), (upper_border, lower_border))
-                )
+        phases(all_events=events, camera_pos=camera_pos, current_time=interface.current_time,
+               borders=(right_border, left_border, upper_border, lower_border),
+               spiders=spider_sprites, witches=witch_sprites)
 
         spider_sprites.update(change=all_change, camera_pos=camera_pos, visible_sprites=visible_enemies)
         witch_sprites.update(change=all_change, player=character, visible_sprites=visible_enemies)
