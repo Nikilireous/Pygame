@@ -26,7 +26,8 @@ class Boss(pygame.sprite.Sprite):
         self.dx = self.dy = self.dist = None
         self.speed = 10
         self.clock = 0
-        self.HP = 20_000
+        self.max_HP = 20_000
+        self.HP = self.max_HP
         self.damage = 4
 
         self.dashes = 0
@@ -50,7 +51,8 @@ class Boss(pygame.sprite.Sprite):
         self.rect.centerx = x - 400 * math.cos(math.radians(75 + (self.circle_step // self.fps)))
         self.rect.centery = y - 400 * math.sin(math.radians(75 + (self.circle_step // self.fps)))
 
-    def update(self, change, player, visible_sprites):
+    def update(self, change, player, visible_sprites, screen):
+        self.Boss_HP_bar(screen)
         if self.movement_type == 'vector':
             if self.vector_time > 0.7:
                 self.dx, self.dy = player.rect.centerx - self.rect.x, player.rect.centery - self.rect.y
@@ -114,3 +116,17 @@ class Boss(pygame.sprite.Sprite):
         else:
             image = image.convert_alpha()
         return image
+
+    def Boss_HP_bar(self, screen):
+        HP_bar = pygame.Surface((250, 30))
+        HP_bar.fill("Blue")
+
+        non_hp_bar = self.max_HP - self.HP
+        k = self.max_HP // 250
+        pygame.draw.rect(HP_bar, (0, 0, 0), ((self.HP // k, 0), (non_hp_bar // k + 10, 30)))
+
+        font = pygame.font.Font(None, 30)
+        text = font.render(f"{str(self.HP)} / {self.max_HP}", 1, (255, 255, 255))
+        HP_bar.blit(text, (70, 5))
+
+        screen.blit(HP_bar, (1140, 10))
