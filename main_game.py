@@ -45,7 +45,7 @@ def main():
     skill_sprites = pygame.sprite.Group()
 
     # character, character_name = character_choice(group=character_sprites, fps=fps)
-    character, character_name = Kiana(character_sprites, fps=fps), "Kiana"
+    character, character_name = Mei(character_sprites, fps=fps), "Mei"
 
     main_map = Map(fps, character)
     main_map_data = main_map.map_data
@@ -69,9 +69,9 @@ def main():
     mei_skill_time = 0
     running = True
 
-    voss = Boss(boss_sprites, fps=fps, map_data=main_map_flightless_data,
-                                      player=character, x=(0), y=(0),
-                                      summons=spider_sprites)
+    # voss = Boss(boss_sprites, fps=fps, map_data=main_map_flightless_data,
+    #                                   player=character, x=(0), y=(0),
+    #                                   summons=spider_sprites)
     while running:
         player_pos = (main_map.player_x, main_map.player_y)
         for event in pygame.event.get():
@@ -113,7 +113,8 @@ def main():
                     seconds_to_shoot += 1
 
         if time.time() - skill_clock >= character.skill_recharge and not skill:
-            character.base_atk_damage -= character.skill_damage
+            if character_name == "Mei":
+                character.base_atk_damage -= character.skill_damage
             skill = True
 
         if mei_skill_duration:
@@ -133,9 +134,9 @@ def main():
 
         interface.timer(screen)
 
-        # events.phases(camera_pos=camera_pos, current_time=interface.current_time,
-        #        borders=(right_border, left_border, upper_border, lower_border),
-        #        spiders=spider_sprites, witches=witch_sprites, bosses=boss_sprites)
+        events.phases(camera_pos=camera_pos, current_time=interface.current_time,
+               borders=(right_border, left_border, upper_border, lower_border),
+               spiders=spider_sprites, witches=witch_sprites, bosses=boss_sprites)
 
         spider_sprites.update(change=all_change, camera_pos=camera_pos, visible_sprites=visible_enemies)
         witch_sprites.update(change=all_change, player=character, visible_sprites=visible_enemies)

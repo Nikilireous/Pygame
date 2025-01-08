@@ -71,21 +71,22 @@ class Boss(pygame.sprite.Sprite):
 
 
         elif self.movement_type == 'circle':
-            self.circle_step += 270
-            self.circle_move(self.player.rect.centerx, self.player.rect.centery)
-
-            self.dx, self.dy = player.rect.centerx - self.rect.x, player.rect.centery - self.rect.y
-            self.dist = math.hypot(self.dx, self.dy)
-
-            if self.circle_time > 2:
-                self.movement_type = 'vector'
-                self.dashes = 0
-                self.delta_time = time.time()
-
-                Spider(self.summons_group, fps=self.fps, map_data=self.map_data,
-                                  player=self.player, x=self.rect.centerx, y=self.rect.centery)
-
-            self.circle_time = time.time() - self.delta_time
+            pass
+            # self.circle_step += 270
+            # self.circle_move(self.player.rect.centerx, self.player.rect.centery)
+            #
+            # self.dx, self.dy = player.rect.centerx - self.rect.x, player.rect.centery - self.rect.y
+            # self.dist = math.hypot(self.dx, self.dy)
+            #
+            # if self.circle_time > 2:
+            #     self.movement_type = 'vector'
+            #     self.dashes = 0
+            #     self.delta_time = time.time()
+            #
+            #     Spider(self.summons_group, fps=self.fps, map_data=self.map_data,
+            #                       player=self.player, x=self.rect.centerx, y=self.rect.centery)
+            #
+            # self.circle_time = time.time() - self.delta_time
 
 
         if -60 < self.rect.centerx < 1460 and -60 < self.rect.centery < 860:

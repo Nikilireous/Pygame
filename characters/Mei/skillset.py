@@ -79,6 +79,7 @@ class MeiBaseAttack(pygame.sprite.Sprite):
                 self.player.XP += 1
             else:
                 enemy.HP -= self.player.base_atk_damage
+                print(enemy.HP)
                 self.shot_enemies.add(enemy)
 
 
