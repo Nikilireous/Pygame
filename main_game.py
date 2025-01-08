@@ -128,7 +128,7 @@ def main():
                         KianaSkillE(skill_sprites, fps=fps, player=character)
                     elif character_name == "Mei":
                         character.HP -= 5
-                        character.base_atk_damage += 15
+                        character.base_atk_damage += character.skill_damage
                         mei_skill = MeiSkillE(player=character, map=main_map, enemy=visible_enemies)
                         mei_skill_duration = True
                     interface.skill_start = True
@@ -153,7 +153,7 @@ def main():
                     seconds_to_shoot += 1
 
         if time.time() - skill_clock >= character.skill_recharge and not skill:
-            character.base_atk_damage -= 15
+            character.base_atk_damage -= character.skill_damage
             skill = True
 
         if mei_skill_duration:

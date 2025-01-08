@@ -17,13 +17,13 @@ class Witch(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = x, y
         self.movement_type = 'vector'
-        self.current_time = 2
+        self.current_time = 3
         self.delta_time = time.time()
         self.dx = self.dy = self.dist = None
         self.speed = 12
         self.clock = 0
-        self.HP = 130
-        self.damage = 3
+        self.HP = 120
+        self.damage = 2
 
     def vector_move(self, change, dx, dy, dist):
         try:
@@ -41,7 +41,7 @@ class Witch(pygame.sprite.Sprite):
 
 
     def update(self, change, player, visible_sprites):
-        if int(self.current_time) == 2:
+        if self.current_time >= 2:
             self.dx, self.dy = player.rect.centerx - self.rect.x, player.rect.centery - self.rect.y
             self.dist = math.hypot(self.dx, self.dy)
             self.delta_time = time.time()

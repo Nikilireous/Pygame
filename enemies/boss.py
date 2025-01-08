@@ -26,8 +26,8 @@ class Boss(pygame.sprite.Sprite):
         self.dx = self.dy = self.dist = None
         self.speed = 10
         self.clock = 0
-        self.HP = 2_000_000
-        self.damage = 5
+        self.HP = 20_000
+        self.damage = 4
 
         self.dashes = 0
         self.circle_step = 0

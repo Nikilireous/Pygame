@@ -20,8 +20,8 @@ class Mei(pygame.sprite.Sprite):
         self.HP = self.max_HP
         self.XP = 0
         self.level = 1
-        self.base_atk_damage = 15
-        self.skill_damage = 50
+        self.base_atk_damage = 30
+        self.skill_damage = 30
         self.regeneration_to_second = 1
         self.regeneration_time = 0
         self.move_speed = 3
@@ -69,7 +69,8 @@ class Mei(pygame.sprite.Sprite):
             self.new_level()
 
     def new_level(self):
-        self.base_atk_damage += 3
+        self.base_atk_damage += 8
+        self.skill_damage += 8
         self.max_HP += 250
         self.HP += 250
         self.regeneration_to_second += 1
