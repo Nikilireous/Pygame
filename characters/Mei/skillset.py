@@ -43,9 +43,9 @@ class MeiBaseAttack(pygame.sprite.Sprite):
                 self.kill()
 
             collision_object = set(pygame.sprite.spritecollide(self, enemies_group, False))
-            if collision_object - (collision_object & self.shot_enemies):
-                for enemie in collision_object:
-                    self.shot(enemie)
+            collision_object =  collision_object - (collision_object & self.shot_enemies)
+            for enemie in collision_object:
+                self.shot(enemie)
 
             self.cur_frame = (self.cur_frame + 1) % len(self.frames)
             self.image = self.frames[self.cur_frame]
