@@ -37,3 +37,44 @@ class Events:
                 current_enemy = enemy(self.boss_sprites, fps=self.fps, map_data=self.flightless_data,
                                       player=self.player, x=(x - camera_pos[0]), y=(y - camera_pos[1]),
                                       summons=self.spider_sprites)
+
+    def phases(self, camera_pos, current_time, borders, spiders, witches, bosses):
+        if current_time <= 60:
+            if len(spiders) < 50:
+                spawn_chance = random.randint(1, 1000)
+                if spawn_chance > 990:
+                    self.spawn_enemies(
+                        enemy=Spider, max_enemies=1,
+                        camera_pos=camera_pos, available_range=(borders[:2], borders[2:]))
+
+        if 60 < current_time <= 120:
+            if len(spiders) < 100:
+                spawn_chance = random.randint(1, 1000)
+                if spawn_chance > 980:
+                    self.spawn_enemies(
+                        enemy=Spider, max_enemies=2,
+                        camera_pos=camera_pos, available_range=(borders[:2], borders[2:]))
+
+        if 120 < current_time <= 180:
+            if len(spiders) < 60:
+                spawn_chance = random.randint(1, 1000)
+                if spawn_chance > 675:
+                    self.spawn_enemies(
+                        enemy=Spider, max_enemies=5,
+                        camera_pos=camera_pos, available_range=(borders[:2], borders[2:]))
+
+        if 180 < current_time <= 240:
+            if len(witches) < 30:
+                spawn_chance = random.randint(1, 1000)
+                if spawn_chance > 990:
+                    self.spawn_enemies(
+                        enemy=Witch, max_enemies=2,
+                        camera_pos=camera_pos, available_range=(borders[:2], borders[2:]))
+
+        if 240 < current_time <= 300:
+            if len(bosses) < 1:
+                spawn_chance = random.randint(1, 1000)
+                if spawn_chance > 990:
+                    self.spawn_enemies(
+                        enemy=Boss, max_enemies=1,
+                        camera_pos=camera_pos, available_range=(borders[:2], borders[2:]))

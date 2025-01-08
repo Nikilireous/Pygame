@@ -23,50 +23,6 @@ def character_choice(group, fps):
         else:
             name = input("Такого персонажа не существует. Выберите одного из предложенных. (Mei, Kiana): ")
 
-
-def phases(all_events: Events, camera_pos, current_time, borders, spiders, witches, bosses):
-    if current_time <= 60:
-        if len(spiders) < 50:
-            spawn_chance = random.randint(1, 1000)
-            if spawn_chance > 990:
-                all_events.spawn_enemies(
-                    enemy=Spider, max_enemies=1,
-                    camera_pos=camera_pos, available_range=(borders[:2], borders[2:]))
-
-    if 60 < current_time <= 120:
-        if len(spiders) < 100:
-            spawn_chance = random.randint(1, 1000)
-            if spawn_chance > 980:
-                all_events.spawn_enemies(
-                    enemy=Spider, max_enemies=2,
-                    camera_pos=camera_pos, available_range=(borders[:2], borders[2:]))
-
-    if 120 < current_time <= 180:
-        if len(spiders) < 60:
-            spawn_chance = random.randint(1, 1000)
-            if spawn_chance > 675:
-                all_events.spawn_enemies(
-                    enemy=Spider, max_enemies=5,
-                    camera_pos=camera_pos, available_range=(borders[:2], borders[2:]))
-
-    if 180 < current_time <= 240:
-        if len(witches) < 30:
-            spawn_chance = random.randint(1, 1000)
-            if spawn_chance > 990:
-                all_events.spawn_enemies(
-                    enemy=Witch, max_enemies=2,
-                    camera_pos=camera_pos, available_range=(borders[:2], borders[2:]))
-
-    if 240 < current_time <= 300:
-        if len(bosses) < 1:
-            spawn_chance = random.randint(1, 1000)
-            if spawn_chance > 990:
-                all_events.spawn_enemies(
-                    enemy=Boss, max_enemies=1,
-                    camera_pos=camera_pos, available_range=(borders[:2], borders[2:]))
-
-
-
 def main():
     pygame.init()
     # pygame.mixer.init()
@@ -173,7 +129,7 @@ def main():
 
         interface.timer(screen)
 
-        phases(all_events=events, camera_pos=camera_pos, current_time=interface.current_time,
+        events.phases(camera_pos=camera_pos, current_time=interface.current_time,
                borders=(right_border, left_border, upper_border, lower_border),
                spiders=spider_sprites, witches=witch_sprites, bosses=boss_sprites)
 
