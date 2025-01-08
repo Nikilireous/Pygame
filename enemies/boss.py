@@ -10,13 +10,13 @@ class Boss(pygame.sprite.Sprite):
     def __init__(self, *group, fps, map_data, player, x, y, summons):
         super().__init__(*group)
         self.summons_group = summons
-        self.frames = [self.load_image(f"zloy pauk.png")]
+        self.frames = [self.load_image(f"boss.png")]
         self.fps = fps
         self.map_data = map_data
         self.player = player
         self.cur_frame = 0
         self.image = self.frames[self.cur_frame]
-        self.image = pygame.transform.scale(self.image, (120, 120))
+        self.image = pygame.transform.scale(self.image, (180, 180))
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = x, y
         self.movement_type = 'vector'
@@ -71,22 +71,21 @@ class Boss(pygame.sprite.Sprite):
 
 
         elif self.movement_type == 'circle':
-            pass
-            # self.circle_step += 270
-            # self.circle_move(self.player.rect.centerx, self.player.rect.centery)
-            #
-            # self.dx, self.dy = player.rect.centerx - self.rect.x, player.rect.centery - self.rect.y
-            # self.dist = math.hypot(self.dx, self.dy)
-            #
-            # if self.circle_time > 2:
-            #     self.movement_type = 'vector'
-            #     self.dashes = 0
-            #     self.delta_time = time.time()
-            #
-            #     Spider(self.summons_group, fps=self.fps, map_data=self.map_data,
-            #                       player=self.player, x=self.rect.centerx, y=self.rect.centery)
-            #
-            # self.circle_time = time.time() - self.delta_time
+            self.circle_step += 270
+            self.circle_move(self.player.rect.centerx, self.player.rect.centery)
+
+            self.dx, self.dy = player.rect.centerx - self.rect.x, player.rect.centery - self.rect.y
+            self.dist = math.hypot(self.dx, self.dy)
+
+            if self.circle_time > 2:
+                self.movement_type = 'vector'
+                self.dashes = 0
+                self.delta_time = time.time()
+
+                Spider(self.summons_group, fps=self.fps, map_data=self.map_data,
+                                  player=self.player, x=self.rect.centerx, y=self.rect.centery)
+
+            self.circle_time = time.time() - self.delta_time
 
 
         if -60 < self.rect.centerx < 1460 and -60 < self.rect.centery < 860:
@@ -95,7 +94,7 @@ class Boss(pygame.sprite.Sprite):
                 self.clock = 0
                 self.cur_frame = (self.cur_frame + 1) % len(self.frames)
                 self.image = self.frames[self.cur_frame]
-                self.image = pygame.transform.scale(self.image, (120, 120))
+                self.image = pygame.transform.scale(self.image, (180, 180))
 
                 angle = math.degrees(math.atan2(-self.dx, self.dy))
                 self.image = pygame.transform.rotate(self.image, -angle)

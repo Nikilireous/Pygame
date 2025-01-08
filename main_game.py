@@ -69,9 +69,6 @@ def main():
     mei_skill_time = 0
     running = True
 
-    # voss = Boss(boss_sprites, fps=fps, map_data=main_map_flightless_data,
-    #                                   player=character, x=(0), y=(0),
-    #                                   summons=spider_sprites)
     while running:
         player_pos = (main_map.player_x, main_map.player_y)
         for event in pygame.event.get():
