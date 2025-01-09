@@ -1,6 +1,7 @@
 import pygame
 import os
 import sys
+from main_game import main_game
 
 
 
@@ -105,7 +106,15 @@ class MaimMenuInterface:
 
 
     def screen3(self):
-        pass
+        game_cycle = main_game(self.character)
+
+        if game_cycle[0]:
+
+            print(f'Вы прошли игру. Персонаж: {game_cycle[1]}.')
+        else:
+            print(f'Вы выживали {int(game_cycle[1])} секунд.')
+        self.flag_screen_3 = False
+        self.flag_screen_1 = True
 
     def screen4(self):
         pass

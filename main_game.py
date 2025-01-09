@@ -23,7 +23,7 @@ def character_choice(group, fps):
         else:
             name = input("Такого персонажа не существует. Выберите одного из предложенных. (Mei, Kiana): ")
 
-def main():
+def main_game(char: str | None):
     pygame.init()
     # pygame.mixer.init()
     # pygame.mixer.music.load('Audio/background_music_2.mp3')
@@ -44,8 +44,10 @@ def main():
     boss_sprites = pygame.sprite.Group()
     skill_sprites = pygame.sprite.Group()
 
-    # character, character_name = character_choice(group=character_sprites, fps=fps)
-    character, character_name = Mei(character_sprites, fps=fps), "Mei"
+    if char:
+        character, character_name = eval(char)(character_sprites, fps=fps), char
+    else:
+        character, character_name = character_choice(group=character_sprites, fps=fps)
 
     main_map = Map(fps, character)
     main_map_data = main_map.map_data
@@ -132,9 +134,12 @@ def main():
 
         interface.timer(screen)
 
-        events.phases(camera_pos=camera_pos, current_time=interface.current_time,
+        phases = events.phases(camera_pos=camera_pos, current_time=interface.current_time,
                borders=(right_border, left_border, upper_border, lower_border),
                spiders=spider_sprites, witches=witch_sprites, bosses=boss_sprites)
+
+        if phases:
+            return True, character_name
 
         spider_sprites.update(change=all_change, camera_pos=camera_pos, visible_sprites=visible_enemies)
         witch_sprites.update(change=all_change, player=character, visible_sprites=visible_enemies)
@@ -156,7 +161,7 @@ def main():
 
         if character.HP <= 0:
             print("Вас убили!")
-            running = False
+            return False, interface.current_time
         pygame.display.flip()
 
     pygame.mixer.music.stop()
@@ -164,4 +169,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main_game(None)
