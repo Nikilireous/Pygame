@@ -7,13 +7,14 @@ from enemies.spider import Spider
 
 
 class Boss(pygame.sprite.Sprite):
-    def __init__(self, *group, fps, map_data, player, x, y, summons):
+    def __init__(self, *group, fps, map_data, player, x, y, summons, difficult):
         super().__init__(*group)
         self.summons_group = summons
         self.frames = [self.load_image(f"boss.png")]
         self.fps = fps
         self.map_data = map_data
         self.player = player
+        self.difficult = difficult
         self.cur_frame = 0
         self.image = self.frames[self.cur_frame]
         self.image = pygame.transform.scale(self.image, (180, 180))
@@ -28,7 +29,10 @@ class Boss(pygame.sprite.Sprite):
         self.clock = 0
         self.max_HP = 20_000
         self.HP = self.max_HP
-        self.damage = 4
+        if self.difficult == 'Easy':
+            self.damage = 4
+        if self.difficult == 'Hard':
+            self.damage = 5
 
         self.dashes = 0
         self.circle_step = 0

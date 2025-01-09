@@ -49,8 +49,6 @@ def main_game(char: str | None, difficult='Hard'):
     else:
         character, character_name = character_choice(group=character_sprites, fps=fps)
 
-    if difficult == 'Easy':
-        return False, 0
 
     main_map = Map(fps, character)
     main_map_data = main_map.map_data
@@ -62,7 +60,7 @@ def main_game(char: str | None, difficult='Hard'):
     lower_border = (len(main_map_data) - 4) * tile_size - tile_size // 2
     interface = Interface(character)
 
-    events = Events(fps=fps, flightless_data=main_map_flightless_data, player=character,
+    events = Events(difficult=difficult, fps=fps, flightless_data=main_map_flightless_data, player=character,
                     spider_sprites=spider_sprites, witch_sprites=witch_sprites, boss_sprites=boss_sprites)
 
     clock = pygame.time.Clock()
