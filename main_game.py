@@ -8,7 +8,7 @@ from enemies.spider import Spider
 from enemies.witch import Witch
 from enemies.boss import Boss
 from events.events import Events
-from interface.interface import Interface
+from interface.game_interface import Interface
 import random
 import time
 
@@ -155,12 +155,12 @@ def main():
 
         interface.draw_interface(screen)
 
-        pygame.display.flip()
         clock.tick(fps)
 
         if character.HP <= 0:
             print("Вас убили!")
             running = False
+        pygame.display.flip()
 
     pygame.mixer.music.stop()
     pygame.quit()
