@@ -23,7 +23,7 @@ def character_choice(group, fps):
         else:
             name = input("Такого персонажа не существует. Выберите одного из предложенных. (Mei, Kiana): ")
 
-def main_game(char: str | None):
+def main_game(char: str | None, difficult='Hard'):
     pygame.init()
     # pygame.mixer.init()
     # pygame.mixer.music.load('Audio/background_music_2.mp3')
@@ -48,6 +48,9 @@ def main_game(char: str | None):
         character, character_name = eval(char)(character_sprites, fps=fps), char
     else:
         character, character_name = character_choice(group=character_sprites, fps=fps)
+
+    if difficult == 'Easy':
+        return False, 0
 
     main_map = Map(fps, character)
     main_map_data = main_map.map_data
