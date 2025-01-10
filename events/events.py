@@ -32,13 +32,13 @@ class Events:
                                       player=self.player, x=(x - camera_pos[0]), y=(y - camera_pos[1]))
 
             if enemy is Witch:
-                current_enemy = enemy(self.witch_sprites, fps=self.fps,
-                                      player=self.player, x=(x - camera_pos[0]), y=(y - camera_pos[1]))
+                current_enemy = enemy(self.witch_sprites, fps=self.fps, player=self.player,
+                                      x=(x - camera_pos[0]), y=(y - camera_pos[1]), difficult=self.difficult)
 
             if enemy is Boss:
                 current_enemy = enemy(self.boss_sprites, fps=self.fps, map_data=self.flightless_data,
                                       player=self.player, x=(x - camera_pos[0]), y=(y - camera_pos[1]),
-                                      summons=self.spider_sprites, )
+                                      summons=self.spider_sprites, difficult=self.difficult)
 
     def phases(self, camera_pos, current_time, borders, spiders, witches, bosses):
         if self.difficult == 'Easy':
