@@ -140,7 +140,7 @@ def main_game(char: str | None, difficult='Hard'):
                spiders=spider_sprites, witches=witch_sprites, bosses=boss_sprites)
 
         if phases:
-            return True, character_name
+            return True, interface.current_time
 
         spider_sprites.update(change=all_change, camera_pos=camera_pos, visible_sprites=visible_enemies)
         witch_sprites.update(change=all_change, player=character, visible_sprites=visible_enemies)
