@@ -16,7 +16,7 @@ class Interface:
         self.XP_to_level_bar(screen)
         self.timer(screen)
         self.skill_bar(screen)
-        self.test(screen)
+        self.base_atk_damage(screen)
 
     def HP_bar(self, screen):
         HP_bar = pygame.Surface((250, 30))
@@ -81,9 +81,9 @@ class Interface:
 
         screen.blit(skill_bar, (840, 740))
 
-    def test(self, screen):
+    def base_atk_damage(self, screen):
         font = pygame.font.Font(None, 30)
-        text = font.render(f"{self.player.base_atk_damage}", 1, (0, 0, 0))
+        text = font.render(f"ATK: {self.player.base_atk_damage}", 1, (0, 0, 0))
 
         screen.blit(text, (875, 750))
 
