@@ -25,10 +25,10 @@ def character_choice(group, fps):
 
 def main_game(char: str | None, difficult='Hard'):
     pygame.init()
-    # pygame.mixer.init()
-    # pygame.mixer.music.load('Audio/background_music_2.mp3')
-    # pygame.mixer.music.set_volume(1)
-    # pygame.mixer.music.play(-1)
+    pygame.mixer.init()
+    pygame.mixer.music.load('Audio/background_music_2.mp3')
+    pygame.mixer.music.set_volume(1)
+    pygame.mixer.music.play(-1)
 
     size = 1400, 800
     fps = 100
@@ -140,6 +140,7 @@ def main_game(char: str | None, difficult='Hard'):
                spiders=spider_sprites, witches=witch_sprites, bosses=boss_sprites)
 
         if phases:
+            pygame.mixer.music.stop()
             return True, interface.current_time
 
         spider_sprites.update(change=all_change, camera_pos=camera_pos, visible_sprites=visible_enemies)
@@ -161,7 +162,7 @@ def main_game(char: str | None, difficult='Hard'):
         clock.tick(fps)
 
         if character.HP <= 0:
-            print("Вас убили!")
+            pygame.mixer.music.stop()
             return False, interface.current_time
         pygame.display.flip()
 
