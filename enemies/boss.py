@@ -59,7 +59,7 @@ class Boss(pygame.sprite.Sprite):
         self.Boss_HP_bar(screen)
         if self.movement_type == 'vector':
             if self.vector_time > 0.7:
-                self.dx, self.dy = player.rect.centerx - self.rect.x, player.rect.centery - self.rect.y
+                self.dx, self.dy = player.rect.centerx - self.rect.centerx, player.rect.centery - self.rect.centery
                 self.dist = math.hypot(self.dx, self.dy)
                 self.delta_time = time.time()
 
