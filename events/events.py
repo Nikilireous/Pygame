@@ -75,12 +75,16 @@ class Events:
                             camera_pos=camera_pos, available_range=(borders[:2], borders[2:]))
 
             if 360 < current_time and not self.boss_alive:
-                self.spawn_enemies(
-                    enemy=Boss, max_enemies=1,
-                    camera_pos=camera_pos, available_range=(borders[:2], borders[2:]))
-                self.boss_alive = True
+                if len(bosses) < 1:
+                    spawn_chance = random.randint(1, 1000)
+                    if spawn_chance > 0:
+                        self.spawn_enemies(
+                            enemy=Boss, max_enemies=1,
+                            camera_pos=camera_pos, available_range=(borders[:2], borders[2:]))
+                if len(bosses) == 1:
+                    self.boss_alive = True
 
-            if len(self.boss_sprites) == 0 and self.boss_alive:
+            if 370 < current_time and len(self.boss_sprites) == 0 and self.boss_alive:
                 return True
 
         if self.difficult == 'Hard':
@@ -117,10 +121,14 @@ class Events:
                             camera_pos=camera_pos, available_range=(borders[:2], borders[2:]))
 
             if 270 < current_time and not self.boss_alive:
-                self.spawn_enemies(
-                    enemy=Boss, max_enemies=1,
-                    camera_pos=camera_pos, available_range=(borders[:2], borders[2:]))
-                self.boss_alive = True
+                if len(bosses) < 1:
+                    spawn_chance = random.randint(1, 1000)
+                    if spawn_chance > 0:
+                        self.spawn_enemies(
+                            enemy=Boss, max_enemies=1,
+                            camera_pos=camera_pos, available_range=(borders[:2], borders[2:]))
+                if len(bosses) == 1:
+                    self.boss_alive = True
 
-            if len(self.boss_sprites) == 0 and self.boss_alive:
+            if 280 < current_time and  len(self.boss_sprites) == 0 and self.boss_alive:
                 return True
