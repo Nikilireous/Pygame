@@ -6,11 +6,12 @@ import time
 
 
 class Witch(pygame.sprite.Sprite):
-    def __init__(self, *group, fps, player, x, y):
+    def __init__(self, *group, fps, player, x, y, difficult):
         super().__init__(*group)
         self.frames = [self.load_image(f"vedma{i}.png") for i in range(3)]
         self.fps = fps
         self.player = player
+        self.difficult = difficult
         self.cur_frame = 0
         self.image = self.frames[self.cur_frame]
         self.image = pygame.transform.scale(self.image, (40, 80))
@@ -23,7 +24,10 @@ class Witch(pygame.sprite.Sprite):
         self.speed = 12
         self.clock = 0
         self.HP = 120
-        self.damage = 2
+        if self.difficult == 'Easy':
+            self.damage = 1
+        if self.difficult == 'Hard':
+            self.damage = 2
 
     def vector_move(self, change, dx, dy, dist):
         try:
