@@ -1,5 +1,5 @@
 import pygame
-from interface.menu_interface import MaimMenuInterface
+from game.interface.menu_interface import MaimMenuInterface
 
 
 def main():

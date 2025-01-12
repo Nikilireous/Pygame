@@ -1,14 +1,11 @@
 import pygame
-from map import Map
-from characters.Kiana.kiana import Kiana
-from characters.Kiana.skillset import KianaBaseAttack, KianaSkillE
-from characters.Mei.mei import Mei
-from characters.Mei.skillset import MeiBaseAttack, MeiSkillE
-from enemies.spider import Spider
-from enemies.witch import Witch
-from enemies.boss import Boss
-from events.events import Events
-from interface.game_interface import Interface
+from game.map import Map
+from game.characters.Kiana.kiana import Kiana
+from game.characters.Kiana.skillset import KianaBaseAttack, KianaSkillE
+from game.characters.Mei.mei import Mei
+from game.characters.Mei.skillset import MeiBaseAttack, MeiSkillE
+from game.events.events import Events
+from game.interface.game_interface import Interface
 import random
 import time
 

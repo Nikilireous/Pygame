@@ -1,7 +1,7 @@
 import random
-from enemies.spider import Spider
-from enemies.witch import Witch
-from enemies.boss import Boss
+from game.enemies.spider import Spider
+from game.enemies.witch import Witch
+from game.enemies.boss import Boss
 
 
 class Events:

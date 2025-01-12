@@ -1,7 +1,7 @@
 import pygame
 import os
 import sys
-from main_game import main_game
+from game.main_game import main_game
 import sqlite3
 
 

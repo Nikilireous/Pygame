@@ -3,7 +3,7 @@ import sys
 import os
 import math
 import time
-from enemies.spider import Spider
+from game.enemies.spider import Spider
 
 
 class Boss(pygame.sprite.Sprite):
