@@ -164,7 +164,7 @@ def main_game(char: str | None, difficult='Hard'):
         pygame.display.flip()
 
     pygame.mixer.music.stop()
-    pygame.quit()
+    return False, interface.current_time
 
 
 if __name__ == "__main__":
