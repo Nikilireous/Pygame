@@ -88,8 +88,8 @@ class KianaSkillE(pygame.sprite.Sprite):
         self.cur_frame = 0
         self.image = self.frames[self.cur_frame]
         self.rect = self.image.get_rect()
-        self.rect.x = 700
-        self.rect.y = 360
+        self.rect.x = player.rect.x
+        self.rect.y = player.rect.y
         self.time = time.time()
 
     def update(self, enemies_group):
@@ -110,8 +110,9 @@ class KianaSkillE(pygame.sprite.Sprite):
         self.cur_frame = (self.cur_frame + 1) % len(self.frames)
         self.image = self.frames[self.cur_frame]
         self.pos = (self.rect.x, self.rect.y)
-        mx, my = pygame.mouse.get_pos()
-        self.dir = (mx - 700, my - 400)
+        self.mx, self.my = pygame.mouse.get_pos()
+        print(self.mx - self.player.rect.x, self.my - self.player.rect.y)
+        self.dir = (self.mx - 720, self.my - 405)
         length = math.hypot(*self.dir)
         if length == 0.0:
             self.dir = (0, -1)
@@ -122,7 +123,7 @@ class KianaSkillE(pygame.sprite.Sprite):
         self.image = pygame.transform.rotate(self.image, angle)
 
         self.rect = self.image.get_rect()
-        self.rect.center = 700, 400
+        self.rect.center = 720, 405
 
     def load_image(self, name, colorkey=None):
         fullname = os.path.join('images/characters/Kiana/Laser', name)
@@ -140,10 +141,10 @@ class KianaSkillE(pygame.sprite.Sprite):
             image = image.convert_alpha()
         return image
 
-    def shot(self, enemie):
-        if pygame.sprite.collide_mask(self, enemie):
-            if enemie.HP - self.player.skill_damage <= 0:
-                enemie.kill()
+    def shot(self, enemy):
+        if pygame.sprite.collide_mask(self, enemy):
+            if enemy.HP - self.player.skill_damage <= 0:
+                enemy.kill()
                 self.player.XP += 1
             else:
-                enemie.HP -= self.player.skill_damage
+                enemy.HP -= self.player.skill_damage
