@@ -30,13 +30,13 @@ class Interface:
         text = font.render(f"{str(self.player.HP)} / {self.player.max_HP}", 1, (255, 255, 255))
         HP_bar.blit(text, (85, 5))
 
-        screen.blit(HP_bar, (575, 740))
+        screen.blit(HP_bar, (595, 750))
 
     def lvl_text(self, screen):
         font = pygame.font.Font(None, 30)
         text = font.render(f"Lv.{self.player.level}", 1, (0, 0, 0))
 
-        screen.blit(text, (525, 750))
+        screen.blit(text, (545, 760))
 
     def XP_to_level_bar(self, screen):
         level_bar = pygame.Surface((250, 5))
@@ -46,7 +46,7 @@ class Interface:
             k = 250 / self.player.level_XP[self.player.level]
             pygame.draw.rect(level_bar, "white", ((0, 0), (self.player.XP * k, 5)))
 
-        screen.blit(level_bar, (575, 780))
+        screen.blit(level_bar, (595, 790))
 
     def timer(self, screen):
         font = pygame.font.Font(None, 50)
@@ -54,7 +54,7 @@ class Interface:
         t = str(time.ctime(self.current_time))
         text = font.render(t.split()[3][3:], 1, (0, 0, 0))
 
-        screen.blit(text, (655, 10))
+        screen.blit(text, (675, 10))
 
     def skill_bar(self, screen):
         skill_bar = pygame.Surface((20, 45))
@@ -79,11 +79,11 @@ class Interface:
             else:
                 pygame.draw.rect(skill_bar, "white", ((0, height), (20, 45)))
 
-        screen.blit(skill_bar, (840, 740))
+        screen.blit(skill_bar, (860, 750))
 
     def base_atk_damage(self, screen):
         font = pygame.font.Font(None, 30)
         text = font.render(f"ATK: {self.player.base_atk_damage}", 1, (0, 0, 0))
 
-        screen.blit(text, (875, 750))
+        screen.blit(text, (895, 760))
 
