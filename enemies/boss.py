@@ -92,7 +92,7 @@ class Boss(pygame.sprite.Sprite):
             self.circle_time = time.time() - self.delta_time
 
 
-        if -60 < self.rect.centerx < 1460 and -60 < self.rect.centery < 860:
+        if -60 < self.rect.centerx < 1500 and -60 < self.rect.centery < 870:
             visible_sprites.add(self)
             if self.clock == 500 // self.fps:
                 self.clock = 0

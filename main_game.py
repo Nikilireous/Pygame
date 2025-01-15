@@ -13,24 +13,25 @@ import random
 import time
 
 
-def character_choice(group, fps):
+def character_choice(group, fps, size):
     name = input("Выберите персонажа. (Mei, Kiana): ")
     while True:
         if name == "Mei":
-            return Mei(group, fps=fps), name
+            return Mei(group, fps=fps, size=size), name
         elif name == "Kiana":
-            return Kiana(group, fps=fps), name
+            return Kiana(group, fps=fps, size=size), name
         else:
             name = input("Такого персонажа не существует. Выберите одного из предложенных. (Mei, Kiana): ")
 
-def main_game(char: str | None, difficult='Hard'):
+
+def main_game(char, size0, difficult='Hard'):
     pygame.init()
     pygame.mixer.init()
     pygame.mixer.music.load('Audio/background_music_2.mp3')
     pygame.mixer.music.set_volume(1)
     pygame.mixer.music.play(-1)
 
-    size = 1400, 800
+    size = size0
     fps = 100
 
     screen = pygame.display.set_mode(size)
@@ -45,10 +46,9 @@ def main_game(char: str | None, difficult='Hard'):
     skill_sprites = pygame.sprite.Group()
 
     if char:
-        character, character_name = eval(char)(character_sprites, fps=fps), char
+        character, character_name = eval(char)(character_sprites, fps=fps, size=size), char
     else:
-        character, character_name = character_choice(group=character_sprites, fps=fps)
-
+        character, character_name = character_choice(group=character_sprites, fps=fps, size=size)
 
     main_map = Map(fps, character)
     main_map_data = main_map.map_data
@@ -126,7 +126,6 @@ def main_game(char: str | None, difficult='Hard'):
                 mei_skill.dash()
                 mei_skill_time += 1
 
-
         screen.fill(0)
         main_map.update(screen)
         all_change = main_map.change
@@ -136,8 +135,8 @@ def main_game(char: str | None, difficult='Hard'):
         interface.timer(screen)
 
         phases = events.phases(camera_pos=camera_pos, current_time=interface.current_time,
-               borders=(right_border, left_border, upper_border, lower_border),
-               spiders=spider_sprites, witches=witch_sprites, bosses=boss_sprites)
+                               borders=(right_border, left_border, upper_border, lower_border),
+                               spiders=spider_sprites, witches=witch_sprites, bosses=boss_sprites)
 
         if phases:
             pygame.mixer.music.stop()
@@ -154,7 +153,7 @@ def main_game(char: str | None, difficult='Hard'):
         bullet_sprites.update(change=all_change, camera_pos=camera_pos, enemies_group=visible_enemies)
         bullet_sprites.draw(screen)
 
-        skill_sprites.update(enemies_group=visible_enemies)
+        skill_sprites.update(enemy_group=visible_enemies)
         skill_sprites.draw(screen)
 
         interface.draw_interface(screen)

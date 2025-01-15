@@ -17,7 +17,7 @@ class Spider(pygame.sprite.Sprite):
         self.image = self.frames[self.cur_frame]
         self.image = pygame.transform.scale(self.image, (80, 80))
         self.rect = self.image.get_rect()
-        self.rect.x, self.rect.y = x, y
+        self.rect.centerx, self.rect.centery = x, y
         self.movement_type = 'vector'
         self.matrix_timer = self.fps * 3
         self.speed = 3
@@ -111,7 +111,7 @@ class Spider(pygame.sprite.Sprite):
             else:
                 self.matrix_timer -= 1
 
-        if -60 < self.rect.centerx < 1460 and -60 < self.rect.centery < 860:
+        if -60 < self.rect.centerx < 1500 and -60 < self.rect.centery < 870:
             visible_sprites.add(self)
             if self.clock == 250 // self.fps:
                 dx, dy = (self.player.rect.x - self.rect.x), (self.player.rect.y - self.rect.y)

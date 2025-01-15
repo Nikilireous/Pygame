@@ -5,11 +5,11 @@ from interface.menu_interface import MaimMenuInterface
 def main():
     pygame.init()
 
-    size = 1400, 800
+    size = 1440, 810
     screen = pygame.display.set_mode(size)
     pygame.display.set_caption("honkai impact 4th")
 
-    interface = MaimMenuInterface(screen)
+    interface = MaimMenuInterface(screen, size)
 
     running = True
     while running:

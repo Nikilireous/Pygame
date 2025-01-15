@@ -5,7 +5,7 @@ import time
 
 
 class Kiana(pygame.sprite.Sprite):
-    def __init__(self, *group, fps):
+    def __init__(self, *group, fps, size):
         super().__init__(*group)
         self.frames = [self.load_image(f"Kiana{i}.png") for i in range(2)]
         self.level_XP = [0, 10, 20, 35, 50, 70, 90, 110, 130, 150]
@@ -14,7 +14,7 @@ class Kiana(pygame.sprite.Sprite):
         self.image = self.frames[self.cur_frame]
         self.image = pygame.transform.scale(self.image, (80, 80))
         self.rect = self.image.get_rect()
-        self.rect.x, self.rect.y = 660, 360
+        self.rect.x, self.rect.y = size[0] // 2 - 40, size[1] // 2 - 40
         self.clock = 0
         self.max_HP = 500
         self.HP = self.max_HP
@@ -25,7 +25,7 @@ class Kiana(pygame.sprite.Sprite):
         self.regeneration_to_second = 1
         self.regeneration_time = 0
         self.move_speed = 3
-        self.skill_recharge = 23
+        self.skill_recharge = 3
 
     def update(self, visible_sprites):
         self.level_update_changed()
