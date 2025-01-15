@@ -19,7 +19,7 @@ class MeiBaseAttack(pygame.sprite.Sprite):
         self.image = self.frames[self.cur_frame]
 
         mx, my = pygame.mouse.get_pos()
-        self.dir = (mx - 700, my - 400)
+        self.dir = (mx - 720, my - 405)
         length = math.hypot(*self.dir)
         if length == 0.0:
             self.dir = (0, -1)
@@ -32,8 +32,8 @@ class MeiBaseAttack(pygame.sprite.Sprite):
 
         self.rect = self.image.get_rect()
 
-        self.pos = (700 + self.dir[0] * 200,
-                    400 + self.dir[1] * 200)
+        self.pos = (720 + self.dir[0] * 200,
+                    405 + self.dir[1] * 200)
         self.rect.center = self.pos
 
     def update(self, change, camera_pos, enemies_group):
