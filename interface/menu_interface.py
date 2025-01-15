@@ -7,8 +7,9 @@ import sqlite3
 
 
 class MaimMenuInterface:
-    def __init__(self, screen):
+    def __init__(self, screen, size):
         self.screen = screen
+        self.size = size
         self.flag_screen_1 = True
         self.flag_screen_2 = False
         self.flag_screen_3 = False
@@ -164,7 +165,7 @@ class MaimMenuInterface:
         self.screen.blit(button5, (1180, 700))
 
     def screen3(self):
-        game_cycle = main_game(self.character, self.difficult)
+        game_cycle = main_game(self.character, self.size, self.difficult)
         if game_cycle[0]:
             self.last_game = {
                 'winning': True,
