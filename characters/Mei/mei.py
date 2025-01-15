@@ -5,7 +5,7 @@ import time
 
 
 class Mei(pygame.sprite.Sprite):
-    def __init__(self, *group, fps):
+    def __init__(self, *group, fps, size):
         super().__init__(*group)
         self.frames = [self.load_image(f"Mei{i}.png") for i in range(2)]
         self.level_XP = [0, 10, 20, 35, 50, 70, 90, 110, 130, 150]
@@ -14,7 +14,7 @@ class Mei(pygame.sprite.Sprite):
         self.image = self.frames[self.cur_frame]
         self.image = pygame.transform.scale(self.image, (110, 110))
         self.rect = self.image.get_rect()
-        self.rect.x, self.rect.y = 645, 350
+        self.rect.x, self.rect.y = size[0] // 2 - 55, size[1] // 2 - 55
         self.clock = 0
         self.max_HP = 500
         self.HP = self.max_HP
