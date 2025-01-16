@@ -29,7 +29,8 @@ class Events:
 
             if enemy is Spider:
                 current_enemy = enemy(self.spider_sprites, fps=self.fps, map_data=self.flightless_data,
-                                      player=self.player, x=(x - camera_pos[0]), y=(y - camera_pos[1]))
+                                      player=self.player, x=(x - camera_pos[0]), y=(y - camera_pos[1]),
+                                      difficult=self.difficult)
 
             if enemy is Witch:
                 current_enemy = enemy(self.witch_sprites, fps=self.fps, player=self.player,

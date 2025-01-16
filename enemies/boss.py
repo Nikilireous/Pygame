@@ -27,10 +27,14 @@ class Boss(pygame.sprite.Sprite):
         self.dx = self.dy = self.dist = None
         self.speed = 10
         self.clock = 0
-        self.max_HP = 20_000
-        self.HP = self.max_HP
         if self.difficult == 'Easy':
-            self.damage = 4
+            self.max_HP = 15_000
+        if self.difficult == 'Hard':
+            self.max_HP = 20_000
+        self.HP = self.max_HP
+
+        if self.difficult == 'Easy':
+            self.damage = 3
         if self.difficult == 'Hard':
             self.damage = 5
 

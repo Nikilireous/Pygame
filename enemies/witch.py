@@ -21,9 +21,17 @@ class Witch(pygame.sprite.Sprite):
         self.current_time = 3
         self.delta_time = time.time()
         self.dx = self.dy = self.dist = None
-        self.speed = 12
         self.clock = 0
-        self.HP = 120
+        if self.difficult == 'Easy':
+            self.speed = 12
+        if self.difficult == 'Hard':
+            self.speed = 16
+
+        if self.difficult == 'Easy':
+            self.HP = 120
+        if self.difficult == 'Hard':
+            self.HP = 180
+
         if self.difficult == 'Easy':
             self.damage = 1
         if self.difficult == 'Hard':
