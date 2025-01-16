@@ -9,7 +9,8 @@ import sqlite3
 class MaimMenuInterface:
     def __init__(self, screen):
         self.screen = screen
-        self.flag_screen_1 = True
+        self.flag_slot_screen = True
+        self.flag_screen_1 = False
         self.flag_screen_2 = False
         self.flag_screen_3 = False
         self.flag_screen_4 = False
@@ -18,8 +19,11 @@ class MaimMenuInterface:
         self.character = None
         self.difficult = None
         self.last_game = None
+        self.last_id = None
 
     def update(self):
+        if self.flag_slot_screen:
+            self.slot_screen()
         if self.flag_screen_1:
             self.screen1()
         if self.flag_screen_2:
@@ -31,6 +35,132 @@ class MaimMenuInterface:
         if self.flag_screen_5:
             self.screen5()
 
+    def slot_screen(self):
+        try:
+            select_request = 'SELECT Id FROM Results'
+            print(self.last_id)
+            con = sqlite3.connect(f"data/data.db")
+            cur = con.cursor()
+            current_info = str(cur.execute(select_request).fetchall())
+
+            print(current_info)
+
+            self.screen.fill("black")
+            font = pygame.font.Font(None, 100)
+            mx, my = pygame.mouse.get_pos()
+
+            text = font.render(f"Выберите файл сохранения", 1, "white")
+            rect = text.get_rect(center=(700, 150))
+            self.screen.blit(text, rect)
+
+            buttons_font = pygame.font.Font(None, 50)
+
+            button1 = pygame.Surface((300, 80))
+            if 100 <= mx <= 400 and 350 <= my <= 430 and '1' in current_info:
+                if self.click:
+                    self.flag_slot_screen = False
+                    self.flag_screen_1 = True
+                    self.last_id = 1
+                    self.click = False
+                button1.fill((165, 165, 165))
+            else:
+                button1.fill((220, 220, 220))
+            button1_text = buttons_font.render(f"Слот 1", 1, "black")
+            button1.blit(button1_text, (95, 25))
+            self.screen.blit(button1, (100, 350))
+
+            ex1 = pygame.Surface((300, 80))
+            if 100 <= mx <= 400 and 550 <= my <= 630:
+                if self.click:
+                    if '1' in current_info:
+                        request = '''DELETE FROM Results WHERE Id == 1'''
+                    else:
+                        request = '''INSERT INTO Results VALUES (1, 0, 0)'''
+                    cur.execute(request)
+                    con.commit()
+                    self.click = False
+                ex1.fill((165, 165, 165))
+            else:
+                ex1.fill((220, 220, 220))
+            if '1' in current_info:
+                ex1_text = buttons_font.render(f"Удалить", 1, "red")
+            else:
+                ex1_text = buttons_font.render(f"Добавить", 1, "black")
+            ex1.blit(ex1_text, (95, 25))
+            self.screen.blit(ex1, (100, 550))
+
+            button2 = pygame.Surface((300, 80))
+            if 550 <= mx <= 850 and 350 <= my <= 430 and '2' in current_info:
+                if self.click:
+                    self.flag_slot_screen = False
+                    self.flag_screen_1 = True
+                    self.last_id = 2
+                    self.click = False
+                button2.fill((165, 165, 165))
+            else:
+                button2.fill((220, 220, 220))
+            button2_text = buttons_font.render(f"Слот 2", 1, "black")
+            button2.blit(button2_text, (95, 25))
+            self.screen.blit(button2, (550, 350))
+
+            ex2 = pygame.Surface((300, 80))
+            if 550 <= mx <= 850 and 550 <= my <= 630:
+                if self.click:
+                    if '2' in current_info:
+                        request = '''DELETE FROM Results WHERE Id == 2'''
+                    else:
+                        request = '''INSERT INTO Results VALUES (2, 0, 0)'''
+                    cur.execute(request)
+                    con.commit()
+                    self.click = False
+                ex2.fill((165, 165, 165))
+            else:
+                ex2.fill((220, 220, 220))
+            if '2' in current_info:
+                ex2_text = buttons_font.render(f"Удалить", 1, "red")
+            else:
+                ex2_text = buttons_font.render(f"Добавить", 1, "black")
+            ex2.blit(ex2_text, (95, 25))
+            self.screen.blit(ex2, (550, 550))
+
+            button3 = pygame.Surface((300, 80))
+            if 1000 <= mx <= 1300 and 350 <= my <= 430 and '3' in current_info:
+                if self.click:
+                    self.flag_slot_screen = False
+                    self.flag_screen_1 = True
+                    self.last_id = 3
+                    self.click = False
+                button3.fill((165, 165, 165))
+            else:
+                button3.fill((220, 220, 220))
+            button3_text = buttons_font.render(f"Слот 3", 1, "black")
+            button3.blit(button3_text, (95, 25))
+            self.screen.blit(button3, (1000, 350))
+
+            ex3 = pygame.Surface((300, 80))
+            if 1000 <= mx <= 1300 and 550 <= my <= 630:
+                if self.click:
+                    if '3' in current_info:
+                        request = '''DELETE FROM Results WHERE Id == 3'''
+                    else:
+                        request = '''INSERT INTO Results VALUES (3, 0, 0)'''
+                    cur.execute(request)
+                    con.commit()
+                    self.click = False
+                ex3.fill((165, 165, 165))
+            else:
+                ex3.fill((220, 220, 220))
+            if '3' in current_info:
+                ex3_text = buttons_font.render(f"Удалить", 1, "red")
+            else:
+                ex3_text = buttons_font.render(f"Добавить", 1, "black")
+            ex3.blit(ex3_text, (95, 25))
+            self.screen.blit(ex3, (1000, 550))
+
+            con.close()
+
+        except sqlite3.OperationalError:
+            print('База данных не найдена')
 
     def screen1(self):
         self.screen.fill("black")
@@ -71,6 +201,19 @@ class MaimMenuInterface:
         button2_text = buttons_font.render(f"Посмотреть статистику", 1, "white")
         button2.blit(button2_text, (5, 25))
         self.screen.blit(button2, (800, 500))
+
+        button3 = pygame.Surface((120, 60))
+        if 50 <= mx <= 170 and 700 <= my <= 760:
+            if self.click:
+                self.flag_screen_1 = False
+                self.flag_slot_screen = True
+                self.click = False
+            button3.fill((165, 165, 165))
+        else:
+            button3.fill((220, 220, 220))
+        button3_text = buttons_font.render(f"Назад", 1, "black")
+        button3.blit(button3_text, (5, 25))
+        self.screen.blit(button3, (50, 700))
 
     def screen2(self):
         self.screen.fill("black")
@@ -178,7 +321,7 @@ class MaimMenuInterface:
             }
 
         try:
-            select_request = 'SELECT * FROM Results'
+            select_request = f'SELECT * FROM Results WHERE Id == {self.last_id}'
             con = sqlite3.connect(f"data/data.db")
             cur = con.cursor()
             current_info = cur.execute(select_request).fetchall()[0]
@@ -186,7 +329,9 @@ class MaimMenuInterface:
             all_games = int(current_info[1]) + 1
             winnings = int(current_info[2]) + game_cycle[0]
 
-            update_request = f'UPDATE Results SET AllRuns = "{all_games}", WinningRuns = "{winnings}" WHERE Id == 1'
+            update_request = f'''UPDATE Results SET AllRuns = "{all_games}",
+                                WinningRuns = "{winnings}" WHERE Id == {self.last_id}'''
+
             cur.execute(update_request)
             con.commit()
             con.close()
@@ -230,7 +375,7 @@ class MaimMenuInterface:
         mx, my = pygame.mouse.get_pos()
 
         try:
-            select_request = 'SELECT * FROM Results'
+            select_request = f'SELECT * FROM Results WHERE Id == {self.last_id}'
             con = sqlite3.connect(f"data/data.db")
             current_info = con.cursor().execute(select_request).fetchall()[0]
 
