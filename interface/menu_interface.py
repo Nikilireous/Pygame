@@ -3,6 +3,7 @@ import os
 import sys
 from email_validator import validate_email, EmailNotValidError
 from main_game import main_game
+from interface.yatta import Yatta
 import sqlite3
 import hashlib
 
@@ -458,6 +459,10 @@ class MainMenuInterface:
         else:
             text = font1.render(f"Вы проиграли. Вы выживали {self.last_game['time']} сек.", 1, "white")
 
+        yatta_sprites = pygame.sprite.Group()
+        Yatta(yatta_sprites, win=self.last_game['winning'])
+        yatta_sprites.draw(self.screen)
+
         rect = text.get_rect(center=(700, 300))
         self.screen.blit(text, rect)
 
@@ -467,11 +472,11 @@ class MainMenuInterface:
                 self.click = False
                 self.flag_screen_4 = False
                 self.flag_screen_1 = True
-            button1.fill((165, 165, 165))
+            button1.fill((67, 245, 7))
         else:
-            button1.fill((220, 220, 220))
+            button1.fill((17, 195, 0))
         text = font2.render('Вернуться в главное меню', 1, 'black')
-        button1.blit(text, (0, 0))
+        button1.blit(text, (10, 8))
         self.screen.blit(button1, (500, 400))
 
     def screen5(self):
