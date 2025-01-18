@@ -253,7 +253,7 @@ class MainMenuInterface:
                 self.password_input.isupper(), self.password_input.islower(),
                 self.password_input == ""]):
             if self.password_input.isdigit():
-                self.bad_password = "Пароль не должен состоять только из цыфр"
+                self.bad_password = "Пароль не должен состоять только из цифр"
             elif self.password_input.isalpha():
                 self.bad_password = "Пароль не должен состоять только из букв"
             elif self.password_input.isupper():
