@@ -7,7 +7,7 @@ import math
 
 
 class Spider(pygame.sprite.Sprite):
-    def __init__(self, *group, fps, map_data, player, x, y):
+    def __init__(self, *group, fps, map_data, player, x, y, difficult):
         super().__init__(*group)
         self.frames = [self.load_image(f"pauk{i}.png") for i in range(11)]
         self.fps = fps
@@ -20,10 +20,10 @@ class Spider(pygame.sprite.Sprite):
         self.rect.centerx, self.rect.centery = x, y
         self.movement_type = 'vector'
         self.matrix_timer = self.fps * 3
-        self.speed = 3
+        self.speed = 2 if difficult == "Easy" else 3
         self.clock = 0
-        self.HP = 200
-        self.damage = 1
+        self.HP = 150 if difficult == "Easy" else 200
+        self.damage = 1 if difficult == "Easy" else 2
 
     def get_legs_coords(self, camera_x, camera_y, tile_size):
         left_x = (self.rect.x + camera_x) // tile_size

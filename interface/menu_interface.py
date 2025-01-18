@@ -30,6 +30,9 @@ class MainMenuInterface:
         self.bad_email = None
         self.bad_password = None
 
+        self.character = None
+        self.difficult = None
+
     def hash_password(self, password):
         return hashlib.sha256(password.encode()).hexdigest()
 
@@ -131,7 +134,7 @@ class MainMenuInterface:
         con.close()
 
         if user:
-            self.current_user = user[1]  # Save email
+            self.current_user = user[1]
             self.flag_auth = False
             self.flag_screen_1 = True
             self.bad_auth = None
@@ -269,8 +272,6 @@ class MainMenuInterface:
         buttons_font = pygame.font.Font(None, 50)
 
         button1 = pygame.Surface((400, 80))
-        self.character = None
-        self.difficult = None
         if 200 <= mx <= 600 and 500 <= my <= 580:
             if self.click:
                 self.flag_screen_1 = False
