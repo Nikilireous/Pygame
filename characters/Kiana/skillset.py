@@ -37,7 +37,6 @@ class KianaBaseAttack(pygame.sprite.Sprite):
         return map_x, map_y
 
     def update(self, change, camera_pos, enemies_group):
-
         collision_object = pygame.sprite.spritecollideany(self, enemies_group)
         if collision_object:
             collision_object.HP -= self.player.base_atk_damage
