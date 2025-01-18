@@ -22,7 +22,7 @@ class Spider(pygame.sprite.Sprite):
         self.matrix_timer = self.fps * 3
         self.speed = 2 if difficult == "Easy" else 3
         self.clock = 0
-        self.HP = 150 if difficult == "Easy" else 200
+        self.HP = 200 if difficult == "Easy" else 270
         self.damage = 1 if difficult == "Easy" else 2
 
     def get_legs_coords(self, camera_x, camera_y, tile_size):

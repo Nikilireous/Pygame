@@ -23,7 +23,7 @@ class Witch(pygame.sprite.Sprite):
         self.dx = self.dy = self.dist = None
         self.speed = 12
         self.clock = 0
-        self.HP = 120
+        self.HP = 150
         self.damage = 1 if self.difficult == 'Easy' else 2
 
     def vector_move(self, change, dx, dy, dist):

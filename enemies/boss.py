@@ -25,9 +25,9 @@ class Boss(pygame.sprite.Sprite):
         self.circle_time = 0
         self.delta_time = time.time()
         self.dx = self.dy = self.dist = None
-        self.speed = 10 if difficult == "Easy" else 8
+        self.speed = 8 if difficult == "Easy" else 10
         self.clock = 0
-        self.max_HP = 20_000 if difficult == "Easy" else 12_000
+        self.max_HP = 12_000 if difficult == "Easy" else 20_000
         self.HP = self.max_HP
         self.damage = 3 if difficult == 'Easy' else 4
 
