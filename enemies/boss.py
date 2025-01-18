@@ -84,7 +84,7 @@ class Boss(pygame.sprite.Sprite):
                 self.delta_time = time.time()
 
                 Spider(self.summons_group, fps=self.fps, map_data=self.map_data,
-                                  player=self.player, x=self.rect.centerx, y=self.rect.centery)
+                                  player=self.player, x=self.rect.centerx, y=self.rect.centery, difficult=self.difficult)
 
             self.circle_time = time.time() - self.delta_time
 

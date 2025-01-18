@@ -12,9 +12,9 @@ class MainMenuInterface:
         self.size = size
         self.event = None
         self.click = False
-        self.flag_auth = True
+        self.flag_auth = False
         self.flag_register = False
-        self.flag_screen_1 = False
+        self.flag_screen_1 = True
         self.flag_screen_2 = False
         self.flag_screen_3 = False
         self.flag_screen_4 = False
@@ -32,6 +32,9 @@ class MainMenuInterface:
 
         self.character = None
         self.difficult = None
+
+        self.not_character = False
+        self.not_difficult = False
 
     def hash_password(self, password):
         return hashlib.sha256(password.encode()).hexdigest()
@@ -54,17 +57,17 @@ class MainMenuInterface:
             self.screen5()
 
     def auth_screen(self):
-        self.screen.fill("black")
+        self.draw_gradient()
         font = pygame.font.Font(None, 50)
         mx, my = pygame.mouse.get_pos()
 
-        title = font.render("Авторизация", True, "white")
+        title = font.render("Авторизация", True, (0, 51, 102))
         self.screen.blit(title, (600, 100))
 
-        email_label = font.render("Email:", True, "white")
+        email_label = font.render("Email:", True, (0, 51, 102))
         self.screen.blit(email_label, (400, 200))
 
-        password_label = font.render("Пароль:", True, "white")
+        password_label = font.render("Пароль:", True, (0, 51, 102))
         self.screen.blit(password_label, (400, 300))
 
         pygame.draw.rect(self.screen, "white", (550, 200, 400, 40))
@@ -76,13 +79,13 @@ class MainMenuInterface:
         self.screen.blit(password_surface, (560, 305))
 
         login_button = pygame.Surface((250, 50))
-        login_button.fill((165, 165, 165) if 600 <= mx <= 850 and 400 <= my <= 450 else (220, 220, 220))
+        login_button.fill((255, 119, 50) if 600 <= mx <= 850 and 400 <= my <= 450 else (255, 169, 100))
         login_text = font.render("Войти", True, "black")
         login_button.blit(login_text, (70, 10))
         self.screen.blit(login_button, (600, 400))
 
         register_button = pygame.Surface((250, 50))
-        register_button.fill((165, 165, 165) if 600 <= mx <= 850 and 500 <= my <= 550 else (220, 220, 220))
+        register_button.fill((255, 119, 50) if 600 <= mx <= 850 and 500 <= my <= 550 else (255, 169, 100))
         register_text = font.render("Регистрация", True, "black")
         register_button.blit(register_text, (20, 10))
         self.screen.blit(register_button, (600, 500))
@@ -144,17 +147,17 @@ class MainMenuInterface:
             self.bad_auth = "Неверный email или пароль"
 
     def register_screen(self):
-        self.screen.fill("black")
+        self.draw_gradient()
         font = pygame.font.Font(None, 50)
         mx, my = pygame.mouse.get_pos()
 
-        title = font.render("Регистрация", True, "white")
+        title = font.render("Регистрация", True, (0, 51, 102))
         self.screen.blit(title, (600, 100))
 
-        email_label = font.render("Email:", True, "white")
+        email_label = font.render("Email:", True, (0, 51, 102))
         self.screen.blit(email_label, (400, 200))
 
-        password_label = font.render("Пароль:", True, "white")
+        password_label = font.render("Пароль:", True, (0, 51, 102))
         self.screen.blit(password_label, (400, 300))
 
         pygame.draw.rect(self.screen, "white", (550, 200, 400, 40))
@@ -166,13 +169,13 @@ class MainMenuInterface:
         self.screen.blit(password_surface, (560, 305))
 
         register_button = pygame.Surface((360, 50))
-        register_button.fill((165, 165, 165) if 545 <= mx <= 905 and 400 <= my <= 450 else (220, 220, 220))
+        register_button.fill((255, 119, 50) if 545 <= mx <= 905 and 400 <= my <= 450 else (255, 169, 100))
         register_text = font.render("Зарегистрироваться", True, "black")
         register_button.blit(register_text, (10, 10))
         self.screen.blit(register_button, (545, 400))
 
         back_button = pygame.Surface((250, 50))
-        back_button.fill((165, 165, 165) if 600 <= mx <= 850 and 500 <= my <= 550 else (220, 220, 220))
+        back_button.fill((255, 119, 50) if 600 <= mx <= 850 and 500 <= my <= 550 else (255, 169, 100))
         back_text = font.render("Назад", True, "black")
         back_button.blit(back_text, (60, 10))
         self.screen.blit(back_button, (600, 500))
@@ -261,11 +264,11 @@ class MainMenuInterface:
         return True
 
     def screen1(self):
-        self.screen.fill("black")
+        self.draw_gradient()
         font = pygame.font.Font(None, 100)
         mx, my = pygame.mouse.get_pos()
 
-        text = font.render(f"Главное меню", 1, "white")
+        text = font.render(f"Главное меню", 1, (0, 51, 102))
         rect = text.get_rect(center=(700, 300))
         self.screen.blit(text, rect)
 
@@ -277,9 +280,9 @@ class MainMenuInterface:
                 self.flag_screen_1 = False
                 self.flag_screen_2 = True
                 self.click = False
-            button1.fill((165, 165, 165))
+            button1.fill((255, 119, 50))
         else:
-            button1.fill((220, 220, 220))
+            button1.fill((255, 169, 100))
         button1_text = buttons_font.render(f"Начать Игру", 1, "white")
         button1.blit(button1_text, (95, 25))
         self.screen.blit(button1, (200, 500))
@@ -290,20 +293,20 @@ class MainMenuInterface:
                 self.flag_screen_1 = False
                 self.flag_screen_5 = True
                 self.click = False
-            button2.fill((165, 165, 165))
+            button2.fill((255, 119, 50))
         else:
-            button2.fill((220, 220, 220))
+            button2.fill((255, 169, 100))
         button2_text = buttons_font.render(f"Посмотреть статистику", 1, "white")
         button2.blit(button2_text, (5, 25))
         self.screen.blit(button2, (800, 500))
 
     def screen2(self):
-        self.screen.fill("black")
+        self.draw_gradient()
         font1 = pygame.font.Font(None, 80)
         font2 = pygame.font.Font(None, 40)
         mx, my = pygame.mouse.get_pos()
 
-        text = font1.render(f"Выберите персонажа:", 1, "white")
+        text = font1.render(f"Выберите персонажа:", 1, (0, 51, 102))
         rect = text.get_rect(center=(400, 250))
         self.screen.blit(text, rect)
 
@@ -312,11 +315,13 @@ class MainMenuInterface:
             if self.click:
                 self.click = False
                 self.character = "Kiana"
-            button1.fill((165, 165, 165))
+                self.not_difficult = False
+                self.not_character = False
+            button1.fill((67, 245, 7))
         elif self.character == "Kiana":
-            button1.fill((165, 165, 165))
+            button1.fill((67, 245, 7))
         else:
-            button1.fill((220, 220, 220))
+            button1.fill((17, 195, 0))
         Kianaimage = self.load_image(f"Kiana/Kiana0.png")
         Kianaimage = pygame.transform.scale(Kianaimage, (100, 100))
         button1.blit(Kianaimage, (0, 0))
@@ -327,17 +332,19 @@ class MainMenuInterface:
             if self.click:
                 self.click = False
                 self.character = 'Mei'
-            button2.fill((165, 165, 165))
+                self.not_difficult = False
+                self.not_character = False
+            button2.fill((67, 245, 7))
         elif self.character == "Mei":
-            button2.fill((165, 165, 165))
+            button2.fill((67, 245, 7))
         else:
-            button2.fill((220, 220, 220))
+            button2.fill((17, 195, 0))
         Meiimage = self.load_image(f"Mei/Mei0.png")
         Meiimage = pygame.transform.scale(Meiimage, (100, 100))
         button2.blit(Meiimage, (0, 0))
         self.screen.blit(button2, (1100, 190))
 
-        text = font1.render(f"Выберите сложность:", 1, "white")
+        text = font1.render(f"Выберите сложность:", 1, (0, 51, 102))
         rect = text.get_rect(center=(400, 540))
         self.screen.blit(text, rect)
 
@@ -346,13 +353,15 @@ class MainMenuInterface:
             if self.click:
                 self.click = False
                 self.difficult = "Easy"
-            button3.fill((165, 165, 165))
+                self.not_difficult = False
+                self.not_character = False
+            button3.fill((67, 245, 7))
         elif self.difficult == "Easy":
-            button3.fill((165, 165, 165))
+            button3.fill((67, 245, 7))
         else:
-            button3.fill((220, 220, 220))
+            button3.fill((17, 195, 0))
         text = font2.render('Легко', 1, 'black')
-        button3.blit(text, (0, 0))
+        button3.blit(text, (10, 8))
         self.screen.blit(button3, (850, 520))
 
         button4 = pygame.Surface((120, 40))
@@ -360,31 +369,45 @@ class MainMenuInterface:
             if self.click:
                 self.click = False
                 self.difficult = "Hard"
-            button4.fill((165, 165, 165))
+                self.not_difficult = False
+                self.not_character = False
+            button4.fill((67, 245, 7))
         elif self.difficult == "Hard":
-            button4.fill((165, 165, 165))
+            button4.fill((67, 245, 7))
         else:
-            button4.fill((220, 220, 220))
+            button4.fill((17, 195, 0))
         text = font2.render('Сложно', 1, 'black')
-        button4.blit(text, (0, 0))
+        button4.blit(text, (7, 8))
         self.screen.blit(button4, (1100, 520))
 
         button5 = pygame.Surface((200, 40))
         if 1180 <= mx <= 1380 and 700 <= my <= 740:
             if self.click:
-                if self.character and self.difficult:
+                self.click = False
+                if not self.character:
+                    self.not_character = True
+                elif not self.difficult:
+                    self.not_difficult = True
+                elif self.character and self.difficult:
                     self.click = False
                     self.flag_screen_2 = False
                     self.flag_screen_3 = True
-            button5.fill((165, 165, 165))
+            button5.fill((255, 119, 50))
         else:
-            button5.fill((220, 220, 220))
-        if self.character and self.difficult:
-            text = font2.render('Начать игру', 1, 'black')
-        else:
-            text = font2.render('Начать игру', 1, 'red')
-        button5.blit(text, (0, 0))
+            button5.fill((255, 169, 100))
+        text1 = font2.render('Начать игру', 1, 'black')
+        button5.blit(text1, (15, 7))
         self.screen.blit(button5, (1180, 700))
+
+        font3 = pygame.font.Font(None, 25)
+        if self.not_character:
+            not_character_text = font3.render('Пожалуйста, выберите персонажа', 1, 'red')
+            self.screen.blit(not_character_text, (1130, 680))
+        elif self.not_difficult:
+            not_character_text = font3.render('Теперь выберите сложность', 1, 'red')
+            self.screen.blit(not_character_text, (1160, 680))
+
+
 
     def screen3(self):
         game_cycle = main_game(self.character, self.size, self.difficult)
@@ -420,7 +443,7 @@ class MainMenuInterface:
         self.flag_screen_4 = True
 
     def screen4(self):
-        self.screen.fill("black")
+        self.draw_gradient()
         font1 = pygame.font.Font(None, 80)
         font2 = pygame.font.Font(None, 40)
         mx, my = pygame.mouse.get_pos()
@@ -447,7 +470,7 @@ class MainMenuInterface:
         self.screen.blit(button1, (500, 400))
 
     def screen5(self):
-        self.screen.fill("black")
+        self.draw_gradient()
         font1 = pygame.font.Font(None, 80)
         font2 = pygame.font.Font(None, 40)
         mx, my = pygame.mouse.get_pos()
@@ -495,3 +518,12 @@ class MainMenuInterface:
         else:
             image = image.convert_alpha()
         return image
+
+    def draw_gradient(self, start_color=(238, 130, 238), end_color=(255, 255, 0)):
+        for y in range(self.size[1]):
+            color = [
+                start_color[i] + (end_color[i] - start_color[i]) * y // self.size[1]
+                for i in range(3)
+            ]
+            pygame.draw.line(self.screen, color, (0, y), (self.size[0], y))
+

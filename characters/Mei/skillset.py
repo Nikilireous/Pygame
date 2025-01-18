@@ -20,20 +20,19 @@ class MeiBaseAttack(pygame.sprite.Sprite):
 
         mx, my = pygame.mouse.get_pos()
         self.dir = (mx - 720, my - 405)
-        length = math.hypot(*self.dir)
-        if length == 0.0:
-            self.dir = (0, -1)
+        self.length = math.hypot(*self.dir)
+        if self.length == 0.0:
+            self.dir2 = (0, -1)
         else:
-            self.dir = (self.dir[0] / length, self.dir[1] / length)
-        self.angle = math.degrees(math.atan2(-self.dir[1], self.dir[0]))
-
+            self.dir2 = (self.dir[0] / self.length, self.dir[1] / self.length)
+        self.angle = math.degrees(math.atan2(-self.dir2[1], self.dir2[0]))
         self.image = pygame.transform.rotate(self.image, self.angle)
         self.image = pygame.transform.flip(self.image, True, True)
 
         self.rect = self.image.get_rect()
 
-        self.pos = (720 + self.dir[0] * 200,
-                    405 + self.dir[1] * 200)
+        self.pos = (720 + self.dir2[0] * 200,
+                    405 + self.dir2[1] * 200)
         self.rect.center = self.pos
 
     def update(self, change, camera_pos, enemies_group):
@@ -72,8 +71,11 @@ class MeiBaseAttack(pygame.sprite.Sprite):
         return image
 
     def shot(self, enemy):
-
-        if pygame.sprite.collide_mask(self, enemy):
+        enemy_lenght_x = enemy.rect.centerx - 720
+        enemy_lenght_y = enemy.rect.centery - 405
+        r = math.hypot(enemy_lenght_x, enemy_lenght_y)
+        angle2 = (abs(self.dir[0] * enemy_lenght_x + self.dir[1] * enemy_lenght_y)) / abs(self.length) * abs(r)
+        if r <= 195:
             if enemy.HP - self.player.base_atk_damage <= 0:
                 enemy.kill()
                 self.player.XP += 1
@@ -114,6 +116,6 @@ class MeiSkillE:
 
     def dash_conditions(self, pos):
         player_in_tiles_cor = (pos[0] // self.map.TILE_SIZE, pos[1] // self.map.TILE_SIZE)
-        if self.map.map_data[player_in_tiles_cor[0]][player_in_tiles_cor[1]] not in [0]:
+        if self.map.map_data[player_in_tiles_cor[0]][player_in_tiles_cor[1]] not in [0, 5]:
             return False
         return True

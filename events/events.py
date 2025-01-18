@@ -27,7 +27,7 @@ class Events:
                 x = random.choice(available_range[0])
                 y = random.randint(*available_range[1])
 
-            if enemy is Spider:
+            if enemy is Spider and not self.spider_sprites:
                 current_enemy = enemy(self.spider_sprites, fps=self.fps, map_data=self.flightless_data,
                                       player=self.player, x=(x - camera_pos[0]), y=(y - camera_pos[1]),
                                       difficult=self.difficult)
