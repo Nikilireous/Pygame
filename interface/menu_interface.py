@@ -3,7 +3,6 @@ import os
 import sys
 from email_validator import validate_email, EmailNotValidError
 from main_game import main_game
-from interface.yatta import Yatta
 import sqlite3
 import hashlib
 
@@ -328,7 +327,7 @@ class MainMenuInterface:
             button1.fill((67, 245, 7))
         else:
             button1.fill((17, 195, 0))
-        Kianaimage = self.load_image(f"Kiana/Kiana0.png")
+        Kianaimage = self.load_image(f"characters/Kiana/Kiana0.png")
         Kianaimage = pygame.transform.scale(Kianaimage, (100, 100))
         button1.blit(Kianaimage, (0, 0))
         self.screen.blit(button1, (850, 190))
@@ -345,7 +344,7 @@ class MainMenuInterface:
             button2.fill((67, 245, 7))
         else:
             button2.fill((17, 195, 0))
-        Meiimage = self.load_image(f"Mei/Mei0.png")
+        Meiimage = self.load_image(f"characters/Mei/Mei0.png")
         Meiimage = pygame.transform.scale(Meiimage, (100, 100))
         button2.blit(Meiimage, (0, 0))
         self.screen.blit(button2, (1100, 190))
@@ -459,9 +458,9 @@ class MainMenuInterface:
         else:
             text = font1.render(f"Вы проиграли. Вы выживали {self.last_game['time']} сек.", 1, "white")
 
-        yatta_sprites = pygame.sprite.Group()
-        Yatta(yatta_sprites, win=self.last_game['winning'])
-        yatta_sprites.draw(self.screen)
+        yatta = self.load_image('yatta/yatta.png') if self.last_game['winning'] else self.load_image('yatta/not yatta.png')
+        yatta = pygame.transform.scale(yatta, (300, 300))
+        self.screen.blit(yatta, (550, 500))
 
         rect = text.get_rect(center=(700, 300))
         self.screen.blit(text, rect)
@@ -514,7 +513,7 @@ class MainMenuInterface:
         self.screen.blit(button1, (500, 400))
 
     def load_image(self, name, colorkey=None):
-        fullname = os.path.join('images/characters', name)
+        fullname = os.path.join('images', name)
         if not os.path.isfile(fullname):
             print(f"Файл с изображением '{fullname}' не найден")
             sys.exit()
@@ -536,4 +535,3 @@ class MainMenuInterface:
                 for i in range(3)
             ]
             pygame.draw.line(self.screen, color, (0, y), (self.size[0], y))
-
