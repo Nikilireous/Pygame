@@ -3,13 +3,14 @@ import os
 
 
 class Map:
-    def __init__(self, fps, player):
+    def __init__(self, fps, player, difficult):
         self.TILE_SIZE = 128
         self.player = player
         self.tiles = self.load_tiles()
         self.change = [0, 0]
         self.fps = fps
-        with open("maps/map_number_2") as file:
+        self.map = "maps/map_number_1" if difficult == "Easy" else "maps/map_number_2"
+        with self.map as file:
             player_pos = list(map(int, file.readline().split()))
             self.map_data = list(map(lambda x: list(map(int, x.split())), file.readlines()))
             self.player_x = player_pos[0] * self.TILE_SIZE + 64
