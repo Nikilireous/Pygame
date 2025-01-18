@@ -24,10 +24,7 @@ class Witch(pygame.sprite.Sprite):
         self.speed = 12
         self.clock = 0
         self.HP = 120
-        if self.difficult == 'Easy':
-            self.damage = 1
-        if self.difficult == 'Hard':
-            self.damage = 2
+        self.damage = 1 if self.difficult == 'Easy' else 2
 
     def vector_move(self, change, dx, dy, dist):
         try:
@@ -42,7 +39,6 @@ class Witch(pygame.sprite.Sprite):
 
         except ZeroDivisionError:
             pass
-
 
     def update(self, change, player, visible_sprites):
         if self.current_time >= 2:
