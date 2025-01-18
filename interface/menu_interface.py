@@ -13,9 +13,9 @@ class MainMenuInterface:
         self.size = size
         self.event = None
         self.click = False
-        self.flag_auth = False
+        self.flag_auth = True
         self.flag_register = False
-        self.flag_screen_1 = True
+        self.flag_screen_1 = False
         self.flag_screen_2 = False
         self.flag_screen_3 = False
         self.flag_screen_4 = False
