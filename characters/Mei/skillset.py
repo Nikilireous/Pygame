@@ -43,7 +43,7 @@ class MeiBaseAttack(pygame.sprite.Sprite):
 
             collision_object = set(pygame.sprite.spritecollide(self, enemies_group, False))
             collision_object =  collision_object - (collision_object & self.shot_enemies)
-            for enemie in collision_object:
+            for enemie in enemies_group:
                 self.shot(enemie)
 
             self.cur_frame = (self.cur_frame + 1) % len(self.frames)
@@ -73,9 +73,13 @@ class MeiBaseAttack(pygame.sprite.Sprite):
     def shot(self, enemy):
         enemy_lenght_x = enemy.rect.centerx - 720
         enemy_lenght_y = enemy.rect.centery - 405
-        r = math.hypot(enemy_lenght_x, enemy_lenght_y)
-        angle2 = (abs(self.dir[0] * enemy_lenght_x + self.dir[1] * enemy_lenght_y)) / abs(self.length) * abs(r)
-        if r <= 195:
+        enemy_vector = (enemy_lenght_x, enemy_lenght_y)
+        enemy_distance = math.hypot(enemy_lenght_x, enemy_lenght_y)
+
+        dot_product = self.dir[0] * enemy_vector[0] + self.dir[1] * enemy_vector[1]
+        angle2 = dot_product / (self.length * enemy_distance)
+
+        if enemy_distance <= 195 and 0.5 <= angle2 <= 1:
             if enemy.HP - self.player.base_atk_damage <= 0:
                 enemy.kill()
                 self.player.XP += 1
