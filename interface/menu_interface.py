@@ -1,6 +1,7 @@
 import pygame
 import os
 import sys
+from email_validator import validate_email, EmailNotValidError
 from main_game import main_game
 import sqlite3
 import hashlib
@@ -243,7 +244,11 @@ class MainMenuInterface:
                 con.close()
 
     def register_requrments(self):
-        if ("@" not in self.email_input) or (len(self.email_input) < 10):
+        try:
+            email = self.email_input
+            email_info = validate_email(email, check_deliverability=False)
+            email = email_info.normalized
+        except EmailNotValidError:
             self.bad_email = "Некорректный Email"
             return False
 
@@ -251,7 +256,7 @@ class MainMenuInterface:
                 self.password_input.isupper(), self.password_input.islower(),
                 self.password_input == ""]):
             if self.password_input.isdigit():
-                self.bad_password = "Пароль не должен состоять только из цыфр"
+                self.bad_password = "Пароль не должен состоять только из цифр"
             elif self.password_input.isalpha():
                 self.bad_password = "Пароль не должен состоять только из букв"
             elif self.password_input.isupper():
