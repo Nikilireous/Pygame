@@ -50,7 +50,7 @@ def main_game(char, size0, difficult):
     else:
         character, character_name = character_choice(group=character_sprites, fps=fps, size=size)
 
-    main_map = Map(fps, character)
+    main_map = Map(fps, character, difficult)
     main_map_data = main_map.map_data
     main_map_flightless_data = main_map.flightless_map
     tile_size = main_map.TILE_SIZE

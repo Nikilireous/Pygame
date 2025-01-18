@@ -10,7 +10,7 @@ class Map:
         self.change = [0, 0]
         self.fps = fps
         self.map = "maps/map_number_1" if difficult == "Easy" else "maps/map_number_2"
-        with self.map as file:
+        with open(self.map) as file:
             player_pos = list(map(int, file.readline().split()))
             self.map_data = list(map(lambda x: list(map(int, x.split())), file.readlines()))
             self.player_x = player_pos[0] * self.TILE_SIZE + 64
