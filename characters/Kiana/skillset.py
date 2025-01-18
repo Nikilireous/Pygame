@@ -92,13 +92,13 @@ class KianaSkillE(pygame.sprite.Sprite):
         self.rect.y = player.rect.y
         self.time = time.time()
 
-    def update(self, enemies_group):
+    def update(self, enemy_group):
         if time.time() - self.time >= 3:
             self.kill()
 
         if self.fire == self.fps // self.fire_to_second:
             self.fire = 0
-            collision_object = pygame.sprite.spritecollide(self, enemies_group, False)
+            collision_object = pygame.sprite.spritecollide(self, enemy_group, False)
             if collision_object:
                 for enemie in collision_object:
                     self.shot(enemie)
@@ -111,7 +111,6 @@ class KianaSkillE(pygame.sprite.Sprite):
         self.image = self.frames[self.cur_frame]
         self.pos = (self.rect.x, self.rect.y)
         self.mx, self.my = pygame.mouse.get_pos()
-        print(self.mx - self.player.rect.x, self.my - self.player.rect.y)
         self.dir = (self.mx - 720, self.my - 405)
         length = math.hypot(*self.dir)
         if length == 0.0:

@@ -7,7 +7,7 @@ import math
 
 
 class Spider(pygame.sprite.Sprite):
-    def __init__(self, *group, fps, map_data, player, x, y):
+    def __init__(self, *group, fps, map_data, player, x, y, difficult):
         super().__init__(*group)
         self.frames = [self.load_image(f"pauk{i}.png") for i in range(11)]
         self.fps = fps
@@ -20,10 +20,10 @@ class Spider(pygame.sprite.Sprite):
         self.rect.centerx, self.rect.centery = x, y
         self.movement_type = 'vector'
         self.matrix_timer = self.fps * 3
-        self.speed = 3
+        self.speed = 2 if difficult == "Easy" else 3
         self.clock = 0
-        self.HP = 200
-        self.damage = 1
+        self.HP = 150 if difficult == "Easy" else 200
+        self.damage = 1 if difficult == "Easy" else 2
 
     def get_legs_coords(self, camera_x, camera_y, tile_size):
         left_x = (self.rect.x + camera_x) // tile_size
@@ -36,21 +36,12 @@ class Spider(pygame.sprite.Sprite):
         center_y = (camera_y + self.rect.centery) // tile_size
         return centre_x, center_y
 
-    def vector_move(self, player, change, camera_pos):
+    def vector_move(self, player, change):
         dx, dy = player.rect.x - self.rect.x, player.rect.y - self.rect.y
         dist = math.hypot(dx, dy)
 
         try:
             dx, dy = (dx / dist * self.speed), (dy / dist * self.speed)
-            # for coords in self.get_legs_coords(camera_pos[0] + int(dx) - change[0],
-            #                                    camera_pos[1] + int(dy) - change[1],
-            #                                    128):
-            #     try:
-            #         if self.map_data[coords[1]][coords[0]] in [0]:
-            #             self.movement_type = 'matrix'
-            #
-            #     except IndexError:
-            #         pass
 
             if self.movement_type == 'vector':
                 self.rect.x += dx - change[0]
@@ -62,48 +53,9 @@ class Spider(pygame.sprite.Sprite):
         except ZeroDivisionError:
             pass
 
-    # def matrix_move(self, player, change, camera_pos):
-    #     grid = Grid(matrix=self.map_data)
-    #     start = self.get_center_coords(camera_pos[0], camera_pos[1], 128)
-    #     end = (camera_pos[0] + 700) // 128, (camera_pos[1] + 400) // 128
-    #
-    #     try:
-    #         start = grid.node(start[0], start[1])
-    #         end = grid.node(end[0], end[1])
-    #
-    #     except IndexError:
-    #         self.movement_type = 'vector'
-    #         pass
-    #
-    #     finder = AStarFinder()
-    #     path, runs = finder.find_path(start, end, grid)
-    #
-    #     try:
-    #         next_cell = list(path[1])
-    #         next_x, next_y = ((next_cell[0]) * 128 + (128 // 2)), ((next_cell[1]) * 128 + (128 // 2))
-    #
-    #         dx, dy = (next_x - camera_pos[0]) - self.rect.centerx, (next_y - camera_pos[1]) - self.rect.centery
-    #         dist = math.hypot(dx, dy)
-    #
-    #         try:
-    #             dx, dy = (dx / dist * self.speed), (dy / dist * self.speed)
-    #             self.rect.x += dx - change[0]
-    #             self.rect.y += dy - change[1]
-    #
-    #
-    #         except ZeroDivisionError:
-    #             pass
-    #
-    #     except IndexError:
-    #         self.movement_type = 'vector'
-    #         pass
-
     def update(self, change, camera_pos, visible_sprites):
         if self.movement_type == 'vector':
-            self.vector_move(self.player, change, camera_pos)
-
-        # if self.movement_type == 'matrix':
-        #     self.matrix_move(self.player, change, camera_pos)
+            self.vector_move(self.player, change)
 
             if self.matrix_timer == 0:
                 self.movement_type = 'vector'

@@ -3,35 +3,262 @@ import os
 import sys
 from main_game import main_game
 import sqlite3
+import hashlib
 
 
-
-class MaimMenuInterface:
+class MainMenuInterface:
     def __init__(self, screen, size):
         self.screen = screen
         self.size = size
-        self.flag_screen_1 = True
+        self.event = None
+        self.click = False
+        self.flag_auth = True
+        self.flag_register = False
+        self.flag_screen_1 = False
         self.flag_screen_2 = False
         self.flag_screen_3 = False
         self.flag_screen_4 = False
         self.flag_screen_5 = False
-        self.click = False
+        self.current_user = None
+
+        self.email_input_active = False
+        self.password_input_active = False
+        self.email_input = ""
+        self.password_input = ""
+
+        self.bad_auth = None
+        self.bad_email = None
+        self.bad_password = None
+
         self.character = None
         self.difficult = None
-        self.last_game = None
 
-    def update(self):
-        if self.flag_screen_1:
+    def hash_password(self, password):
+        return hashlib.sha256(password.encode()).hexdigest()
+
+    def update(self, event):
+        self.event = event
+        if self.flag_auth:
+            self.auth_screen()
+        elif self.flag_register:
+            self.register_screen()
+        elif self.flag_screen_1:
             self.screen1()
-        if self.flag_screen_2:
+        elif self.flag_screen_2:
             self.screen2()
-        if self.flag_screen_3:
+        elif self.flag_screen_3:
             self.screen3()
-        if self.flag_screen_4:
+        elif self.flag_screen_4:
             self.screen4()
-        if self.flag_screen_5:
+        elif self.flag_screen_5:
             self.screen5()
 
+    def auth_screen(self):
+        self.screen.fill("black")
+        font = pygame.font.Font(None, 50)
+        mx, my = pygame.mouse.get_pos()
+
+        title = font.render("Авторизация", True, "white")
+        self.screen.blit(title, (600, 100))
+
+        email_label = font.render("Email:", True, "white")
+        self.screen.blit(email_label, (400, 200))
+
+        password_label = font.render("Пароль:", True, "white")
+        self.screen.blit(password_label, (400, 300))
+
+        pygame.draw.rect(self.screen, "white", (550, 200, 400, 40))
+        email_surface = font.render(self.email_input, True, "black")
+        self.screen.blit(email_surface, (560, 205))
+
+        pygame.draw.rect(self.screen, "white", (550, 300, 400, 40))
+        password_surface = font.render("*" * len(self.password_input), True, "black")
+        self.screen.blit(password_surface, (560, 305))
+
+        login_button = pygame.Surface((250, 50))
+        login_button.fill((165, 165, 165) if 600 <= mx <= 850 and 400 <= my <= 450 else (220, 220, 220))
+        login_text = font.render("Войти", True, "black")
+        login_button.blit(login_text, (70, 10))
+        self.screen.blit(login_button, (600, 400))
+
+        register_button = pygame.Surface((250, 50))
+        register_button.fill((165, 165, 165) if 600 <= mx <= 850 and 500 <= my <= 550 else (220, 220, 220))
+        register_text = font.render("Регистрация", True, "black")
+        register_button.blit(register_text, (20, 10))
+        self.screen.blit(register_button, (600, 500))
+
+        if self.bad_auth:
+            font1 = pygame.font.Font(None, 25)
+            error_surface = font1.render(self.bad_auth, True, "red")
+            self.screen.blit(error_surface, (610, 380))
+
+        if self.click:
+            self.click = False
+            if 600 <= mx <= 850 and 400 <= my <= 450:
+                self.authenticate_user()
+            elif 600 <= mx <= 850 and 500 <= my <= 550:
+                self.flag_auth = False
+                self.flag_register = True
+                self.email_input = ""
+                self.password_input = ""
+            elif 550 <= mx <= 950 and 200 <= my <= 240:
+                self.email_input_active = True
+                self.password_input_active = False
+            elif 550 <= mx <= 950 and 300 <= my <= 340:
+                self.email_input_active = False
+                self.password_input_active = True
+            else:
+                self.email_input_active = False
+                self.password_input_active = False
+
+        if self.email_input_active or self.password_input_active:
+            if self.event.type == pygame.KEYDOWN:
+                if self.event.key == pygame.K_BACKSPACE:
+                    if self.email_input_active:
+                        self.email_input = self.email_input[:-1]
+                    elif self.password_input_active:
+                        self.password_input = self.password_input[:-1]
+                elif self.email_input_active:
+                    self.email_input += self.event.unicode
+                    self.bad_auth = None
+                elif self.password_input_active:
+                    self.bad_auth = None
+                    self.password_input += self.event.unicode
+
+    def authenticate_user(self):
+        con = sqlite3.connect("data/users.db")
+        cur = con.cursor()
+        hashed_password = self.hash_password(self.password_input)
+        user = cur.execute("SELECT * FROM Users WHERE email = ? AND password = ?",
+                           (self.email_input, hashed_password)).fetchone()
+        con.close()
+
+        if user:
+            self.current_user = user[1]
+            self.flag_auth = False
+            self.flag_screen_1 = True
+            self.bad_auth = None
+            self.password_input = ""
+            self.email_input = ""
+        else:
+            self.bad_auth = "Неверный email или пароль"
+
+    def register_screen(self):
+        self.screen.fill("black")
+        font = pygame.font.Font(None, 50)
+        mx, my = pygame.mouse.get_pos()
+
+        title = font.render("Регистрация", True, "white")
+        self.screen.blit(title, (600, 100))
+
+        email_label = font.render("Email:", True, "white")
+        self.screen.blit(email_label, (400, 200))
+
+        password_label = font.render("Пароль:", True, "white")
+        self.screen.blit(password_label, (400, 300))
+
+        pygame.draw.rect(self.screen, "white", (550, 200, 400, 40))
+        email_surface = font.render(self.email_input, True, "black")
+        self.screen.blit(email_surface, (560, 205))
+
+        pygame.draw.rect(self.screen, "white", (550, 300, 400, 40))
+        password_surface = font.render("*" * len(self.password_input), True, "black")
+        self.screen.blit(password_surface, (560, 305))
+
+        register_button = pygame.Surface((360, 50))
+        register_button.fill((165, 165, 165) if 545 <= mx <= 905 and 400 <= my <= 450 else (220, 220, 220))
+        register_text = font.render("Зарегистрироваться", True, "black")
+        register_button.blit(register_text, (10, 10))
+        self.screen.blit(register_button, (545, 400))
+
+        back_button = pygame.Surface((250, 50))
+        back_button.fill((165, 165, 165) if 600 <= mx <= 850 and 500 <= my <= 550 else (220, 220, 220))
+        back_text = font.render("Назад", True, "black")
+        back_button.blit(back_text, (60, 10))
+        self.screen.blit(back_button, (600, 500))
+
+        if self.bad_email:
+            font1 = pygame.font.Font(None, 25)
+            error_surface = font1.render(self.bad_email, True, "red")
+            self.screen.blit(error_surface, (960, 200))
+
+        if self.bad_password:
+            font1 = pygame.font.Font(None, 25)
+            error_surface = font1.render(self.bad_password, True, "red")
+            self.screen.blit(error_surface, (960, 300))
+
+        if self.click:
+            self.click = False
+            if 545 <= mx <= 905 and 400 <= my <= 450:
+                self.register_user()
+            elif 600 <= mx <= 850 and 500 <= my <= 550:
+                self.flag_register = False
+                self.flag_auth = True
+            elif 550 <= mx <= 950 and 200 <= my <= 240:
+                self.email_input_active = True
+                self.password_input_active = False
+            elif 550 <= mx <= 950 and 300 <= my <= 340:
+                self.email_input_active = False
+                self.password_input_active = True
+            else:
+                self.email_input_active = False
+                self.password_input_active = False
+
+        if self.email_input_active or self.password_input_active:
+            if self.event.type == pygame.KEYDOWN:
+                if self.event.key == pygame.K_BACKSPACE:
+                    if self.email_input_active:
+                        self.bad_email = None
+                        self.bad_password = None
+                        self.email_input = self.email_input[:-1]
+                    elif self.password_input_active:
+                        self.bad_email = None
+                        self.bad_password = None
+                        self.password_input = self.password_input[:-1]
+                elif self.email_input_active:
+                    self.bad_email = None
+                    self.bad_password = None
+                    self.email_input += self.event.unicode
+                elif self.password_input_active:
+                    self.bad_email = None
+                    self.bad_password = None
+                    self.password_input += self.event.unicode
+
+    def register_user(self):
+        if self.register_requrments():
+            con = sqlite3.connect("data/users.db")
+            cur = con.cursor()
+            hashed_password = self.hash_password(self.password_input)
+            try:
+                cur.execute("INSERT INTO Users (email, password) VALUES (?, ?)", (self.email_input, hashed_password))
+                con.commit()
+                self.flag_register = False
+                self.flag_screen_1 = True
+                self.email_input = ""
+                self.password_input = ""
+            finally:
+                con.close()
+
+    def register_requrments(self):
+        if ("@" not in self.email_input) or (len(self.email_input) < 10):
+            self.bad_email = "Некорректный Email"
+            return False
+
+        if any([self.password_input.isdigit(), self.password_input.isalpha(),
+                self.password_input.isupper(), self.password_input.islower(),
+                self.password_input == ""]):
+            if self.password_input.isdigit():
+                self.bad_password = "Пароль не должен состоять только из цыфр"
+            elif self.password_input.isalpha():
+                self.bad_password = "Пароль не должен состоять только из букв"
+            elif self.password_input.isupper():
+                self.bad_password = "Пароль не должен состоять только из заглавных букв"
+            elif self.password_input.islower():
+                self.bad_password = "Пароль не должен состоять только из маленьких букв"
+            elif self.password_input == "":
+                self.bad_password = "Пароль не должен состоять быть пустым"
+            return False
+        return True
 
     def screen1(self):
         self.screen.fill("black")
@@ -42,12 +269,9 @@ class MaimMenuInterface:
         rect = text.get_rect(center=(700, 300))
         self.screen.blit(text, rect)
 
-
         buttons_font = pygame.font.Font(None, 50)
 
         button1 = pygame.Surface((400, 80))
-        self.character = None
-        self.difficult = None
         if 200 <= mx <= 600 and 500 <= my <= 580:
             if self.click:
                 self.flag_screen_1 = False
@@ -83,7 +307,6 @@ class MaimMenuInterface:
         rect = text.get_rect(center=(400, 250))
         self.screen.blit(text, rect)
 
-
         button1 = pygame.Surface((100, 100))
         if 850 <= mx <= 950 and 190 <= my <= 290:
             if self.click:
@@ -113,7 +336,6 @@ class MaimMenuInterface:
         Meiimage = pygame.transform.scale(Meiimage, (100, 100))
         button2.blit(Meiimage, (0, 0))
         self.screen.blit(button2, (1100, 190))
-
 
         text = font1.render(f"Выберите сложность:", 1, "white")
         rect = text.get_rect(center=(400, 540))
@@ -241,7 +463,7 @@ class MaimMenuInterface:
         except sqlite3.OperationalError:
             print('База данных не найдена')
 
-        text = font1.render( f'Всего игр: {all_games}, выиграно: {winnings}.', 1, "white")
+        text = font1.render(f'Всего игр: {all_games}, выиграно: {winnings}.', 1, "white")
         rect = text.get_rect(center=(700, 300))
         self.screen.blit(text, rect)
 

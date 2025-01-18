@@ -3,13 +3,14 @@ import os
 
 
 class Map:
-    def __init__(self, fps, player):
+    def __init__(self, fps, player, difficult):
         self.TILE_SIZE = 128
         self.player = player
         self.tiles = self.load_tiles()
         self.change = [0, 0]
         self.fps = fps
-        with open("maps/map_number_3") as file:
+        self.map = "maps/map_number_1" if difficult == "Easy" else "maps/map_number_2"
+        with self.map as file:
             player_pos = list(map(int, file.readline().split()))
             self.map_data = list(map(lambda x: list(map(int, x.split())), file.readlines()))
             self.player_x = player_pos[0] * self.TILE_SIZE + 64
@@ -31,7 +32,11 @@ class Map:
             1: pygame.image.load(os.path.join("images/tiles", "wall.png")),
             2: pygame.image.load(os.path.join("images/tiles", "water.png")),
             3: pygame.image.load(os.path.join("images/tiles", "lava.png")),
-            4: pygame.image.load(os.path.join("images/tiles", "earth.png"))
+            4: pygame.image.load(os.path.join("images/tiles", "earth.png")),
+            5: pygame.image.load(os.path.join("images/tiles", "snow.png")),
+            6: pygame.image.load(os.path.join("images/tiles", "ice.png")),
+            7: pygame.image.load(os.path.join("images/tiles", "water2.png")),
+
         }
         for key in tiles:
             tiles[key] = pygame.transform.scale(tiles[key], (self.TILE_SIZE, self.TILE_SIZE))
@@ -85,6 +90,6 @@ class Map:
     def step_condition(self, pos1, pos2):
         for i in (pos1, pos2):
             player_in_tiles_cor = (i[0] // self.TILE_SIZE, i[1] // self.TILE_SIZE)
-            if self.map_data[player_in_tiles_cor[0]][player_in_tiles_cor[1]] not in [0, 4]:
+            if self.map_data[player_in_tiles_cor[0]][player_in_tiles_cor[1]] not in [0, 4, 5]:
                 return False
         return True

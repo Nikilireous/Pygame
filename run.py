@@ -1,5 +1,5 @@
 import pygame
-from interface.menu_interface import MaimMenuInterface
+from interface.menu_interface import MainMenuInterface
 
 
 def main():
@@ -9,7 +9,7 @@ def main():
     screen = pygame.display.set_mode(size)
     pygame.display.set_caption("honkai impact 4th")
 
-    interface = MaimMenuInterface(screen, size)
+    interface = MainMenuInterface(screen, size)
 
     running = True
     while running:
@@ -18,8 +18,7 @@ def main():
                 running = False
             if event.type == pygame.MOUSEBUTTONDOWN:
                 interface.click = True
-
-        interface.update()
+            interface.update(event)
         pygame.display.flip()
 
     pygame.quit()

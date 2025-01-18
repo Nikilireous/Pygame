@@ -24,7 +24,7 @@ def character_choice(group, fps, size):
             name = input("Такого персонажа не существует. Выберите одного из предложенных. (Mei, Kiana): ")
 
 
-def main_game(char, size0, difficult='Hard'):
+def main_game(char, size0, difficult):
     pygame.init()
     pygame.mixer.init()
     pygame.mixer.music.load('Audio/background_music_2.mp3')
