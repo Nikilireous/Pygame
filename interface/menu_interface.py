@@ -36,6 +36,7 @@ class MainMenuInterface:
 
         self.not_character = False
         self.not_difficult = False
+        self.clone_email = False
 
     def hash_password(self, password):
         return hashlib.sha256(password.encode()).hexdigest()
@@ -191,6 +192,11 @@ class MainMenuInterface:
             error_surface = font1.render(self.bad_password, True, "red")
             self.screen.blit(error_surface, (960, 300))
 
+        if self.clone_email:
+            font4 = pygame.font.Font(None, 30)
+            clone_email = font4.render('пользователь с таким email уже существует', 1, 'red')
+            self.screen.blit(clone_email, (500, 680))
+
         if self.click:
             self.click = False
             if 545 <= mx <= 905 and 400 <= my <= 450:
@@ -201,9 +207,11 @@ class MainMenuInterface:
             elif 550 <= mx <= 950 and 200 <= my <= 240:
                 self.email_input_active = True
                 self.password_input_active = False
+                self.clone_email = False
             elif 550 <= mx <= 950 and 300 <= my <= 340:
                 self.email_input_active = False
                 self.password_input_active = True
+                self.clone_email = False
             else:
                 self.email_input_active = False
                 self.password_input_active = False
@@ -240,6 +248,8 @@ class MainMenuInterface:
                 self.flag_screen_1 = True
                 self.email_input = ""
                 self.password_input = ""
+            except sqlite3.IntegrityError:
+                self.clone_email = True
             finally:
                 con.close()
 
@@ -494,6 +504,7 @@ class MainMenuInterface:
             con.close()
         except sqlite3.OperationalError:
             print('База данных не найдена')
+
 
         text = font1.render(f'Всего игр: {all_games}, выиграно: {winnings}.', 1, "white")
         rect = text.get_rect(center=(700, 300))
