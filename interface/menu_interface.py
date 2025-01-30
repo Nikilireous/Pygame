@@ -183,11 +183,11 @@ class MainMenuInterface:
         password_label = font.render("Пароль:", True, (0, 51, 102))
         self.screen.blit(password_label, (400 - 720 + center[0], 300 - 405 + center[1]))
 
-        pygame.draw.rect(self.screen, "white", (550, 200, 400, 40))
+        pygame.draw.rect(self.screen, "white", (550 - 720 + center[0], 200 - 405 + center[1], 400, 40))
         email_surface = font.render(self.email_input, True, "black")
         self.screen.blit(email_surface, (560 - 720 + center[0], 205 - 405 + center[1]))
 
-        pygame.draw.rect(self.screen, "white", (550, 300, 400, 40))
+        pygame.draw.rect(self.screen, "white", (550 - 720 + center[0], 300 - 405 + center[1], 400, 40))
         password_surface = font.render("*" * len(self.password_input), True, "black")
         self.screen.blit(password_surface, (560 - 720 + center[0], 305 - 405 + center[1]))
 
