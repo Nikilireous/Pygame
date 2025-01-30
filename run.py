@@ -5,7 +5,9 @@ from interface.menu_interface import MainMenuInterface
 def main():
     pygame.init()
 
-    size = 1440, 810
+    info = pygame.display.Info()
+
+    size = info.current_w, info.current_h
     screen = pygame.display.set_mode(size)
     pygame.display.set_caption("honkai impact 4th")
 

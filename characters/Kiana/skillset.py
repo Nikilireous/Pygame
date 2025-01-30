@@ -77,7 +77,7 @@ class KianaBaseAttack(pygame.sprite.Sprite):
 
 
 class KianaSkillE(pygame.sprite.Sprite):
-    def __init__(self, *group, fps, player):
+    def __init__(self, *group, fps, player, res):
         super().__init__(*group)
         self.frames = [self.load_image(f"lazer{i}.png") for i in range(12)]
         self.fire_to_second = 10
@@ -86,31 +86,20 @@ class KianaSkillE(pygame.sprite.Sprite):
         self.fire = 0
         self.cur_frame = 0
         self.image = self.frames[self.cur_frame]
+        self.lazerWidth = 90
         self.rect = self.image.get_rect()
         self.rect.x = player.rect.x
         self.rect.y = player.rect.y
         self.time = time.time()
+        self.resolution = res
 
-    def update(self, enemy_group):
+    def update(self, enemy_group, ):
         if time.time() - self.time >= 3:
             self.kill()
 
-        if self.fire == self.fps // self.fire_to_second:
-            self.fire = 0
-            collision_object = pygame.sprite.spritecollide(self, enemy_group, False)
-            if collision_object:
-                for enemie in collision_object:
-                    self.shot(enemie)
-
-        else:
-            self.fire += 1
-
-
-        self.cur_frame = (self.cur_frame + 1) % len(self.frames)
-        self.image = self.frames[self.cur_frame]
         self.pos = (self.rect.x, self.rect.y)
         self.mx, self.my = pygame.mouse.get_pos()
-        self.dir = (self.mx - 720, self.my - 405)
+        self.dir = (self.mx - self.resolution[0] / 2, self.my - self.resolution[1] / 2)
         length = math.hypot(*self.dir)
         if length == 0.0:
             self.dir = (0, -1)
@@ -118,10 +107,28 @@ class KianaSkillE(pygame.sprite.Sprite):
             self.dir = (self.dir[0] / length, self.dir[1] / length)
         angle = math.degrees(math.atan2(-self.dir[1], self.dir[0]))
 
+        if self.fire == self.fps // self.fire_to_second:
+            self.fire = 0
+            for enemy in enemy_group:
+                pos = [enemy.rect.x, enemy.rect.y]
+                alpha = math.atan2(self.my, self.mx) - math.atan2(pos[1], pos[0])
+                a = math.hypot(self.mx, self.my)
+                s = 0.5 * a * math.hypot(pos[0], pos[1]) * math.sin(alpha)
+                height = abs(2 * s / a)
+                if math.degrees(alpha) <= 90 and height < self.lazerWidth / 2:
+                    self.shot(enemy)
+
+        else:
+            self.fire += 1
+
+
+        self.cur_frame = (self.cur_frame + 1) % len(self.frames)
+        self.image = self.frames[self.cur_frame]
+
         self.image = pygame.transform.rotate(self.image, angle)
 
         self.rect = self.image.get_rect()
-        self.rect.center = 720, 405
+        self.rect.center = self.resolution[0]/2, self.resolution[1]/2
 
     def load_image(self, name, colorkey=None):
         fullname = os.path.join('images/characters/Kiana/Laser', name)
@@ -140,9 +147,8 @@ class KianaSkillE(pygame.sprite.Sprite):
         return image
 
     def shot(self, enemy):
-        if pygame.sprite.collide_mask(self, enemy):
-            if enemy.HP - self.player.skill_damage <= 0:
-                enemy.kill()
-                self.player.XP += 1
-            else:
-                enemy.HP -= self.player.skill_damage
+        if enemy.HP - self.player.skill_damage <= 0:
+            enemy.kill()
+            self.player.XP += 1
+        else:
+            enemy.HP -= self.player.skill_damage

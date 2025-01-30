@@ -54,6 +54,7 @@ class Spider(pygame.sprite.Sprite):
             pass
 
     def update(self, change, camera_pos, visible_sprites):
+        info = pygame.display.Info()
         if self.movement_type == 'vector':
             self.vector_move(self.player, change)
 
@@ -63,7 +64,7 @@ class Spider(pygame.sprite.Sprite):
             else:
                 self.matrix_timer -= 1
 
-        if -60 < self.rect.centerx < 1500 and -60 < self.rect.centery < 870:
+        if -60 < self.rect.centerx < info.current_w * 1.1 and -60 < self.rect.centery < info.current_h * 1.1:
             visible_sprites.add(self)
             if self.clock == 250 // self.fps:
                 dx, dy = (self.player.rect.x - self.rect.x), (self.player.rect.y - self.rect.y)

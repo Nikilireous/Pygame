@@ -41,6 +41,7 @@ class Witch(pygame.sprite.Sprite):
             pass
 
     def update(self, change, player, visible_sprites):
+        info = pygame.display.Info()
         if self.current_time >= 2:
             self.dx, self.dy = player.rect.centerx - self.rect.x, player.rect.centery - self.rect.y
             self.dist = math.hypot(self.dx, self.dy)
@@ -49,7 +50,7 @@ class Witch(pygame.sprite.Sprite):
         if self.movement_type == 'vector':
             self.vector_move(change, self.dx, self.dy, self.dist)
 
-        if -60 < self.rect.centerx < 1500 and -60 < self.rect.centery < 870:
+        if -60 < self.rect.centerx < info.current_w * 1.1 and -60 < self.rect.centery < info.current_h * 1.1:
             visible_sprites.add(self)
             if self.clock == 500 // self.fps:
                 self.clock = 0

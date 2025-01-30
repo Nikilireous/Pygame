@@ -63,39 +63,49 @@ class MainMenuInterface:
         font = pygame.font.Font(None, 50)
         mx, my = pygame.mouse.get_pos()
 
+        info = pygame.display.Info()
+        center = [info.current_w / 2, info.current_h / 2]
+        left_center = [0, info.current_h / 2]
+        right_center = [info.current_w, info.current_h / 2]
+        upper_center = [info.current_w / 2, 0]
+        lower_center = [info.current_w / 2, info.current_h]
+
+        mx += 720 - center[0]
+        my += 405 - center[1]
+
         title = font.render("Авторизация", True, (0, 51, 102))
-        self.screen.blit(title, (600, 100))
+        self.screen.blit(title, (600 - 720 + center[0], 100 - 405 + center[1]))
 
         email_label = font.render("Email:", True, (0, 51, 102))
-        self.screen.blit(email_label, (400, 200))
+        self.screen.blit(email_label, (400 - 720 + center[0], 200 - 405 + center[1]))
 
         password_label = font.render("Пароль:", True, (0, 51, 102))
-        self.screen.blit(password_label, (400, 300))
+        self.screen.blit(password_label, (400 - 720 + center[0], 300 - 405 + center[1]))
 
-        pygame.draw.rect(self.screen, "white", (550, 200, 400, 40))
+        pygame.draw.rect(self.screen, "white", (550 - 720 + center[0], 200 - 405 + center[1], 400, 40))
         email_surface = font.render(self.email_input, True, "black")
-        self.screen.blit(email_surface, (560, 205))
+        self.screen.blit(email_surface, (560 - 720 + center[0], 205 - 405 + center[1]))
 
-        pygame.draw.rect(self.screen, "white", (550, 300, 400, 40))
+        pygame.draw.rect(self.screen, "white", (550 - 720 + center[0], 300 - 405 + center[1], 400, 40))
         password_surface = font.render("*" * len(self.password_input), True, "black")
-        self.screen.blit(password_surface, (560, 305))
+        self.screen.blit(password_surface, (560 - 720 + center[0], 305 - 405 + center[1]))
 
         login_button = pygame.Surface((250, 50))
         login_button.fill((255, 119, 50) if 600 <= mx <= 850 and 400 <= my <= 450 else (255, 169, 100))
         login_text = font.render("Войти", True, "black")
         login_button.blit(login_text, (70, 10))
-        self.screen.blit(login_button, (600, 400))
+        self.screen.blit(login_button, (600 - 720 + center[0], 400 - 405 + center[1]))
 
         register_button = pygame.Surface((250, 50))
         register_button.fill((255, 119, 50) if 600 <= mx <= 850 and 500 <= my <= 550 else (255, 169, 100))
         register_text = font.render("Регистрация", True, "black")
         register_button.blit(register_text, (20, 10))
-        self.screen.blit(register_button, (600, 500))
+        self.screen.blit(register_button, (600 - 720 + center[0], 500 - 405 + center[1]))
 
         if self.bad_auth:
             font1 = pygame.font.Font(None, 25)
             error_surface = font1.render(self.bad_auth, True, "red")
-            self.screen.blit(error_surface, (610, 380))
+            self.screen.blit(error_surface, (610 - 720 + center[0], 380 - 405 + center[1]))
 
         if self.click:
             self.click = False
@@ -149,38 +159,49 @@ class MainMenuInterface:
             self.bad_auth = "Неверный email или пароль"
 
     def register_screen(self):
+
+        info = pygame.display.Info()
+        center = [info.current_w / 2, info.current_h / 2]
+        left_center = [0, info.current_h / 2]
+        right_center = [info.current_w, info.current_h / 2]
+        upper_center = [info.current_w / 2, 0]
+        lower_center = [info.current_w / 2, info.current_h]
+
         self.draw_gradient()
         font = pygame.font.Font(None, 50)
         mx, my = pygame.mouse.get_pos()
 
+        mx += 720 - center[0]
+        my += 405 - center[1]
+
         title = font.render("Регистрация", True, (0, 51, 102))
-        self.screen.blit(title, (600, 100))
+        self.screen.blit(title, (600 - 720 + center[0], 100 - 405 + center[1]))
 
         email_label = font.render("Email:", True, (0, 51, 102))
-        self.screen.blit(email_label, (400, 200))
+        self.screen.blit(email_label, (400 - 720 + center[0], 200 - 405 + center[1]))
 
         password_label = font.render("Пароль:", True, (0, 51, 102))
-        self.screen.blit(password_label, (400, 300))
+        self.screen.blit(password_label, (400 - 720 + center[0], 300 - 405 + center[1]))
 
         pygame.draw.rect(self.screen, "white", (550, 200, 400, 40))
         email_surface = font.render(self.email_input, True, "black")
-        self.screen.blit(email_surface, (560, 205))
+        self.screen.blit(email_surface, (560 - 720 + center[0], 205 - 405 + center[1]))
 
         pygame.draw.rect(self.screen, "white", (550, 300, 400, 40))
         password_surface = font.render("*" * len(self.password_input), True, "black")
-        self.screen.blit(password_surface, (560, 305))
+        self.screen.blit(password_surface, (560 - 720 + center[0], 305 - 405 + center[1]))
 
         register_button = pygame.Surface((360, 50))
         register_button.fill((255, 119, 50) if 545 <= mx <= 905 and 400 <= my <= 450 else (255, 169, 100))
         register_text = font.render("Зарегистрироваться", True, "black")
         register_button.blit(register_text, (10, 10))
-        self.screen.blit(register_button, (545, 400))
+        self.screen.blit(register_button, (545 - 720 + center[0], 400 - 405 + center[1]))
 
         back_button = pygame.Surface((250, 50))
         back_button.fill((255, 119, 50) if 600 <= mx <= 850 and 500 <= my <= 550 else (255, 169, 100))
         back_text = font.render("Назад", True, "black")
         back_button.blit(back_text, (60, 10))
-        self.screen.blit(back_button, (600, 500))
+        self.screen.blit(back_button, (600 - 720 + center[0], 500 - 405 + center[1]))
 
         if self.bad_email:
             font1 = pygame.font.Font(None, 25)
@@ -279,12 +300,23 @@ class MainMenuInterface:
         return True
 
     def screen1(self):
+
+        info = pygame.display.Info()
+        center = [info.current_w / 2, info.current_h / 2]
+        left_center = [0, info.current_h / 2]
+        right_center = [info.current_w, info.current_h / 2]
+        upper_center = [info.current_w / 2, 0]
+        lower_center = [info.current_w / 2, info.current_h]
+
         self.draw_gradient()
         font = pygame.font.Font(None, 100)
         mx, my = pygame.mouse.get_pos()
 
+        mx += 720 - center[0]
+        my += 405 - center[1]
+
         text = font.render(f"Главное меню", 1, (0, 51, 102))
-        rect = text.get_rect(center=(700, 300))
+        rect = text.get_rect(center=(700 - 720 + center[0], 300 - 405 + center[1]))
         self.screen.blit(text, rect)
 
         buttons_font = pygame.font.Font(None, 50)
@@ -300,7 +332,7 @@ class MainMenuInterface:
             button1.fill((255, 169, 100))
         button1_text = buttons_font.render(f"Начать Игру", 1, "white")
         button1.blit(button1_text, (95, 25))
-        self.screen.blit(button1, (200, 500))
+        self.screen.blit(button1, (200 - 720 + center[0], 500 - 405 + center[1]))
 
         button2 = pygame.Surface((400, 80))
         if 800 <= mx <= 1200 and 500 <= my <= 580:
@@ -313,16 +345,27 @@ class MainMenuInterface:
             button2.fill((255, 169, 100))
         button2_text = buttons_font.render(f"Посмотреть статистику", 1, "white")
         button2.blit(button2_text, (5, 25))
-        self.screen.blit(button2, (800, 500))
+        self.screen.blit(button2, (800 - 720 + center[0], 500 - 405 + center[1]))
 
     def screen2(self):
+
+        info = pygame.display.Info()
+        center = [info.current_w / 2, info.current_h / 2]
+        left_center = [0, info.current_h / 2]
+        right_center = [info.current_w, info.current_h / 2]
+        upper_center = [info.current_w / 2, 0]
+        lower_center = [info.current_w / 2, info.current_h]
+
         self.draw_gradient()
         font1 = pygame.font.Font(None, 80)
         font2 = pygame.font.Font(None, 40)
         mx, my = pygame.mouse.get_pos()
 
+        mx += 720 - center[0]
+        my += 405 - center[1]
+
         text = font1.render(f"Выберите персонажа:", 1, (0, 51, 102))
-        rect = text.get_rect(center=(400, 250))
+        rect = text.get_rect(center=(400 - 720 + center[0], 250 - 405 + center[1]))
         self.screen.blit(text, rect)
 
         button1 = pygame.Surface((100, 100))
@@ -340,7 +383,7 @@ class MainMenuInterface:
         Kianaimage = self.load_image(f"characters/Kiana/Kiana0.png")
         Kianaimage = pygame.transform.scale(Kianaimage, (100, 100))
         button1.blit(Kianaimage, (0, 0))
-        self.screen.blit(button1, (850, 190))
+        self.screen.blit(button1, (850 - 720 + center[0], 190 - 405 + center[1]))
 
         button2 = pygame.Surface((100, 100))
         if 1100 <= mx <= 1200 and 190 <= my <= 290:
@@ -357,10 +400,10 @@ class MainMenuInterface:
         Meiimage = self.load_image(f"characters/Mei/Mei0.png")
         Meiimage = pygame.transform.scale(Meiimage, (100, 100))
         button2.blit(Meiimage, (0, 0))
-        self.screen.blit(button2, (1100, 190))
+        self.screen.blit(button2, (1100 - 720 + center[0], 190 - 405 + center[1]))
 
         text = font1.render(f"Выберите сложность:", 1, (0, 51, 102))
-        rect = text.get_rect(center=(400, 540))
+        rect = text.get_rect(center=(400 - 720 + center[0], 540 - 405 + center[1]))
         self.screen.blit(text, rect)
 
         button3 = pygame.Surface((100, 40))
@@ -377,7 +420,7 @@ class MainMenuInterface:
             button3.fill((17, 195, 0))
         text = font2.render('Легко', 1, 'black')
         button3.blit(text, (10, 8))
-        self.screen.blit(button3, (850, 520))
+        self.screen.blit(button3, (850 - 720 + center[0], 520 - 405 + center[1]))
 
         button4 = pygame.Surface((120, 40))
         if 1100 <= mx <= 1220 and 520 <= my <= 560:
@@ -393,7 +436,7 @@ class MainMenuInterface:
             button4.fill((17, 195, 0))
         text = font2.render('Сложно', 1, 'black')
         button4.blit(text, (7, 8))
-        self.screen.blit(button4, (1100, 520))
+        self.screen.blit(button4, (1100 - 720 + center[0], 520 - 405 + center[1]))
 
         button5 = pygame.Surface((200, 40))
         if 1180 <= mx <= 1380 and 700 <= my <= 740:
@@ -412,19 +455,20 @@ class MainMenuInterface:
             button5.fill((255, 169, 100))
         text1 = font2.render('Начать игру', 1, 'black')
         button5.blit(text1, (15, 7))
-        self.screen.blit(button5, (1180, 700))
+        self.screen.blit(button5, (1180 - 720 + center[0], 700 - 405 + center[1]))
 
         font3 = pygame.font.Font(None, 25)
         if self.not_character:
             not_character_text = font3.render('Пожалуйста, выберите персонажа', 1, 'red')
-            self.screen.blit(not_character_text, (1130, 680))
+            self.screen.blit(not_character_text, (1130 - 720 + center[0], 68 - 405 + center[1]))
         elif self.not_difficult:
             not_character_text = font3.render('Теперь выберите сложность', 1, 'red')
-            self.screen.blit(not_character_text, (1160, 680))
+            self.screen.blit(not_character_text, (1160 - 720 + center[0], 680 - 405 + center[1]))
 
 
 
     def screen3(self):
+
         game_cycle = main_game(self.character, self.size, self.difficult)
         if game_cycle[0]:
             self.last_game = {
@@ -458,10 +502,21 @@ class MainMenuInterface:
         self.flag_screen_4 = True
 
     def screen4(self):
+
+        info = pygame.display.Info()
+        center = [info.current_w / 2, info.current_h / 2]
+        left_center = [0, info.current_h / 2]
+        right_center = [info.current_w, info.current_h / 2]
+        upper_center = [info.current_w / 2, 0]
+        lower_center = [info.current_w / 2, info.current_h]
+
         self.draw_gradient()
         font1 = pygame.font.Font(None, 80)
         font2 = pygame.font.Font(None, 40)
         mx, my = pygame.mouse.get_pos()
+
+        mx += 720 - center[0]
+        my += 405 - center[1]
 
         if self.last_game['winning']:
             text = font1.render(f"Вы прошли игру. Время прохождения: {self.last_game['time']}.", 1, "white")
@@ -470,9 +525,9 @@ class MainMenuInterface:
 
         yatta = self.load_image('yatta/yatta.png') if self.last_game['winning'] else self.load_image('yatta/not yatta.png')
         yatta = pygame.transform.scale(yatta, (300, 300))
-        self.screen.blit(yatta, (550, 500))
+        self.screen.blit(yatta, (550 - 720 + center[0], 500 - 405 + center[1]))
 
-        rect = text.get_rect(center=(700, 300))
+        rect = text.get_rect(center=(700 - 720 + center[0], 300 - 405 + center[1]))
         self.screen.blit(text, rect)
 
         button1 = pygame.Surface((380, 40))
@@ -486,13 +541,24 @@ class MainMenuInterface:
             button1.fill((17, 195, 0))
         text = font2.render('Вернуться в главное меню', 1, 'black')
         button1.blit(text, (10, 8))
-        self.screen.blit(button1, (500, 400))
+        self.screen.blit(button1, (500 - 720 + center[0], 400 - 405 + center[1]))
 
     def screen5(self):
+
+        info = pygame.display.Info()
+        center = [info.current_w / 2, info.current_h / 2]
+        left_center = [0, info.current_h / 2]
+        right_center = [info.current_w, info.current_h / 2]
+        upper_center = [info.current_w / 2, 0]
+        lower_center = [info.current_w / 2, info.current_h]
+
         self.draw_gradient()
         font1 = pygame.font.Font(None, 80)
         font2 = pygame.font.Font(None, 40)
         mx, my = pygame.mouse.get_pos()
+
+        mx += 720 - center[0]
+        my += 405 - center[1]
 
         try:
             select_request = 'SELECT * FROM Results'
@@ -507,7 +573,7 @@ class MainMenuInterface:
 
 
         text = font1.render(f'Всего игр: {all_games}, выиграно: {winnings}.', 1, "white")
-        rect = text.get_rect(center=(700, 300))
+        rect = text.get_rect(center=(700 - 720 + center[0], 300 - 405 + center[1]))
         self.screen.blit(text, rect)
 
         button1 = pygame.Surface((380, 40))
@@ -521,7 +587,7 @@ class MainMenuInterface:
             button1.fill((220, 220, 220))
         text = font2.render('Вернуться в главное меню', 1, 'black')
         button1.blit(text, (0, 0))
-        self.screen.blit(button1, (500, 400))
+        self.screen.blit(button1, (500 - 720 + center[0], 400 - 405 + center[1]))
 
     def load_image(self, name, colorkey=None):
         fullname = os.path.join('images', name)

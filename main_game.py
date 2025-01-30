@@ -34,6 +34,7 @@ def main_game(char, size0, difficult):
     size = size0
     fps = 100
 
+    print(size)
     screen = pygame.display.set_mode(size)
     pygame.display.set_caption("honkai impact 4th")
 
@@ -44,6 +45,8 @@ def main_game(char, size0, difficult):
     witch_sprites = pygame.sprite.Group()
     boss_sprites = pygame.sprite.Group()
     skill_sprites = pygame.sprite.Group()
+
+    info = pygame.display.Info()
 
     if char:
         character, character_name = eval(char)(character_sprites, fps=fps, size=size), char
@@ -59,6 +62,7 @@ def main_game(char, size0, difficult):
     upper_border = 3 * tile_size + tile_size // 2
     lower_border = (len(main_map_data) - 4) * tile_size - tile_size // 2
     interface = Interface(character)
+    interface.get_info()
 
     events = Events(difficult=difficult, fps=fps, flightless_data=main_map_flightless_data, player=character,
                     spider_sprites=spider_sprites, witch_sprites=witch_sprites, boss_sprites=boss_sprites)
@@ -85,12 +89,12 @@ def main_game(char, size0, difficult):
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_e and skill:
                     if character_name == "Kiana":
-                        KianaSkillE(skill_sprites, fps=fps, player=character)
+                        KianaSkillE(skill_sprites, fps=fps, player=character, res=[info.current_w, info.current_h])
                     elif character_name == "Mei":
                         character.HP -= 5
                         skill_damage = character.skill_damage
                         character.base_atk_damage += skill_damage
-                        mei_skill = MeiSkillE(player=character, map=main_map, enemy=visible_enemies)
+                        mei_skill = MeiSkillE(player=character, map=main_map, enemy=visible_enemies, resolution=[info.current_w, info.current_h])
                         mei_skill_duration = True
                     interface.skill_start = True
                     skill = False
@@ -109,7 +113,7 @@ def main_game(char, size0, difficult):
             elif character_name == "Mei":
                 if seconds_to_shoot == 50:
                     seconds_to_shoot = 0
-                    MeiBaseAttack(bullet_sprites, fps=fps, player=character)
+                    MeiBaseAttack(bullet_sprites, fps=fps, player=character, res=[info.current_w, info.current_h])
                 else:
                     seconds_to_shoot += 1
 
