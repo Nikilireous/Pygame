@@ -444,10 +444,10 @@ class MainMenuInterface:
             cur = con.cursor()
             current_info = cur.execute(select_request).fetchall()[0]
 
-            all_games = int(current_info[1]) + 1
-            winnings = int(current_info[2]) + game_cycle[0]
+            all_games = int(current_info[3]) + 1
+            winnings = int(current_info[4]) + game_cycle[0]
 
-            update_request = f'''UPDATE Users SET AllRuns = "{all_games}", WinningRuns = "{winnings}",
+            update_request = f'''UPDATE Users SET AllRuns = "{all_games}", WinningRuns = "{winnings}"
                                     WHERE Id == {self.current_user}'''
             cur.execute(update_request)
             con.commit()
