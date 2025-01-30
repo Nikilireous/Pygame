@@ -6,7 +6,7 @@ import time
 
 
 class MeiBaseAttack(pygame.sprite.Sprite):
-    def __init__(self, *group, fps, player):
+    def __init__(self, *group, fps, player, res):
         super().__init__(*group)
         self.cur_frame = 0
         self.player = player
@@ -15,7 +15,7 @@ class MeiBaseAttack(pygame.sprite.Sprite):
         self.frames_second = 0
         self.frames = [self.load_image(f"katana{i}.png") for i in range(15)]
         self.shot_enemies = set()
-
+        self.resolution = res
         self.image = self.frames[self.cur_frame]
 
         mx, my = pygame.mouse.get_pos()
@@ -31,8 +31,8 @@ class MeiBaseAttack(pygame.sprite.Sprite):
 
         self.rect = self.image.get_rect()
 
-        self.pos = (720 + self.dir2[0] * 200,
-                    405 + self.dir2[1] * 200)
+        self.pos = (self.resolution[0]/2 + self.dir2[0] * 200,
+                    self.resolution[1]/2 + self.dir2[1] * 200)
         self.rect.center = self.pos
 
     def update(self, change, camera_pos, enemies_group):
@@ -42,7 +42,7 @@ class MeiBaseAttack(pygame.sprite.Sprite):
                 self.kill()
 
             collision_object = set(pygame.sprite.spritecollide(self, enemies_group, False))
-            collision_object =  collision_object - (collision_object & self.shot_enemies)
+            collision_object = collision_object - (collision_object & self.shot_enemies)
             for enemy in collision_object:
                 self.shot(enemy)
 
@@ -71,8 +71,8 @@ class MeiBaseAttack(pygame.sprite.Sprite):
         return image
 
     def shot(self, enemy):
-        enemy_length_x = enemy.rect.centerx - 720
-        enemy_length_y = enemy.rect.centery - 405
+        enemy_length_x = enemy.rect.centerx - self.resolution[0]/2
+        enemy_length_y = enemy.rect.centery - self.resolution[1]/2
         enemy_vector = (enemy_length_x, enemy_length_y)
         enemy_distance = math.hypot(enemy_length_x, enemy_length_y)
 
@@ -89,13 +89,13 @@ class MeiBaseAttack(pygame.sprite.Sprite):
 
 
 class MeiSkillE:
-    def __init__(self, player, map, enemy):
+    def __init__(self, player, map, enemy, resolution):
         self.player = player
         self.map = map
         self.enemy = enemy
 
         mx, my = pygame.mouse.get_pos()
-        self.dir = (mx - 700, my - 400)
+        self.dir = (mx - resolution[0]/2, my - resolution[1]/2)
         length = math.hypot(*self.dir)
         if length == 0.0:
             self.dir = (0, -1)
