@@ -134,12 +134,12 @@ class MainMenuInterface:
         con = sqlite3.connect("data/users.db")
         cur = con.cursor()
         hashed_password = self.hash_password(self.password_input)
-        user = cur.execute("SELECT * FROM Users WHERE email = ? AND password = ?",
+        user = cur.execute("SELECT * FROM Users WHERE Email = ? AND Password = ?",
                            (self.email_input, hashed_password)).fetchone()
         con.close()
 
         if user:
-            self.current_user = user[1]
+            self.current_user = user[0]
             self.flag_auth = False
             self.flag_screen_1 = True
             self.bad_auth = None
@@ -194,7 +194,7 @@ class MainMenuInterface:
 
         if self.clone_email:
             font4 = pygame.font.Font(None, 30)
-            clone_email = font4.render('пользователь с таким email уже существует', 1, 'red')
+            clone_email = font4.render('Пользователь с таким email уже существует', 1, 'red')
             self.screen.blit(clone_email, (500, 680))
 
         if self.click:
@@ -242,10 +242,10 @@ class MainMenuInterface:
             cur = con.cursor()
             hashed_password = self.hash_password(self.password_input)
             try:
-                cur.execute("INSERT INTO Users (email, password) VALUES (?, ?)", (self.email_input, hashed_password))
+                cur.execute("INSERT INTO Users (Email, Password) VALUES (?, ?)", (self.email_input, hashed_password))
                 con.commit()
                 self.flag_register = False
-                self.flag_screen_1 = True
+                self.flag_auth = True
                 self.email_input = ""
                 self.password_input = ""
             except sqlite3.IntegrityError:
@@ -439,15 +439,16 @@ class MainMenuInterface:
             }
 
         try:
-            select_request = 'SELECT * FROM Results'
-            con = sqlite3.connect(f"data/data.db")
+            select_request = f'SELECT * FROM Users WHERE Id == {self.current_user}'
+            con = sqlite3.connect(f"data/users.db")
             cur = con.cursor()
             current_info = cur.execute(select_request).fetchall()[0]
 
             all_games = int(current_info[1]) + 1
             winnings = int(current_info[2]) + game_cycle[0]
 
-            update_request = f'UPDATE Results SET AllRuns = "{all_games}", WinningRuns = "{winnings}" WHERE Id == 1'
+            update_request = f'''UPDATE Users SET AllRuns = "{all_games}", WinningRuns = "{winnings}",
+                                    WHERE Id == {self.current_user}'''
             cur.execute(update_request)
             con.commit()
             con.close()
@@ -495,12 +496,12 @@ class MainMenuInterface:
         mx, my = pygame.mouse.get_pos()
 
         try:
-            select_request = 'SELECT * FROM Results'
-            con = sqlite3.connect(f"data/data.db")
+            select_request = f'SELECT * FROM Users WHERE Id == {self.current_user}'
+            con = sqlite3.connect(f"data/users.db")
             current_info = con.cursor().execute(select_request).fetchall()[0]
 
-            all_games = int(current_info[1])
-            winnings = int(current_info[2])
+            all_games = int(current_info[3])
+            winnings = int(current_info[4])
             con.close()
         except sqlite3.OperationalError:
             print('База данных не найдена')
