@@ -111,7 +111,7 @@ class KianaSkillE(pygame.sprite.Sprite):
             self.fire = 0
             for enemy in enemy_group:
                 pos = [enemy.rect.x, enemy.rect.y]
-                alpha = math.atan2(self.my, self.mx) - math.atan2(pos[1], pos[0])
+                alpha = abs(math.atan2(self.my, self.mx) - math.atan2(pos[1], pos[0]))
                 a = math.hypot(self.mx, self.my)
                 s = 0.5 * a * math.hypot(pos[0], pos[1]) * math.sin(alpha)
                 height = abs(2 * s / a)
