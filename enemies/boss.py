@@ -7,11 +7,10 @@ from enemies.spider import Spider
 
 
 class Boss(pygame.sprite.Sprite):
-    def __init__(self, *group, fps, map_data, player, x, y, summons, difficult):
+    def __init__(self, *group, map_data, player, x, y, summons, difficult):
         super().__init__(*group)
         self.summons_group = summons
         self.frames = [self.load_image(f"boss.png")]
-        self.fps = fps
         self.map_data = map_data
         self.player = player
         self.difficult = difficult
@@ -20,12 +19,13 @@ class Boss(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(self.image, (180, 180))
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = x, y
+        self.pos = [x, y]
         self.movement_type = 'vector'
         self.vector_time = 2
         self.circle_time = 0
         self.delta_time = time.time()
         self.dx = self.dy = self.dist = None
-        self.speed = 8 if difficult == "Easy" else 10
+        self.speed = 850 if difficult == "Easy" else 1000
         self.clock = 0
         self.max_HP = 12_000 if difficult == "Easy" else 20_000
         self.HP = self.max_HP
@@ -34,25 +34,24 @@ class Boss(pygame.sprite.Sprite):
         self.dashes = 0
         self.circle_step = 0
 
-    def vector_move(self, change, dx, dy, dist):
+    def vector_move(self, change, dx, dy, dist, dt):
         try:
-            dx, dy = (dx / dist * self.speed), (dy / dist * self.speed)
+            dx, dy = (dx / dist * self.speed * dt), (dy / dist * self.speed * dt)
 
-            if self.movement_type == 'vector':
-                self.rect.x += dx - change[0]
-                self.rect.y += dy - change[1]
-            else:
-                self.rect.x -= change[0]
-                self.rect.y -= change[1]
+            self.pos[0] += dx - change[0]
+            self.pos[1] += dy - change[1]
+
+            self.rect.x = self.pos[0]
+            self.rect.y = self.pos[1]
 
         except ZeroDivisionError:
             pass
 
     def circle_move(self, x, y):
-        self.rect.centerx = x - 400 * math.cos(math.radians(75 + (self.circle_step // self.fps)))
-        self.rect.centery = y - 400 * math.sin(math.radians(75 + (self.circle_step // self.fps)))
+        self.rect.centerx = x - 400 * math.cos(math.radians(75 + (self.circle_step // 100)))
+        self.rect.centery = y - 400 * math.sin(math.radians(75 + (self.circle_step // 100)))
 
-    def update(self, change, player, visible_sprites, screen):
+    def update(self, change, player, visible_sprites, screen, dt):
         info = pygame.display.Info()
         self.Boss_HP_bar(screen)
         if self.movement_type == 'vector':
@@ -64,7 +63,7 @@ class Boss(pygame.sprite.Sprite):
                 if self.dashes <= 7:
                     self.dashes += 1
 
-            self.vector_move(change, self.dx, self.dy, self.dist)
+            self.vector_move(change, self.dx, self.dy, self.dist, dt)
 
             if self.dashes > 7:
                 self.movement_type = 'circle'
@@ -84,7 +83,7 @@ class Boss(pygame.sprite.Sprite):
                 self.dashes = 0
                 self.delta_time = time.time()
 
-                Spider(self.summons_group, fps=self.fps, map_data=self.map_data,
+                Spider(self.summons_group, map_data=self.map_data,
                                   player=self.player, x=self.rect.centerx, y=self.rect.centery, difficult=self.difficult)
 
             self.circle_time = time.time() - self.delta_time
@@ -92,7 +91,8 @@ class Boss(pygame.sprite.Sprite):
 
         if -60 < self.rect.centerx < info.current_w * 1.1 and -60 < self.rect.centery < info.current_h * 1.1:
             visible_sprites.add(self)
-            if self.clock == 500 // self.fps:
+            self.clock += dt
+            if self.clock >= 1/20:
                 self.clock = 0
                 self.cur_frame = (self.cur_frame + 1) % len(self.frames)
                 self.image = self.frames[self.cur_frame]
@@ -100,8 +100,6 @@ class Boss(pygame.sprite.Sprite):
 
                 angle = math.degrees(math.atan2(-self.dx, self.dy))
                 self.image = pygame.transform.rotate(self.image, -angle)
-            else:
-                self.clock += 1
 
     def load_image(self, name, colorkey=None):
         fullname = os.path.join('images/enemies/boss', name)

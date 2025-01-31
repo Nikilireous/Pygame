@@ -6,11 +6,10 @@ import time
 
 
 class MeiBaseAttack(pygame.sprite.Sprite):
-    def __init__(self, *group, fps, player, res):
+    def __init__(self, *group, player, res):
         super().__init__(*group)
         self.cur_frame = 0
         self.player = player
-        self.fps = fps
         self.frames_time = 1
         self.frames_second = 0
         self.frames = [self.load_image(f"katana{i}.png") for i in range(15)]
@@ -19,6 +18,13 @@ class MeiBaseAttack(pygame.sprite.Sprite):
         self.image = self.frames[self.cur_frame]
 
         mx, my = pygame.mouse.get_pos()
+
+        info = pygame.display.Info()
+        center = [info.current_w / 2, info.current_h / 2]
+
+        mx += 720 - center[0]
+        my += 405 - center[1]
+
         self.dir = (mx - 720, my - 405)
         self.length = math.hypot(*self.dir)
         if self.length == 0.0:
@@ -35,7 +41,7 @@ class MeiBaseAttack(pygame.sprite.Sprite):
                     self.resolution[1]/2 + self.dir2[1] * 200)
         self.rect.center = self.pos
 
-    def update(self, change, camera_pos, enemies_group):
+    def update(self, change, camera_pos, enemies_group, dt):
         if self.frames_second == self.frames_time:
             self.frames_second = 0
             if self.cur_frame + 1 == len(self.frames):
@@ -75,7 +81,7 @@ class MeiBaseAttack(pygame.sprite.Sprite):
         enemy_length_y = enemy.rect.centery - self.resolution[1]/2
         enemy_vector = (enemy_length_x, enemy_length_y)
         enemy_distance = math.hypot(enemy_length_x, enemy_length_y)
-
+        if enemy_distance == 0: enemy_distance = 0.001
         dot_product = self.dir[0] * enemy_vector[0] + self.dir[1] * enemy_vector[1]
         angle2 = dot_product / (self.length * enemy_distance)
 
@@ -102,24 +108,24 @@ class MeiSkillE:
         else:
             self.dir = (self.dir[0] / length, self.dir[1] / length)
 
-        self.speed = 10
+        self.speed = 1000
 
-    def dash(self):
-        positions = [(self.map.player_y + 35 + int(self.dir[1] * self.speed), self.map.player_x + 10 + int(self.dir[0] * self.speed)),
-                     (self.map.player_y - 30 + int(self.dir[1] * self.speed), self.map.player_x - 10 + int(self.dir[0] * self.speed)),
-                     (self.map.player_y + 35 + int(self.dir[1] * self.speed), self.map.player_x - 10 + int(self.dir[0] * self.speed)),
-                     (self.map.player_y - 30 + int(self.dir[1] * self.speed), self.map.player_x + 10 + int(self.dir[0] * self.speed))]
+    def dash(self, dt):
+        positions = [(self.map.player_y + 35 + int(self.dir[1] * self.speed * dt), self.map.player_x + 10 + int(self.dir[0] * self.speed * dt)),
+                     (self.map.player_y - 30 + int(self.dir[1] * self.speed * dt), self.map.player_x - 10 + int(self.dir[0] * self.speed * dt)),
+                     (self.map.player_y + 35 + int(self.dir[1] * self.speed * dt), self.map.player_x - 10 + int(self.dir[0] * self.speed * dt)),
+                     (self.map.player_y - 30 + int(self.dir[1] * self.speed * dt), self.map.player_x + 10 + int(self.dir[0] * self.speed * dt))]
 
         if all(list(map(self.dash_conditions, positions))):
-            self.map.player_x += int(self.dir[0] * self.speed)
-            self.map.player_y += int(self.dir[1] * self.speed)
+            self.map.player_x += self.dir[0] * self.speed * dt
+            self.map.player_y += self.dir[1] * self.speed * dt
             if self.enemy:
                 for i in self.enemy:
-                    i.rect.x -= int(self.dir[0] * self.speed)
-                    i.rect.y -= int(self.dir[1] * self.speed)
+                    i.pos[0] -= self.dir[0] * self.speed * dt
+                    i.pos[1] -= self.dir[1] * self.speed * dt
 
     def dash_conditions(self, pos):
         player_in_tiles_cor = (pos[0] // self.map.TILE_SIZE, pos[1] // self.map.TILE_SIZE)
-        if self.map.map_data[player_in_tiles_cor[0]][player_in_tiles_cor[1]] not in [0, 5]:
+        if self.map.map_data[round(player_in_tiles_cor[0])][round(player_in_tiles_cor[1])] not in [0, 5]:
             return False
         return True

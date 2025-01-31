@@ -3,12 +3,11 @@ import os
 
 
 class Map:
-    def __init__(self, fps, player, difficult):
+    def __init__(self, player, difficult):
         self.TILE_SIZE = 128
         self.player = player
         self.tiles = self.load_tiles()
         self.change = [0, 0]
-        self.fps = fps
         self.map = "maps/map_number_1" if difficult == "Easy" else "maps/map_number_2"
         with open(self.map) as file:
             player_pos = list(map(int, file.readline().split()))
@@ -51,34 +50,34 @@ class Map:
                 if -self.TILE_SIZE < screen_x < screen.get_width() and -self.TILE_SIZE < screen_y < screen.get_height():
                     screen.blit(self.tiles[tile], (screen_x, screen_y))
 
-    def update(self, screen):
+    def update(self, screen, dt):
         self.change = [0, 0]
-        speed = self.player.move_speed
+        speed = self.player.move_speed * dt
         keys = pygame.key.get_pressed()
         if keys[pygame.K_w]:  # Движение Вверх
-            pos1, pos2 = (self.player_y - 30 - speed, self.player_x - 10), (
-                self.player_y - 30 - speed, self.player_x + 10)
+            pos1, pos2 = (round(self.player_y - 30 - speed), round(self.player_x - 10)), (
+                round(self.player_y - 30 - speed), round(self.player_x + 10))
             if self.step_condition(pos1, pos2):
                 self.player_y -= speed
                 self.change[1] -= speed
 
         if keys[pygame.K_s]:  # Движение Вниз
-            pos1, pos2 = (self.player_y + 35 + speed, self.player_x - 10), (
-                self.player_y + 35 + speed, self.player_x + 10)
+            pos1, pos2 = (round(self.player_y + 35 + speed), round(self.player_x - 10)), (
+                round(self.player_y + 35 + speed), round(self.player_x + 10))
             if self.step_condition(pos1, pos2):
                 self.player_y += speed
                 self.change[1] += speed
 
         if keys[pygame.K_a]:  # Движение Влево
-            pos1, pos2 = (self.player_y - 30, self.player_x - 10 - speed), (
-                self.player_y + 35, self.player_x - 10 - speed)
+            pos1, pos2 = (round(self.player_y - 30), round(self.player_x - 10 - speed)), (
+                round(self.player_y + 35), round(self.player_x - 10 - speed))
             if self.step_condition(pos1, pos2):
                 self.player_x -= speed
                 self.change[0] -= speed
 
         if keys[pygame.K_d]:  # Движение Вправо
-            pos1, pos2 = (self.player_y - 30, self.player_x + 10 + speed), (
-                self.player_y + 35, self.player_x + 10 + speed)
+            pos1, pos2 = (round(self.player_y - 30), round(self.player_x + 10 + speed)), (
+                round(self.player_y + 35), round(self.player_x + 10 + speed))
             if self.step_condition(pos1, pos2):
                 self.player_x += speed
                 self.change[0] += speed

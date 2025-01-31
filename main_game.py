@@ -32,9 +32,7 @@ def main_game(char, size0, difficult):
     pygame.mixer.music.play(-1)
 
     size = size0
-    fps = 100
 
-    print(size)
     screen = pygame.display.set_mode(size)
     pygame.display.set_caption("honkai impact 4th")
 
@@ -49,11 +47,11 @@ def main_game(char, size0, difficult):
     info = pygame.display.Info()
 
     if char:
-        character, character_name = eval(char)(character_sprites, fps=fps, size=size), char
+        character, character_name = eval(char)(character_sprites, size=size), char
     else:
-        character, character_name = character_choice(group=character_sprites, fps=fps, size=size)
+        character, character_name = character_choice(group=character_sprites, size=size)
 
-    main_map = Map(fps, character, difficult)
+    main_map = Map(character, difficult)
     main_map_data = main_map.map_data
     main_map_flightless_data = main_map.flightless_map
     tile_size = main_map.TILE_SIZE
@@ -64,7 +62,7 @@ def main_game(char, size0, difficult):
     interface = Interface(character)
     interface.get_info()
 
-    events = Events(difficult=difficult, fps=fps, flightless_data=main_map_flightless_data, player=character,
+    events = Events(difficult=difficult, flightless_data=main_map_flightless_data, player=character,
                     spider_sprites=spider_sprites, witch_sprites=witch_sprites, boss_sprites=boss_sprites)
 
     clock = pygame.time.Clock()
@@ -76,7 +74,10 @@ def main_game(char, size0, difficult):
     mei_skill_time = 0
     running = True
 
+    deltaTime = 0
+
     while running:
+        currTime = time.time()
         player_pos = (main_map.player_x, main_map.player_y)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -89,12 +90,13 @@ def main_game(char, size0, difficult):
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_e and skill:
                     if character_name == "Kiana":
-                        KianaSkillE(skill_sprites, fps=fps, player=character, res=[info.current_w, info.current_h])
+                        KianaSkillE(skill_sprites, player=character, res=[info.current_w, info.current_h])
                     elif character_name == "Mei":
                         character.HP -= 5
                         skill_damage = character.skill_damage
                         character.base_atk_damage += skill_damage
-                        mei_skill = MeiSkillE(player=character, map=main_map, enemy=visible_enemies, resolution=[info.current_w, info.current_h])
+                        mei_skill = MeiSkillE(player=character, map=main_map, enemy=visible_enemies,
+                                              resolution=[info.current_w, info.current_h])
                         mei_skill_duration = True
                     interface.skill_start = True
                     skill = False
@@ -102,18 +104,17 @@ def main_game(char, size0, difficult):
 
         if fire:
             if character_name == "Kiana":
-                if seconds_to_shoot == fps // 10:
+                seconds_to_shoot += deltaTime
+                if seconds_to_shoot >= 0.1:
                     seconds_to_shoot = 0
                     x, y = size[0] // 2, size[1] // 2
-                    KianaBaseAttack(bullet_sprites, x=x, y=y, fps=fps, map_data=main_map_data, player_pos=player_pos,
+                    KianaBaseAttack(bullet_sprites, x=x, y=y, map_data=main_map_data, player_pos=player_pos,
                                     player=character)
-                else:
-                    seconds_to_shoot += 1
 
             elif character_name == "Mei":
                 if seconds_to_shoot == 50:
                     seconds_to_shoot = 0
-                    MeiBaseAttack(bullet_sprites, fps=fps, player=character, res=[info.current_w, info.current_h])
+                    MeiBaseAttack(bullet_sprites,  player=character, res=[info.current_w, info.current_h])
                 else:
                     seconds_to_shoot += 1
 
@@ -123,15 +124,15 @@ def main_game(char, size0, difficult):
             skill = True
 
         if mei_skill_duration:
-            if mei_skill_time == 20:
+            if mei_skill_time >= 0.2:
                 mei_skill_duration = False
                 mei_skill_time = 0
             else:
-                mei_skill.dash()
-                mei_skill_time += 1
+                mei_skill.dash(deltaTime)
+                mei_skill_time += 1 * deltaTime
 
         screen.fill(0)
-        main_map.update(screen)
+        main_map.update(screen, deltaTime)
         all_change = main_map.change
         camera_pos = (main_map.player_x - size[0] // 2, main_map.player_y - size[1] // 2)
         visible_enemies = pygame.sprite.Group()
@@ -146,28 +147,29 @@ def main_game(char, size0, difficult):
             pygame.mixer.music.stop()
             return True, interface.current_time
 
-        spider_sprites.update(change=all_change, camera_pos=camera_pos, visible_sprites=visible_enemies)
-        witch_sprites.update(change=all_change, player=character, visible_sprites=visible_enemies)
-        boss_sprites.update(change=all_change, player=character, visible_sprites=visible_enemies, screen=screen)
+        spider_sprites.update(change=all_change, camera_pos=camera_pos, visible_sprites=visible_enemies, dt=deltaTime)
+        witch_sprites.update(change=all_change, player=character, visible_sprites=visible_enemies, dt=deltaTime)
+        boss_sprites.update(change=all_change, player=character, visible_sprites=visible_enemies, screen=screen,
+                            dt=deltaTime)
         visible_enemies.draw(screen)
 
-        character_sprites.update(visible_sprites=visible_enemies)
+        character_sprites.update(visible_sprites=visible_enemies, dt=deltaTime)
         character_sprites.draw(screen)
 
-        bullet_sprites.update(change=all_change, camera_pos=camera_pos, enemies_group=visible_enemies)
+        bullet_sprites.update(change=all_change, camera_pos=camera_pos, enemies_group=visible_enemies, dt=deltaTime)
         bullet_sprites.draw(screen)
 
-        skill_sprites.update(enemy_group=visible_enemies)
+        skill_sprites.update(enemy_group=visible_enemies, deltaTime=deltaTime, screen=screen)
         skill_sprites.draw(screen)
 
         interface.draw_interface(screen)
-
-        clock.tick(fps)
 
         if character.HP <= 0:
             pygame.mixer.music.stop()
             return False, interface.current_time
         pygame.display.flip()
+
+        deltaTime = time.time() - currTime
 
     pygame.mixer.music.stop()
     return False, interface.current_time

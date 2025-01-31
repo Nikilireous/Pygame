@@ -7,20 +7,18 @@ import math
 
 
 class Spider(pygame.sprite.Sprite):
-    def __init__(self, *group, fps, map_data, player, x, y, difficult):
+    def __init__(self, *group, map_data, player, x, y, difficult):
         super().__init__(*group)
         self.frames = [self.load_image(f"pauk{i}.png") for i in range(11)]
-        self.fps = fps
         self.player = player
         self.map_data = map_data
         self.cur_frame = 0
         self.image = self.frames[self.cur_frame]
         self.image = pygame.transform.scale(self.image, (80, 80))
+        self.pos = [x, y]
         self.rect = self.image.get_rect()
         self.rect.centerx, self.rect.centery = x, y
-        self.movement_type = 'vector'
-        self.matrix_timer = self.fps * 3
-        self.speed = 2 if difficult == "Easy" else 3
+        self.speed = 250 if difficult == "Easy" else 350
         self.clock = 0
         self.HP = 200 if difficult == "Easy" else 270
         self.damage = 1 if difficult == "Easy" else 2
@@ -36,37 +34,30 @@ class Spider(pygame.sprite.Sprite):
         center_y = (camera_y + self.rect.centery) // tile_size
         return centre_x, center_y
 
-    def vector_move(self, player, change):
+    def vector_move(self, player, change, dt):
         dx, dy = player.rect.x - self.rect.x, player.rect.y - self.rect.y
         dist = math.hypot(dx, dy)
 
         try:
-            dx, dy = (dx / dist * self.speed), (dy / dist * self.speed)
+            dx, dy = ((dx / dist) * self.speed * dt), ((dy / dist) * self.speed * dt)
 
-            if self.movement_type == 'vector':
-                self.rect.x += dx - change[0]
-                self.rect.y += dy - change[1]
-            else:
-                self.rect.x -= change[0]
-                self.rect.y -= change[1]
+            self.pos[0] += dx - change[0]
+            self.pos[1] += dy - change[1]
+
+            self.rect.x = self.pos[0]
+            self.rect.y = self.pos[1]
 
         except ZeroDivisionError:
             pass
 
-    def update(self, change, camera_pos, visible_sprites):
+    def update(self, change, camera_pos, visible_sprites, dt):
         info = pygame.display.Info()
-        if self.movement_type == 'vector':
-            self.vector_move(self.player, change)
-
-            if self.matrix_timer == 0:
-                self.movement_type = 'vector'
-                self.matrix_timer = self.fps * 3
-            else:
-                self.matrix_timer -= 1
+        self.vector_move(self.player, change, dt)
 
         if -60 < self.rect.centerx < info.current_w * 1.1 and -60 < self.rect.centery < info.current_h * 1.1:
             visible_sprites.add(self)
-            if self.clock == 250 // self.fps:
+            self.clock += dt
+            if self.clock >= 1/40:
                 dx, dy = (self.player.rect.x - self.rect.x), (self.player.rect.y - self.rect.y)
                 self.clock = 0
                 self.cur_frame = (self.cur_frame + 1) % len(self.frames)
@@ -75,8 +66,6 @@ class Spider(pygame.sprite.Sprite):
 
                 angle = math.degrees(math.atan2(-dx, dy))
                 self.image = pygame.transform.rotate(self.image, -angle)
-            else:
-                self.clock += 1
 
     def load_image(self, name, colorkey=None):
         fullname = os.path.join('images/enemies/pauk', name)
