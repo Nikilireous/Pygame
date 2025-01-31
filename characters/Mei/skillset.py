@@ -6,11 +6,10 @@ import time
 
 
 class MeiBaseAttack(pygame.sprite.Sprite):
-    def __init__(self, *group, fps, player, res):
+    def __init__(self, *group, player, res):
         super().__init__(*group)
         self.cur_frame = 0
         self.player = player
-        self.fps = fps
         self.frames_time = 1
         self.frames_second = 0
         self.frames = [self.load_image(f"katana{i}.png") for i in range(15)]
@@ -19,6 +18,13 @@ class MeiBaseAttack(pygame.sprite.Sprite):
         self.image = self.frames[self.cur_frame]
 
         mx, my = pygame.mouse.get_pos()
+
+        info = pygame.display.Info()
+        center = [info.current_w / 2, info.current_h / 2]
+
+        mx += 720 - center[0]
+        my += 405 - center[1]
+
         self.dir = (mx - 720, my - 405)
         self.length = math.hypot(*self.dir)
         if self.length == 0.0:

@@ -5,11 +5,10 @@ import time
 
 
 class Kiana(pygame.sprite.Sprite):
-    def __init__(self, *group, fps, size):
+    def __init__(self, *group, size):
         super().__init__(*group)
         self.frames = [self.load_image(f"Kiana{i}.png") for i in range(2)]
         self.level_XP = [0, 10, 20, 35, 50, 70, 90, 110, 130, 150]
-        self.fps = fps
         self.cur_frame = 0
         self.image = self.frames[self.cur_frame]
         self.image = pygame.transform.scale(self.image, (80, 80))
@@ -21,23 +20,24 @@ class Kiana(pygame.sprite.Sprite):
         self.XP = 0
         self.level = 1
         self.base_atk_damage = 10
-        self.skill_damage = 35
+        self.skill_damage = 100
         self.regeneration_to_second = 1
         self.regeneration_time = 0
-        self.move_speed = 3
-        self.skill_recharge = 23
+        self.move_speed = 300
+        self.skill_recharge = 1
 
-    def update(self, visible_sprites):
+    def update(self, visible_sprites, dt):
         self.level_update_changed()
         self.regeneration()
 
-        if self.clock == 2500 // self.fps:
+        self.clock += dt
+
+        if self.clock >= 0.25:
             self.clock = 0
             self.cur_frame = (self.cur_frame + 1) % len(self.frames)
             self.image = self.frames[self.cur_frame]
             self.image = pygame.transform.scale(self.image, (80, 80))
-        else:
-            self.clock += 1
+
 
         collision_object = pygame.sprite.spritecollide(self, visible_sprites, False)
         if collision_object:
@@ -72,7 +72,7 @@ class Kiana(pygame.sprite.Sprite):
         self.max_HP += 150
         self.HP += 150
         self.regeneration_to_second += 1
-        self.skill_damage += 8
+        self.skill_damage *= 1.15
 
     def regeneration(self):
         if self.HP != self.max_HP:
