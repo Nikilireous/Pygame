@@ -5,7 +5,7 @@ import time
 
 
 class Mei(pygame.sprite.Sprite):
-    def __init__(self, *group, fps, size):
+    def __init__(self, *group, size):
         super().__init__(*group)
         self.frames = [self.load_image(f"Mei{i}.png") for i in range(2)]
         self.level_XP = [0, 10, 20, 35, 50, 70, 90, 110, 130, 150]

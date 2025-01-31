@@ -124,12 +124,12 @@ def main_game(char, size0, difficult):
             skill = True
 
         if mei_skill_duration:
-            if mei_skill_time == 20:
+            if mei_skill_time >= 0.2:
                 mei_skill_duration = False
                 mei_skill_time = 0
             else:
-                mei_skill.dash()
-                mei_skill_time += 1
+                mei_skill.dash(deltaTime)
+                mei_skill_time += 1 * deltaTime
 
         screen.fill(0)
         main_map.update(screen, deltaTime)

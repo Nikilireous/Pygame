@@ -107,18 +107,16 @@ class KianaSkillE(pygame.sprite.Sprite):
         angle = math.degrees(math.atan2(-self.dir[1], self.dir[0]))
 
         for enemy in enemy_group:
-            pos = [enemy.rect.centerx + 25, enemy.rect.centery + 25]
-            pygame.draw.circle(screen, "red", (pos[0], pos[1]), 25)
-            a = math.hypot(self.mx, self.my)
+            info = pygame.display.Info()
+            center = [info.current_w / 2, info.current_h / 2]
+            pos = [enemy.rect.centerx + 25 - center[0], enemy.rect.centery + 25 - center[1]]
+            mPos = [self.mx - center[0], self.my - center[1]]
+            a = math.hypot(mPos[0], mPos[1])
             b = math.hypot(pos[0], pos[1])
-            c = math.hypot(pos[0] - self.mx, pos[1] - self.my)
-            p = (a + b + c) / 2
-            alpha = abs(math.atan2(self.my / a, self.mx / a) - math.atan2(pos[1] / b, pos[0] / b))
-            # s = 0.5 * a * b * math.sin(alpha)
-            s = (p * (p - a) * (p - b) * (p - c)) ** 0.5
+            if b == 0: b = 0.0001
+            alpha = abs(math.atan2(mPos[1] / a, mPos[0] / a) - math.atan2(pos[1] / b, pos[0] / b))
             height = b * math.sin(alpha)
-
-            pygame.draw.line(screen, "blue", (pos[0], pos[1]), (pos[0] + height, pos[1]), 5)
+            # pygame.draw.line(screen, "blue", (pos[0] + center[0], pos[1] + center[1]), (pos[0] + height + center[0], pos[1] + center[1]), 5)
             if math.degrees(alpha) <= 90 and height < self.lazerWidth / 2:
                 self.shot(enemy, deltaTime)
 
